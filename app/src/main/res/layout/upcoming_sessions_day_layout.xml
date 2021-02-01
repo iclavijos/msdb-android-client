@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="4dp">
+    android:paddingTop="6dp">
 
     <TextView
         android:id="@+id/textViewSessionHours"
@@ -13,21 +13,24 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="10:00AM - 11:00AM"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
         android:id="@+id/textViewSessionName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/textViewSessionHours"
+        android:layout_below="@id/textViewSessionHours"
+        android:layout_alignParentBottom="false"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:paddingStart="8dp"
         android:text="Free Practice 1 - 2021 Le Mans 24 Hours"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="?attr/textAppearanceListItem" />
 
     <ImageView
         android:id="@+id/imageViewSeriesLogo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_below="@id/textViewSessionName"
         android:layout_alignStart="@id/textViewSessionName"
         tools:src="@tools:sample/avatars" />
@@ -38,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewSessionName"
         android:layout_toEndOf="@id/imageViewSeriesLogo"
+        android:paddingLeft="8dp"
         android:text="Circuit La Sarthe" />
 
 </RelativeLayout>

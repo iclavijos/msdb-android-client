@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.icesoft.msdb.client.R;
@@ -24,8 +25,9 @@ import java.util.List;
 public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingSessionsRecyclerViewAdapter.ViewHolder> {
 
     private final UpcomingSessionsViewModel upcomingSessionsViewModel;
+    private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
-    public UpcomingSessionsRecyclerViewAdapter(Context context, List<UpcomingSession> items) {
+    public UpcomingSessionsRecyclerViewAdapter(Context context) {
         upcomingSessionsViewModel =
                 new ViewModelProvider((FragmentActivity)context).get(UpcomingSessionsViewModel.class);
     }
@@ -42,6 +44,21 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
         LocalDate startDate = upcomingSessionsViewModel.getDays().get(position);
         String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(startDate);
         holder.mIdView.setText(formattedDate);
+
+        UpcomingSessionsDayRecyclerViewAdapter sessionsDayViewAdapter =
+                new UpcomingSessionsDayRecyclerViewAdapter(upcomingSessionsViewModel.getSessionsDay(startDate));
+        holder.upcomingSessionsDayView.setAdapter(sessionsDayViewAdapter);
+        holder.upcomingSessionsDayView.setRecycledViewPool(viewPool);
+
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(
+                        holder.upcomingSessionsDayView.getContext(),
+                        LinearLayoutManager.VERTICAL,
+                        false);
+        layoutManager.setInitialPrefetchItemCount(
+                upcomingSessionsViewModel.getSessionsDay(startDate).size());
+        holder.upcomingSessionsDayView.setLayoutManager(layoutManager);
+        sessionsDayViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -52,11 +69,13 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
+        public final RecyclerView upcomingSessionsDayView;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.day);
+            upcomingSessionsDayView = (RecyclerView) view.findViewById(R.id.upcomingSessionsDayReciclerView);
         }
 
     }
