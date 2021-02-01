@@ -1,15 +1,7 @@
 <resources>
-    <string name="app_name">MSDB Client</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name" translatable="false">MSDB Client</string>
 
-    <string name="menu_home">Motorsports Database</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_home" translatable="false">Motorsports Database</string>
 
     <string name="upcomingEvents">Upcoming events</string>
     <string name="noEvents">No data is available right now</string>
@@ -36,5 +28,4 @@
     <string name="upcomingSession">Upcoming event</string>
     <string name="upcomingSessionMessage">Session {session} of {event} begins at {startTime}</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

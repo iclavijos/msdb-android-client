@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MSDB Client</string>
     <string name="upcomingEvents">Propers esdeveniments</string>
+    <string name="noEvents">No hi ha dades disponibles en aquests moments</string>
+    <string name="subscriptions">Subscripcions</string>
+    <string name="upcomingSessions">Gestiona preferències</string>
+    <string name="processingData">Processant dades</string>
+    <string name="submit">Guardar</string>
+    <string name="login">Autenticar-se</string>
+    <string name="logout">Desconnectar</string>
+    <string name="sessionTypes">Tipus de sessió</string>
+    <string name="notificationTime">Temps de preavís</string>
+    <string name="practice">Entrenaments lliures</string>
+    <string name="qualifying">Classificacions</string>
+    <string name="races">Curses</string>
+    <string name="fifteenMin">15 minuts</string>
+    <string name="oneHour">1 hora</string>
+    <string name="threeHours">3 hores</string>
+    <string name="saving">Guardant preferències</string>
+    <string name="saved">Preferències guardades</string>
+    <string name="upcomingSession">Proper esdeveniment</string>
+    <string name="upcomingSessionMessage">La sessió {session} del {event} comença a les {startTime} hores</string>
 </resources>
