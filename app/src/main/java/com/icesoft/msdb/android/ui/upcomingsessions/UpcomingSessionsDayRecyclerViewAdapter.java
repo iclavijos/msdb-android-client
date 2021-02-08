@@ -62,7 +62,7 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
         Glide.with(holder.mView)
                 .load(upcomingSession.getSeriesLogo())
                 //.override(150)
-                .fitCenter()
+                .centerInside()
                 .into(holder.mViewSeriesLogo);
     }
 
