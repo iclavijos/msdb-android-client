@@ -1,4 +1,4 @@
-package com.icesoft.msdb.client;
+package com.icesoft.msdb.android;
 
 import org.junit.Test;
 

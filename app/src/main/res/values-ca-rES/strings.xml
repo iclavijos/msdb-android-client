@@ -19,5 +19,5 @@
     <string name="saving">Guardant preferències</string>
     <string name="saved">Preferències guardades</string>
     <string name="upcomingSession">Proper esdeveniment</string>
-    <string name="upcomingSessionMessage">La sessió {session} del {event} comença a les {startTime} hores</string>
+    <string name="upcomingSessionMessage">La sessió %1$s del %2$s comença a les %3$s hores</string>
 </resources>

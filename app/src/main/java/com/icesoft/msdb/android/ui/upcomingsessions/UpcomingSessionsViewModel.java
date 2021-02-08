@@ -1,10 +1,10 @@
-package com.icesoft.msdb.client.ui.upcomingsessions;
+package com.icesoft.msdb.android.ui.upcomingsessions;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.icesoft.msdb.client.model.UpcomingSession;
-import com.icesoft.msdb.client.tasks.UpcomingSessionsTask;
+import com.icesoft.msdb.android.model.UpcomingSession;
+import com.icesoft.msdb.android.tasks.UpcomingSessionsTask;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -54,6 +54,9 @@ public class UpcomingSessionsViewModel extends ViewModel {
         Future<List<UpcomingSession>> opResult = Executors.newFixedThreadPool(1).submit(task);
         try {
             List<UpcomingSession> sessions = opResult.get();
+            if (sessions == null) {
+                return Collections.emptyList();
+            }
             sessions.forEach(upcomingSession -> {
                 LocalDate startDate = LocalDateTime.ofInstant(
                     Instant.ofEpochSecond(upcomingSession.getSessionStartTime()), ZoneId.systemDefault()).toLocalDate();

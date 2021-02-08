@@ -26,6 +26,8 @@
     <string name="saved">Preferences saved</string>
 
     <string name="upcomingSession">Upcoming event</string>
-    <string name="upcomingSessionMessage">Session {session} of {event} begins at {startTime}</string>
+    <string name="upcomingSessionMessage">Session %1$s of %2$s begins at %3$s</string>
+    <string name="default_notification_channel_id" translatable="false">msdbChannel</string>
+    <string name="default_notification_channel_name" translatable="false">Motorsports Database</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

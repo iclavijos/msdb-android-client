@@ -32,7 +32,7 @@
 
             <fragment
                 android:id="@+id/fragment"
-                android:name="com.icesoft.msdb.client.ui.upcomingsessions.UpcomingSessionsFragment"
+                android:name="com.icesoft.msdb.android.ui.upcomingsessions.UpcomingSessionsFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </ScrollView>

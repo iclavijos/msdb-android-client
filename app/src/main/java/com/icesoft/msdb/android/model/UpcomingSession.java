@@ -1,6 +1,4 @@
-package com.icesoft.msdb.client.model;
-
-import java.util.List;
+package com.icesoft.msdb.android.model;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.icesoft.msdb.client.ui.upcomingsessions;
+package com.icesoft.msdb.android.ui.upcomingsessions;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,16 +11,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.icesoft.msdb.client.R;
-import com.icesoft.msdb.client.model.UpcomingSession;
+import com.icesoft.msdb.android.R;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link com.icesoft.msdb.client.model.UpcomingSession}.
+ * {@link RecyclerView.Adapter} that can display a {@link com.icesoft.msdb.android.model.UpcomingSession}.
  */
 public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingSessionsRecyclerViewAdapter.ViewHolder> {
 

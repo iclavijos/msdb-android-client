@@ -1,4 +1,4 @@
-package com.icesoft.msdb.client.ui.upcomingsessions;
+package com.icesoft.msdb.android.ui.upcomingsessions;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.icesoft.msdb.client.R;
+import com.icesoft.msdb.android.R;
 
 /**
  * A fragment representing a list of Items.

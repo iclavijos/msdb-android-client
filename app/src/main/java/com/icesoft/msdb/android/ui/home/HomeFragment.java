@@ -1,4 +1,4 @@
-package com.icesoft.msdb.client.ui.home;
+package com.icesoft.msdb.android.ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.icesoft.msdb.client.R;
+import com.icesoft.msdb.android.R;
 
 public class HomeFragment extends Fragment {
 

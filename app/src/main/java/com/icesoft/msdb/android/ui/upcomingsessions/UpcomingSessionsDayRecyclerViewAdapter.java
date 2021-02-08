@@ -1,4 +1,4 @@
-package com.icesoft.msdb.client.ui.upcomingsessions;
+package com.icesoft.msdb.android.ui.upcomingsessions;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.icesoft.msdb.client.R;
-import com.icesoft.msdb.client.model.UpcomingSession;
+import com.icesoft.msdb.android.R;
+import com.icesoft.msdb.android.model.UpcomingSession;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
