@@ -3,11 +3,14 @@ package com.icesoft.msdb.android;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +38,7 @@ import com.icesoft.msdb.android.service.BackendService;
 import com.icesoft.msdb.android.tasks.RegisterTokenTask;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -61,6 +65,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -83,7 +88,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         auth0.setOIDCConformant(true);
         authenticationAPIClient = new AuthenticationAPIClient(auth0);
         credentialsManager = new SecureCredentialsManager(this, new AuthenticationAPIClient(auth0), new SharedPreferencesStorage(this));
-        getCredentials();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
@@ -111,6 +115,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //            }
 //        }
         // [END handle_data_extras]
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        getCredentials();
     }
 
     @Override
@@ -235,8 +246,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 navigationView.inflateMenu(R.menu.activity_main_drawer);
                 navigationView.invalidate();
                 ImageView avatarView = (ImageView)findViewById(R.id.avatarView);
-                avatarView.setImageResource(R.mipmap.ic_launcher);
-                avatarView.setScaleType(ImageView.ScaleType.CENTER);
+                Glide.with(HomeActivity.this)
+                        .load(R.mipmap.ic_launcher)
+                        .fitCenter()
+                        .into((ImageView)findViewById(R.id.avatarView));
+//                avatarView.setImageResource(R.mipmap.ic_launcher);
+//                avatarView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 ((TextView)findViewById(R.id.userNameView)).setText("");
                 ((TextView)findViewById(R.id.userEmailView)).setText("");
             });

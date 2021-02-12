@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="256dp">
+
+    <ImageView
+        android:id="@+id/seriesLogoExpandedImageView"
+        android:layout_width="150dp"
+        android:layout_height="75dp"
+        android:padding="8dp"
+        android:scaleType="centerInside"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/eventTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/seriesLogoExpandedImageView"
+        android:padding="1dp"
+        android:text="@string/event" />
+
+    <TextView
+        android:id="@+id/sessionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/eventTextView"
+        android:layout_margin="1dp"
+        android:layout_toEndOf="@id/seriesLogoExpandedImageView"
+        android:text="@string/session" />
+
+    <TextView
+        android:id="@+id/startTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sessionTextView"
+        android:layout_margin="1dp"
+        android:layout_toEndOf="@id/seriesLogoExpandedImageView"
+        android:text="@string/startTime" />
+
+    <TextView
+        android:id="@+id/endTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startTimeTextView"
+        android:layout_toEndOf="@id/seriesLogoExpandedImageView"
+        android:padding="1dp"
+        android:text="@string/endTime" />
+
+    <TextView
+        android:id="@+id/whereTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/endTimeTextView"
+        android:layout_alignStart="@id/eventTextView"
+        android:text="@string/where" />
+
+    <ImageView
+        android:id="@+id/racetrackLayoutImageView"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_below="@id/whereTextView"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        tools:srcCompat="@tools:sample/avatars" />
+
+</RelativeLayout>

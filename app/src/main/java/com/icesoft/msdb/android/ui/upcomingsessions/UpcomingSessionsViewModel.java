@@ -49,6 +49,10 @@ public class UpcomingSessionsViewModel extends ViewModel {
         return sessionsPerDay.get(date);
     }
 
+    public void refreshUpcomingSessions() {
+        upcomingSessionsMutableData.setValue(fetchUpcomingSessions());
+    }
+
     private List<UpcomingSession> fetchUpcomingSessions() {
         UpcomingSessionsTask task = new UpcomingSessionsTask();
         Future<List<UpcomingSession>> opResult = Executors.newFixedThreadPool(1).submit(task);

@@ -1,5 +1,6 @@
 package com.icesoft.msdb.android.service;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,10 +10,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.NotificationTarget;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.icesoft.msdb.android.HomeActivity;
@@ -23,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Map;
 import java.util.Random;
 
 public class NotificationService extends FirebaseMessagingService {
@@ -36,27 +41,10 @@ public class NotificationService extends FirebaseMessagingService {
         LocalDateTime startTime = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("startTime"))),
                 ZoneId.systemDefault());
+        LocalDateTime endTime = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("endTime"))),
+                ZoneId.systemDefault());
 
-        String msg = getResources().getString(R.string.upcomingSessionMessage,
-                remoteMessage.getData().get("sessionName"),
-                remoteMessage.getData().get("eventName"),
-                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime));
-        sendNotification(msg);
-    }
-
-    @Override
-    public void onNewToken(@NonNull String s) {
-        Log.d(TAG, "onNewToken: " + s);
-        super.onNewToken(s);
-    }
-
-    @Override
-    public void handleIntent(Intent intent) {
-        Log.d(TAG, "handleIntent");
-        super.handleIntent(intent);
-    }
-
-    private void sendNotification(String messageBody) {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -64,14 +52,31 @@ public class NotificationService extends FirebaseMessagingService {
 
         String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        RemoteViews compactView = new RemoteViews(getPackageName(), R.layout.notification_compact_layout);
+        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded_layout);
+
+        String msg = getResources().getString(R.string.upcomingSessionMessage,
+                remoteMessage.getData().get("sessionName"),
+                remoteMessage.getData().get("eventName"),
+                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime));
+
+        compactView.setTextViewText(R.id.notificationMessageTextView, msg);
+        expandedView.setTextViewText(R.id.eventTextView, getResources().getString(R.string.event, remoteMessage.getData().get("eventName")));
+        expandedView.setTextViewText(R.id.sessionTextView, getResources().getString(R.string.session, remoteMessage.getData().get("sessionName")));
+        expandedView.setTextViewText(R.id.startTimeTextView, getResources().getString(R.string.startTime, DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime)));
+        expandedView.setTextViewText(R.id.endTimeTextView, getResources().getString(R.string.endTime, DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(endTime)));
+        expandedView.setTextViewText(R.id.whereTextView, getResources().getString(R.string.where, remoteMessage.getData().get("racetrack")));
+
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.mipmap.ic_launcher_foreground)
-                        .setContentTitle(getString(R.string.upcomingSession))
-                        .setContentText(messageBody)
+                        .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                        .setCustomContentView(compactView)
+                        .setCustomBigContentView(expandedView)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setCategory(NotificationCompat.CATEGORY_EVENT)
                         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
@@ -85,6 +90,49 @@ public class NotificationService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(random.nextInt(Integer.MAX_VALUE), notificationBuilder.build());
+        String sessionId = remoteMessage.getData().get("sessionId");
+        int notificationId = random.nextInt(Integer.MAX_VALUE);
+        if (sessionId != null) {
+            notificationId = Integer.parseInt(sessionId);
+        }
+        Notification notification = notificationBuilder.build();
+
+        NotificationTarget notificationTargetCompact = new NotificationTarget(
+                getApplicationContext(),
+                R.id.seriesLogoCompactImageView,
+                compactView,
+                notification,
+                notificationId);
+        NotificationTarget notificationTargetSeriesLogoExpanded = new NotificationTarget(
+                getApplicationContext(),
+                R.id.seriesLogoExpandedImageView,
+                expandedView,
+                notification,
+                notificationId);
+        NotificationTarget notificationTargetTrackLayoutExpanded = new NotificationTarget(
+                getApplicationContext(),
+                R.id.racetrackLayoutImageView,
+                expandedView,
+                notification,
+                notificationId);
+
+        String logoUrl = remoteMessage.getData().get("seriesLogoUrl");
+        Glide.with(this)
+                .asBitmap()
+                .load(logoUrl)
+                .fitCenter()
+                .into(notificationTargetCompact);
+        Glide.with(this)
+                .asBitmap()
+                .load(logoUrl)
+                .fitCenter()
+                .into(notificationTargetSeriesLogoExpanded);
+        Glide.with(this)
+                .asBitmap()
+                .load(remoteMessage.getData().get("racetrackLayoutUrl"))
+                .fitCenter()
+                .into(notificationTargetTrackLayoutExpanded);
+
+        notificationManager.notify(notificationId, notification);
     }
 }

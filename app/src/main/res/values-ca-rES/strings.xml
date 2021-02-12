@@ -20,4 +20,9 @@
     <string name="saved">Preferències guardades</string>
     <string name="upcomingSession">Proper esdeveniment</string>
     <string name="upcomingSessionMessage">La sessió %1$s del %2$s comença a les %3$s hores</string>
+    <string name="event">Event: %1$s</string>
+    <string name="session">Sessió: %1$s</string>
+    <string name="startTime">Hora d\'inici: %1$s</string>
+    <string name="endTime">Hora de fi: %1$s</string>
+    <string name="where">A on: %1$s</string>
 </resources>

@@ -21,7 +21,8 @@ public class BackendService {
 
     private final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://www.motorsports-database.racing")
-            // .baseUrl("http://10.0.2.2:8080/")
+            //.baseUrl("http://10.0.2.2:8080/")
+            //.baseUrl("http://192.168.1.185:8080")
             .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)))
             .build();
@@ -37,10 +38,10 @@ public class BackendService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                Log.e("MSDBService", "Couldn't retrieve data");
+                Log.e("MSDBService", "Couldn't retrieve upcoming sessions: " + response.errorBody().string());
             }
         } catch (IOException e) {
-            Log.e("MSDBService", "Couldn't retrieve data", e);
+            Log.e("MSDBService", "Couldn't process upcoming sessions request", e);
         }
 
         return null;
@@ -53,10 +54,10 @@ public class BackendService {
         try {
             response = msdbCall.execute();
             if (!response.isSuccessful()) {
-                Log.e("MSDBService", "Couldn't retrieve data");
+                Log.e("MSDBService", "Couldn't register token " + response.errorBody().string());
             }
         } catch (IOException e) {
-            Log.e("MSDBService", "Couldn't retrieve data", e);
+            Log.e("MSDBService", "Register token request not processed", e);
         }
 
         return null;

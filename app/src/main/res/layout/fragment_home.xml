@@ -26,16 +26,24 @@
             android:text="@string/upcomingEvents"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-        <ScrollView
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swiperefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <fragment
-                android:id="@+id/fragment"
-                android:name="com.icesoft.msdb.android.ui.upcomingsessions.UpcomingSessionsFragment"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </ScrollView>
+                android:layout_height="match_parent">
+
+                <fragment
+                    android:id="@+id/fragment"
+                    android:name="com.icesoft.msdb.android.ui.upcomingsessions.UpcomingSessionsFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </ScrollView>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 

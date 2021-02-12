@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.icesoft.msdb.android.R;
 /**
  * A fragment representing a list of Items.
  */
-public class UpcomingSessionsFragment extends Fragment {
+public class UpcomingSessionsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private UpcomingSessionsViewModel upcomingSessionsViewModel;
 
@@ -33,12 +34,16 @@ public class UpcomingSessionsFragment extends Fragment {
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-            Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             upcomingSessionsViewModel.getUpcomingSessions().observe(getViewLifecycleOwner(), upcomingSessions -> {
                 recyclerView.setAdapter(new UpcomingSessionsRecyclerViewAdapter(getContext()));
             });
         }
         return view;
+    }
+
+    @Override
+    public void onRefresh() {
+        upcomingSessionsViewModel.refreshUpcomingSessions();
     }
 }
