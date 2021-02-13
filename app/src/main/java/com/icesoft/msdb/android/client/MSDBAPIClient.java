@@ -1,6 +1,8 @@
 package com.icesoft.msdb.android.client;
 
+import com.icesoft.msdb.android.model.ActiveSeries;
 import com.icesoft.msdb.android.model.UpcomingSession;
+import com.icesoft.msdb.android.model.UserSubscription;
 
 import java.util.List;
 
@@ -14,8 +16,14 @@ import retrofit2.http.POST;
 public interface MSDBAPIClient {
 
     @GET("api/home/calendar")
-    public Call<List<UpcomingSession>> getUpcomingSessions();
+    Call<List<UpcomingSession>> getUpcomingSessions();
 
     @POST("api/account/device")
-    public Call<Void> registerToken(@Header("Authorization") String accessToken, @Body RequestBody deviceId);
+    Call<Void> registerToken(@Header("Authorization") String accessToken, @Body RequestBody deviceId);
+
+    @GET("api/series-editions/active")
+    Call<List<ActiveSeries>> getActiveSeries();
+
+    @GET("api/account/subscriptions")
+    Call<List<UserSubscription>> getUserSubscriptions(@Header("Authorization") String accessToken);
 }

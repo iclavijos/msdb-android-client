@@ -17,6 +17,6 @@ public class RegisterTokenTask implements Callable<Void> {
 
     @Override
     public Void call() {
-         return new BackendService().registerToken(accessToken, deviceToken);
+         return BackendService.getInstance().registerToken(accessToken, deviceToken);
     }
 }
