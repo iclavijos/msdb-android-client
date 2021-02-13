@@ -59,9 +59,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private Auth0 auth0;
     private AuthenticationAPIClient authenticationAPIClient;
-    private UsersAPIClient usersClient;
     private SecureCredentialsManager credentialsManager;
-    private BackendService backendService = new BackendService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +162,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     navigationView.invalidate();
                 });
                 if (credentialsManager.hasValidCredentials()) {
-                    usersClient = new UsersAPIClient(auth0, credentials.getAccessToken());
                     getProfile(credentials.getAccessToken());
                 }
             }
