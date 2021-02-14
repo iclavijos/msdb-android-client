@@ -24,8 +24,7 @@ public class HomeFragment extends Fragment {
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.upcomingSessionsRefresh);
 
         refreshLayout.setOnRefreshListener(() -> {
-            RecyclerView recyclerView =
-                    (RecyclerView)view.findViewById(R.id.upcomingSessionsReciclerView);
+            RecyclerView recyclerView = view.findViewById(R.id.upcomingSessionsReciclerView);
             ((UpcomingSessionsRecyclerViewAdapter)recyclerView.getAdapter()).refreshData();
             refreshLayout.setRefreshing(false);
         });
