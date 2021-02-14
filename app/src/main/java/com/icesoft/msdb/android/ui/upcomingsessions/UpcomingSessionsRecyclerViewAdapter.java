@@ -45,17 +45,17 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
 
         UpcomingSessionsDayRecyclerViewAdapter sessionsDayViewAdapter =
                 new UpcomingSessionsDayRecyclerViewAdapter(upcomingSessionsViewModel.getSessionsDay(startDate));
-        holder.upcomingSessionsDayView.setAdapter(sessionsDayViewAdapter);
-        holder.upcomingSessionsDayView.setRecycledViewPool(viewPool);
+        holder.mUpcomingSessionsDayView.setAdapter(sessionsDayViewAdapter);
+        holder.mUpcomingSessionsDayView.setRecycledViewPool(viewPool);
 
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(
-                        holder.upcomingSessionsDayView.getContext(),
+                        holder.mUpcomingSessionsDayView.getContext(),
                         LinearLayoutManager.VERTICAL,
                         false);
         layoutManager.setInitialPrefetchItemCount(
                 upcomingSessionsViewModel.getSessionsDay(startDate).size());
-        holder.upcomingSessionsDayView.setLayoutManager(layoutManager);
+        holder.mUpcomingSessionsDayView.setLayoutManager(layoutManager);
         sessionsDayViewAdapter.notifyDataSetChanged();
     }
 
@@ -64,16 +64,24 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
         return upcomingSessionsViewModel.getDays().size();
     }
 
+    public void refreshData() {
+        int numItems = upcomingSessionsViewModel.getDays().size();
+        upcomingSessionsViewModel.clear();
+        notifyItemRangeRemoved(0, numItems);
+        upcomingSessionsViewModel.refreshUpcomingSessions();
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
-        public final RecyclerView upcomingSessionsDayView;
+        public final RecyclerView mUpcomingSessionsDayView;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.day);
-            upcomingSessionsDayView = (RecyclerView) view.findViewById(R.id.upcomingSessionsDayReciclerView);
+            mUpcomingSessionsDayView = (RecyclerView) view.findViewById(R.id.upcomingSessionsDayReciclerView);
         }
 
     }

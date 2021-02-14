@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import com.icesoft.msdb.android.R;
 /**
  * A fragment representing a list of Items.
  */
-public class UpcomingSessionsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class UpcomingSessionsFragment extends Fragment {
 
     private UpcomingSessionsViewModel upcomingSessionsViewModel;
 
@@ -40,10 +41,5 @@ public class UpcomingSessionsFragment extends Fragment implements SwipeRefreshLa
             });
         }
         return view;
-    }
-
-    @Override
-    public void onRefresh() {
-        upcomingSessionsViewModel.refreshUpcomingSessions();
     }
 }

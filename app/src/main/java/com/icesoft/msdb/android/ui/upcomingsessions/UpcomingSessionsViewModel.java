@@ -49,7 +49,13 @@ public class UpcomingSessionsViewModel extends ViewModel {
         return sessionsPerDay.get(date);
     }
 
+    public void clear() {
+        sessionsPerDay.clear();
+        upcomingSessionsMutableData.getValue().clear();
+    }
+
     public void refreshUpcomingSessions() {
+        upcomingSessionsMutableData.getValue().clear();
         upcomingSessionsMutableData.setValue(fetchUpcomingSessions());
     }
 
