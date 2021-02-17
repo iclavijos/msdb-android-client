@@ -3,7 +3,7 @@
     <string name="upcomingEvents">Propers esdeveniments</string>
     <string name="noEvents">No hi ha dades disponibles en aquests moments</string>
     <string name="subscriptions">Subscripcions</string>
-    <string name="upcomingSessions">Gestiona preferències</string>
+    <string name="managePreferences">Gestiona preferències</string>
     <string name="processingData">Processant dades</string>
     <string name="submit">Guardar</string>
     <string name="login">Autenticar-se</string>
@@ -25,4 +25,7 @@
     <string name="startTime">Hora d\'inici: %1$s</string>
     <string name="endTime">Hora de fi: %1$s</string>
     <string name="where">A on: %1$s</string>
+    <string name="filterLabel">Filtrar campionats:</string>
+    <string name="filterHint">Escriu quelcom per filtrar els campionats</string>
+    <string name="savingError">No s\'han pogut guardar les preferències: %1$s</string>
 </resources>

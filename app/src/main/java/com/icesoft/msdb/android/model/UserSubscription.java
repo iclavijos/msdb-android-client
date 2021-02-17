@@ -1,11 +1,15 @@
 package com.icesoft.msdb.android.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UserSubscription {
 
-    private int seriesEditionId;
+    private Long seriesEditionId;
+    private String seriesEditionName;
+    private String seriesLogo;
     private boolean practiceSessions;
     private boolean qualiSessions;
     private boolean races;
@@ -13,13 +17,18 @@ public class UserSubscription {
     private boolean oneHourWarning;
     private boolean threeHoursWarning;
 
-    boolean isValid() {
+    public UserSubscription(Long seriesEditionId, String seriesEditionName) {
+        this.seriesEditionId = seriesEditionId;
+        this.seriesEditionName = seriesEditionName;
+    }
+
+    public boolean isValid() {
         return
                 (practiceSessions || qualiSessions || races) &&
                         (fifteenMinWarning || oneHourWarning || threeHoursWarning);
     }
 
-    void reset() {
+    public void reset() {
         this.practiceSessions = false;
         this.qualiSessions = false;
         this.races = false;

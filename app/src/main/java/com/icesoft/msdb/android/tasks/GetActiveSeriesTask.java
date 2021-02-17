@@ -6,11 +6,20 @@ import com.icesoft.msdb.android.service.BackendService;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
 public class GetActiveSeriesTask implements Callable<List<ActiveSeries>> {
 
+    private final CountDownLatch doneSignal;
+
+    public GetActiveSeriesTask(CountDownLatch doneSignal) {
+        this.doneSignal = doneSignal;
+    }
+
     @Override
     public List<ActiveSeries> call() {
-        return BackendService.getInstance().getActiveSeries();
+        List<ActiveSeries> result = BackendService.getInstance().getActiveSeries();
+        doneSignal.countDown();
+        return result;
     }
 }

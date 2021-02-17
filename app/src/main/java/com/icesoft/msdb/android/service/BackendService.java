@@ -30,8 +30,8 @@ public class BackendService {
     }
 
     private final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://www.motorsports-database.racing")
-            //.baseUrl("http://10.0.2.2:8080/")
+            //.baseUrl("https://www.motorsports-database.racing")
+            .baseUrl("http://10.0.2.2:8080/")
             //.baseUrl("http://192.168.1.185:8080")
             .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)))
@@ -92,7 +92,7 @@ public class BackendService {
     }
 
     public List<UserSubscription> getUserSubscriptions(String accessToken) {
-        Call<List<UserSubscription>> msdbCall = msdbAPIClient.getUserSubscriptions(accessToken);
+        Call<List<UserSubscription>> msdbCall = msdbAPIClient.getUserSubscriptions("Bearer " + accessToken);
 
         Response<List<UserSubscription>> response = null;
         try {
@@ -106,6 +106,20 @@ public class BackendService {
             Log.e("MSDBService", "Couldn't process get user subscriptions request", e);
         }
 
+        return null;
+    }
+
+    public Void updateUserSubscriptions(String accessToken, List<UserSubscription> userSubscriptions) {
+        Call<Void> msdbCall = msdbAPIClient.updateSubscriptions(accessToken, userSubscriptions);
+        Response<Void> response = null;
+        try {
+            response = msdbCall.execute();
+            if (!response.isSuccessful()) {
+                Log.e("MSDBService", "Couldn't update user subscriptions " + response.errorBody().string());
+            }
+        } catch (IOException e) {
+            Log.e("MSDBService", "User subscriptions update not processed", e);
+        }
         return null;
     }
 }

@@ -120,7 +120,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
 
-        getCredentials();
+        updateProfile();
     }
 
     @Override
@@ -143,8 +143,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 doLogin();
                 break;
             case R.id.nav_subscriptions:
-                Intent intent = new Intent(this, UserSubscriptionsActivity.class);
-                startActivity(intent);
+                credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
+                    @Override
+                    public void onSuccess(final Credentials credentials) {
+                        if (credentialsManager.hasValidCredentials()) {
+                            startUserSubscriptionsActivity(credentials.getIdToken());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(CredentialsManagerException error) {
+                        Log.w(TAG, "Couldn't get credentials");
+                    }
+                });
+
                 break;
             case R.id.nav_logout:
                 doLogout();
@@ -153,7 +165,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
-    private void getCredentials() {
+    private void updateProfile() {
         credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
             @Override
             public void onSuccess(final Credentials credentials) {
@@ -211,7 +223,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 // Retrying
                 credentialsManager.saveCredentials(credentials);
             }
-            getCredentials();
+            updateProfile();
 
             FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -287,5 +299,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     );
                 }
             });
+    }
+
+    private void startUserSubscriptionsActivity(String accessToken) {
+        Intent intent = new Intent(this, UserSubscriptionsActivity.class);
+        intent.putExtra("accessToken", accessToken);
+        startActivity(intent);
     }
 }

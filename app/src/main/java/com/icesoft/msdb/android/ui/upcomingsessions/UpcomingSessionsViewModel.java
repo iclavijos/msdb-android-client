@@ -1,5 +1,7 @@
 package com.icesoft.msdb.android.ui.upcomingsessions;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -22,12 +24,13 @@ import java.util.stream.Collectors;
 
 public class UpcomingSessionsViewModel extends ViewModel {
 
+    private static final String TAG = "UpcomingSessionsViewModel";
+
     private MutableLiveData<List<UpcomingSession>> upcomingSessionsMutableData;
 
     private Map<LocalDate, List<UpcomingSession>> sessionsPerDay = new HashMap<>();
 
     public UpcomingSessionsViewModel() {
-        upcomingSessionsMutableData = new MutableLiveData<>();
         if (upcomingSessionsMutableData == null) {
             upcomingSessionsMutableData = new MutableLiveData<>();
         }
@@ -78,7 +81,7 @@ public class UpcomingSessionsViewModel extends ViewModel {
             });
             return sessions;
         } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Couldn't retrieve upcoming sessions", e);
             return Collections.emptyList();
         }
     }

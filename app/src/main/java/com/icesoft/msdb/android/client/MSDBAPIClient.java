@@ -12,6 +12,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface MSDBAPIClient {
 
@@ -26,4 +27,7 @@ public interface MSDBAPIClient {
 
     @GET("api/account/subscriptions")
     Call<List<UserSubscription>> getUserSubscriptions(@Header("Authorization") String accessToken);
+
+    @PUT("api/account/subscriptions")
+    Call<Void> updateSubscriptions(@Header("Authorization") String accessToken, @Body List<UserSubscription> userSubscriptions);
 }
