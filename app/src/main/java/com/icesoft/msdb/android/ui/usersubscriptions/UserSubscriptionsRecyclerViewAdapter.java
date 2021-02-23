@@ -49,8 +49,7 @@ public class UserSubscriptionsRecyclerViewAdapter extends RecyclerView.Adapter<U
 
         Glide.with(holder.mView)
             .load(userSubscription.getSeriesLogo())
-            .override(150)
-            .centerInside()
+            .fitCenter()
             .into(holder.mViewSeriesLogo);
 
         holder.mPracticesSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -76,6 +75,11 @@ public class UserSubscriptionsRecyclerViewAdapter extends RecyclerView.Adapter<U
     @Override
     public int getItemCount() {
         return userSubscriptionsViewModel.getUserSubscriptions().size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

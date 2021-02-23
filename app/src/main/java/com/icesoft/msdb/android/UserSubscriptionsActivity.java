@@ -42,10 +42,10 @@ public class UserSubscriptionsActivity extends AppCompatActivity {
             try {
                 opResult.get();
                 opResult.isDone();
-                Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT);
+                Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Couldn't update preferences", e);
-                Toast.makeText(this, getString(R.string.savingError, e.getLocalizedMessage()), Toast.LENGTH_LONG);
+                Toast.makeText(this, getString(R.string.savingError, e.getLocalizedMessage()), Toast.LENGTH_LONG).show();
             }
         });
     }

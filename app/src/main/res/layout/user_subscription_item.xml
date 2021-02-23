@@ -11,24 +11,28 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/userSubsSeriesLogoImageView"
             android:layout_width="100dp"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:layout_centerInParent="false" />
 
         <TextView
             android:id="@+id/seriesNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_toRightOf="@id/userSubsSeriesLogoImageView"
+            android:paddingStart="8dp"
             android:paddingLeft="2dp"
-            android:text="TextView"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/sessionTypesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:baselineAligned="false"
@@ -38,7 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="2dp">
 
             <TextView
                 android:id="@+id/sessionTypesTextView"
@@ -50,56 +55,56 @@
                 android:id="@+id/practicesSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/practice" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/qualifyingSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/qualifying" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/racesSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/races" />
         </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray_400" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="2dp"
+            android:paddingLeft="2dp">
 
             <TextView
                 android:id="@+id/notificationTimeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/notificationTime" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/fifteenMinsSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/fifteenMin" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/oneHourSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/oneHour" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/threeHoursSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/threeHours" />
         </LinearLayout>
 
