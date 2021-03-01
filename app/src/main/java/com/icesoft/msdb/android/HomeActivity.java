@@ -3,15 +3,12 @@ package com.icesoft.msdb.android;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +21,6 @@ import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.auth0.android.authentication.storage.SharedPreferencesStorage;
 import com.auth0.android.callback.BaseCallback;
-import com.auth0.android.management.UsersAPIClient;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.VoidCallback;
 import com.auth0.android.provider.WebAuthProvider;
@@ -35,11 +31,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.icesoft.msdb.android.service.BackendService;
 import com.icesoft.msdb.android.tasks.RegisterTokenTask;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -278,27 +272,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     };
 
     private void getProfile(String accessToken) {
-        authenticationAPIClient.userInfo(accessToken)
-            .start(new BaseCallback<UserProfile, AuthenticationException>() {
-                @Override
-                public void onSuccess(UserProfile userInfo) {
-                    runOnUiThread(() -> {
-                        ((TextView)findViewById(R.id.userNameView)).setText(userInfo.getName());
-                        ((TextView)findViewById(R.id.userEmailView)).setText(userInfo.getEmail());
-                        Glide.with(HomeActivity.this)
-                            .load(userInfo.getPictureURL())
-                            .circleCrop()
-                            .into((ImageView)findViewById(R.id.avatarView));
-                    });
-                }
+        if (!isDestroyed()) {
+            authenticationAPIClient.userInfo(accessToken)
+                    .start(new BaseCallback<UserProfile, AuthenticationException>() {
+                        @Override
+                        public void onSuccess(UserProfile userInfo) {
+                            runOnUiThread(() -> {
+                                ((TextView) findViewById(R.id.userNameView)).setText(userInfo.getName());
+                                ((TextView) findViewById(R.id.userEmailView)).setText(userInfo.getEmail());
+                                Glide.with(HomeActivity.this)
+                                        .load(userInfo.getPictureURL())
+                                        .circleCrop()
+                                        .into((ImageView) findViewById(R.id.avatarView));
+                            });
+                        }
 
-                @Override
-                public void onFailure(AuthenticationException error) {
-                    runOnUiThread(
-                        () -> Toast.makeText(HomeActivity.this, "User Info Request Failed", Toast.LENGTH_SHORT).show()
-                    );
-                }
-            });
+                        @Override
+                        public void onFailure(AuthenticationException error) {
+                            runOnUiThread(
+                                    () -> Toast.makeText(HomeActivity.this, "User Info Request Failed", Toast.LENGTH_SHORT).show()
+                            );
+                        }
+                    });
+        }
     }
 
     private void startUserSubscriptionsActivity(String accessToken) {
