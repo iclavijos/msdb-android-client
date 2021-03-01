@@ -1,4 +1,4 @@
-package com.icesoft.msdb.android;
+package com.icesoft.msdb.android.activity;
 
 import android.app.Dialog;
 import android.app.NotificationChannel;
@@ -31,6 +31,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.tasks.RegisterTokenTask;
 
 import androidx.annotation.NonNull;
@@ -92,22 +93,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     channelName, NotificationManager.IMPORTANCE_LOW));
         }
 
-        // If a notification message is tapped, any data accompanying the notification
-        // message is available in the intent extras. In this sample the launcher
-        // intent is fired when the notification is tapped, so any accompanying data would
-        // be handled here. If you want a different intent fired, set the click_action
-        // field of the notification message to the desired intent. The launcher intent
-        // is used when no click_action is specified.
-        //
-        // Handle possible data accompanying notification message.
-        // [START handle_data_extras]
-//        if (getIntent().getExtras() != null) {
-//            for (String key : getIntent().getExtras().keySet()) {
-//                Object value = getIntent().getExtras().get(key);
-//                Log.d(TAG, "Key: " + key + " Value: " + value);
-//            }
-//        }
-        // [END handle_data_extras]
+        if (getIntent().getExtras() != null) {
+            for (String key : getIntent().getExtras().keySet()) {
+                Object value = getIntent().getExtras().get(key);
+                Log.d(TAG, "Key: " + key + " Value: " + value);
+            }
+        }
     }
 
     @Override
@@ -256,8 +247,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         .load(R.mipmap.ic_launcher)
                         .fitCenter()
                         .into((ImageView)findViewById(R.id.avatarView));
-//                avatarView.setImageResource(R.mipmap.ic_launcher);
-//                avatarView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
                 ((TextView)findViewById(R.id.userNameView)).setText("");
                 ((TextView)findViewById(R.id.userEmailView)).setText("");
             });

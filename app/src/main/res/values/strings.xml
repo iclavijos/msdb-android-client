@@ -37,5 +37,8 @@
     <string name="filterLabel">Filter series:</string>
     <string name="filterHint">Type something to filter series</string>
     <string name="savingError">Couldn\'t save preferences: %1$s</string>
+    <string name="title_activity_event_details">EventDetailsActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

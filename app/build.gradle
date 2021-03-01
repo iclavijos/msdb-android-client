@@ -13,8 +13,8 @@ android {
         applicationId "com.icesoft.msdb.android"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 7
-        versionName "1.0.0"
+        versionCode 8
+        versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -62,6 +62,8 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
+    
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'

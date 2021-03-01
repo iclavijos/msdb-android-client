@@ -1,4 +1,4 @@
-package com.icesoft.msdb.android;
+package com.icesoft.msdb.android.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.tasks.UpdateUserSubscriptionsTask;
 import com.icesoft.msdb.android.ui.usersubscriptions.UserSubscriptionsViewModel;
 

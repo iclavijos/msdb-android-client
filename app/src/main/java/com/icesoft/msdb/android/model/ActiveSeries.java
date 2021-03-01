@@ -7,7 +7,7 @@ import java.util.Map;
 import lombok.Data;
 
 @Data
-public class ActiveSeries {
+public class ActiveSeries extends BaseModel {
     Long id;
     String editionName;
     String seriesLogo;

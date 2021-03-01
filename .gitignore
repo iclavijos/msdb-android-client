@@ -20,3 +20,4 @@ local.properties
 /app/google-services.json
 /app/src/main/res/values/auth0.xml
 /app/release/
+/app/src/

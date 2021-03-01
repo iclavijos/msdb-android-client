@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UserSubscription {
+public class UserSubscription extends BaseModel {
 
     private Long seriesEditionId;
     private String seriesEditionName;

@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.auth0.android.authentication.storage.CredentialsManager;
+import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.icesoft.msdb.android.R;
 
 import java.time.LocalDate;
@@ -23,11 +25,14 @@ import java.time.format.FormatStyle;
 public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingSessionsRecyclerViewAdapter.ViewHolder> {
 
     private final UpcomingSessionsViewModel upcomingSessionsViewModel;
+    private final SecureCredentialsManager credentialsManager;
+
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
-    public UpcomingSessionsRecyclerViewAdapter(Context context) {
+    public UpcomingSessionsRecyclerViewAdapter(Context context, SecureCredentialsManager credentialsManager) {
         upcomingSessionsViewModel =
                 new ViewModelProvider((FragmentActivity)context).get(UpcomingSessionsViewModel.class);
+        this.credentialsManager = credentialsManager;
     }
 
     @Override
@@ -44,7 +49,7 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
         holder.mIdView.setText(formattedDate);
 
         UpcomingSessionsDayRecyclerViewAdapter sessionsDayViewAdapter =
-                new UpcomingSessionsDayRecyclerViewAdapter(upcomingSessionsViewModel.getSessionsDay(startDate));
+                new UpcomingSessionsDayRecyclerViewAdapter(upcomingSessionsViewModel.getSessionsDay(startDate), credentialsManager);
         holder.mUpcomingSessionsDayView.setAdapter(sessionsDayViewAdapter);
         holder.mUpcomingSessionsDayView.setRecycledViewPool(viewPool);
 

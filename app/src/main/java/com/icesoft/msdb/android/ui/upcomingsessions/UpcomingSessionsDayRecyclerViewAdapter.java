@@ -1,5 +1,7 @@
 package com.icesoft.msdb.android.ui.upcomingsessions;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.auth0.android.authentication.storage.CredentialsManagerException;
+import com.auth0.android.authentication.storage.SecureCredentialsManager;
+import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.result.Credentials;
 import com.bumptech.glide.Glide;
+import com.icesoft.msdb.android.activity.EventDetailsActivity;
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.model.UpcomingSession;
 
@@ -22,10 +29,14 @@ import java.util.List;
 
 public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingSessionsDayRecyclerViewAdapter.ViewHolder> {
 
-    private final List<UpcomingSession> upcomingSessions;
+    private static final String TAG = "UpcomingSessionsDayViewAdapter";
 
-    public UpcomingSessionsDayRecyclerViewAdapter(List<UpcomingSession> upcomingSessions) {
+    private final List<UpcomingSession> upcomingSessions;
+    private final SecureCredentialsManager credentialsManager;
+
+    public UpcomingSessionsDayRecyclerViewAdapter(List<UpcomingSession> upcomingSessions, SecureCredentialsManager credentialsManager) {
         this.upcomingSessions = upcomingSessions;
+        this.credentialsManager = credentialsManager;
     }
 
     @NonNull
@@ -39,6 +50,7 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(@NonNull UpcomingSessionsDayRecyclerViewAdapter.ViewHolder holder, int position) {
         UpcomingSession upcomingSession = upcomingSessions.get(position);
+        holder.setUpcomingSession(upcomingSession);
         holder.mViewSessionName.setText(String.join(" ",
                 upcomingSession.getEventName(),
                 "-",
@@ -71,7 +83,8 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
         return upcomingSessions.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private UpcomingSession upcomingSession;
         public final View mView;
         public final TextView mViewSessionHours;
         public final TextView mViewSessionName;
@@ -81,11 +94,37 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            mView.setOnClickListener(this);
             mViewSessionHours = (TextView) view.findViewById(R.id.textViewSessionHours);
             mViewSessionName = (TextView) view.findViewById(R.id.textViewSessionName);
             mViewRacetrack = (TextView) view.findViewById(R.id.textViewRacetrack);
             mViewSeriesLogo = (ImageView) view.findViewById(R.id.imageViewSeriesLogo);
         }
 
+        protected void setUpcomingSession(UpcomingSession upcomingSession) {
+            this.upcomingSession = upcomingSession;
+        }
+
+        @Override
+        public void onClick(View v) {
+            credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
+                @Override
+                public void onSuccess(final Credentials credentials) {
+                    if (credentialsManager.hasValidCredentials()) {
+                        Intent intent = new Intent(mView.getContext(), EventDetailsActivity.class);
+                        intent.putExtra("eventEditionId", upcomingSession.getEventEditionId());
+                        intent.putExtra("accessToken", credentials.getIdToken());
+                        mView.getContext().startActivity(intent);
+                    } else {
+                        Log.i(TAG, "No valid credentials...");
+                    }
+                }
+
+                @Override
+                public void onFailure(CredentialsManagerException error) {
+                    Log.w(TAG, "Couldn't get credentials");
+                }
+            });
+        }
     }
 }

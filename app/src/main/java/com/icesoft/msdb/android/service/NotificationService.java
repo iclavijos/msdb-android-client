@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.NotificationTarget;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.icesoft.msdb.android.HomeActivity;
+import com.icesoft.msdb.android.activity.HomeActivity;
 import com.icesoft.msdb.android.R;
 
 import java.time.Instant;
@@ -27,7 +27,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Map;
 import java.util.Random;
 
 public class NotificationService extends FirebaseMessagingService {
