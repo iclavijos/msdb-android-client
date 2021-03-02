@@ -2,6 +2,10 @@ package com.icesoft.msdb.android.activity;
 
 import android.os.Bundle;
 
+import com.auth0.android.Auth0;
+import com.auth0.android.authentication.AuthenticationAPIClient;
+import com.auth0.android.authentication.storage.SecureCredentialsManager;
+import com.auth0.android.authentication.storage.SharedPreferencesStorage;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -12,11 +16,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.ui.main.SectionsPagerAdapter;
 
 public class EventDetailsActivity extends AppCompatActivity {
+
+    private Auth0 auth0;
+    private SecureCredentialsManager credentialsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +35,18 @@ public class EventDetailsActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = findViewById(R.id.fab);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        auth0 = new Auth0(this);
+        auth0.setOIDCConformant(true);
+        credentialsManager = new SecureCredentialsManager(this, new AuthenticationAPIClient(auth0), new SharedPreferencesStorage(this));
+
+        TextView eventEditionNameTextView = findViewById(R.id.eventDetailsEventNameTextView);
+        eventEditionNameTextView.setText(getIntent().getStringExtra("eventName"));
+
+        if (getIntent().getStringExtra("accessToken") != null) {
+
+        } else {
+
+        }
     }
 }

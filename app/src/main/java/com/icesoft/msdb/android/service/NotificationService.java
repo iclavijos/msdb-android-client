@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.NotificationTarget;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.icesoft.msdb.android.activity.HomeActivity;
+import com.icesoft.msdb.android.activity.EventDetailsActivity;
 import com.icesoft.msdb.android.R;
 
 import java.time.Instant;
@@ -44,8 +44,10 @@ public class NotificationService extends FirebaseMessagingService {
                 Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("endTime"))),
                 ZoneId.systemDefault());
 
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, EventDetailsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("eventEditionId", remoteMessage.getData().get("eventEditionId"));
+        intent.putExtra("eventName", remoteMessage.getData().get("eventName"));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
