@@ -27,11 +27,11 @@ import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.UserProfile;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.tasks.RegisterTokenTask;
+import com.icesoft.msdb.android.tasks.RemoveTokenTask;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -92,22 +92,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     channelName, NotificationManager.IMPORTANCE_LOW));
         }
 
-        // If a notification message is tapped, any data accompanying the notification
-        // message is available in the intent extras. In this sample the launcher
-        // intent is fired when the notification is tapped, so any accompanying data would
-        // be handled here. If you want a different intent fired, set the click_action
-        // field of the notification message to the desired intent. The launcher intent
-        // is used when no click_action is specified.
-        //
-        // Handle possible data accompanying notification message.
-        // [START handle_data_extras]
-//        if (getIntent().getExtras() != null) {
-//            for (String key : getIntent().getExtras().keySet()) {
-//                Object value = getIntent().getExtras().get(key);
-//                Log.d(TAG, "Key: " + key + " Value: " + value);
-//            }
-//        }
-        // [END handle_data_extras]
     }
 
     @Override
@@ -191,6 +175,34 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void doLogout() {
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(getTokenTask -> {
+                if (!getTokenTask.isSuccessful()) {
+                    Log.w(TAG, "Fetching FCM registration token failed", getTokenTask.getException());
+                    return;
+                }
+
+                // Get FCM registration token
+                String token = getTokenTask.getResult();
+                credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
+                    @Override
+                    public void onSuccess(final Credentials credentials) {
+                        RemoveTokenTask task = new RemoveTokenTask(credentials.getIdToken(), token);
+                        Future<Void> opResult = Executors.newFixedThreadPool(1).submit(task);
+                        try {
+                            opResult.get();
+                        } catch (ExecutionException | InterruptedException e) {
+                            Log.e(TAG, "Couldn't register token", e);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(CredentialsManagerException error) {
+                        Log.w(TAG, "Couldn't get credentials");
+                    }
+                });
+            });
+
         WebAuthProvider.logout(auth0)
             .withScheme("msdbclient")
             .start(this, logoutCallback);
@@ -220,23 +232,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             updateProfile();
 
             FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> getTokenTask) {
-                        if (!getTokenTask.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", getTokenTask.getException());
-                            return;
-                        }
+                .addOnCompleteListener(getTokenTask -> {
+                    if (!getTokenTask.isSuccessful()) {
+                        Log.w(TAG, "Fetching FCM registration token failed", getTokenTask.getException());
+                        return;
+                    }
 
-                        // Get new FCM registration token
-                        String token = getTokenTask.getResult();
-                        RegisterTokenTask task = new RegisterTokenTask(credentials.getIdToken(), token);
-                        Future<Void> opResult = Executors.newFixedThreadPool(1).submit(task);
-                        try {
-                            opResult.get();
-                        } catch (ExecutionException | InterruptedException e) {
-                            Log.e(TAG, "Couldn't register token", e);
-                        }
+                    // Get new FCM registration token
+                    String token = getTokenTask.getResult();
+                    RegisterTokenTask task = new RegisterTokenTask(credentials.getIdToken(), token);
+                    Future<Void> opResult = Executors.newFixedThreadPool(1).submit(task);
+                    try {
+                        opResult.get();
+                    } catch (ExecutionException | InterruptedException e) {
+                        Log.e(TAG, "Couldn't register token", e);
                     }
                 });
         }

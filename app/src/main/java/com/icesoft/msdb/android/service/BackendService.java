@@ -73,6 +73,21 @@ public class BackendService {
         return null;
     }
 
+    public Void removeToken(String accessToken, String deviceToken) {
+        Call<Void> msdbCall = msdbAPIClient.removeToken("Bearer " + accessToken, deviceToken);
+        Response<Void> response = null;
+        try {
+            response = msdbCall.execute();
+            if (!response.isSuccessful()) {
+                Log.e("MSDBService", "Couldn't register token " + response.errorBody().string());
+            }
+        } catch (IOException e) {
+            Log.e("MSDBService", "Register token request not processed", e);
+        }
+
+        return null;
+    }
+
     public List<ActiveSeries> getActiveSeries() {
         Call<List<ActiveSeries>> msdbCall = msdbAPIClient.getActiveSeries();
 
