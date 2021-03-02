@@ -71,11 +71,13 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
                         DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(endTime)
         ));
 
-        Glide.with(holder.mView)
-                .load(upcomingSession.getSeriesLogo())
-                //.override(150)
-                .centerInside()
-                .into(holder.mViewSeriesLogo);
+        if (upcomingSession.getSeriesLogo() != null) {
+            Glide.with(holder.mView)
+                    .load(upcomingSession.getSeriesLogo())
+                    //.override(150)
+                    .centerInside()
+                    .into(holder.mViewSeriesLogo);
+        }
     }
 
     @Override
@@ -107,24 +109,27 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
 
         @Override
         public void onClick(View v) {
-            credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
-                @Override
-                public void onSuccess(final Credentials credentials) {
-                    if (credentialsManager.hasValidCredentials()) {
-                        Intent intent = new Intent(mView.getContext(), EventDetailsActivity.class);
-                        intent.putExtra("eventEditionId", upcomingSession.getEventEditionId());
-                        intent.putExtra("accessToken", credentials.getIdToken());
-                        mView.getContext().startActivity(intent);
-                    } else {
-                        Log.i(TAG, "No valid credentials...");
+            if (credentialsManager.hasValidCredentials()) {
+                credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
+                    @Override
+                    public void onSuccess(final Credentials credentials) {
+                        if (credentialsManager.hasValidCredentials()) {
+                            Intent intent = new Intent(mView.getContext(), EventDetailsActivity.class);
+                            intent.putExtra("eventEditionId", upcomingSession.getEventEditionId());
+                            intent.putExtra("eventName", upcomingSession.getEventName());
+                            intent.putExtra("accessToken", credentials.getIdToken());
+                            mView.getContext().startActivity(intent);
+                        } else {
+                            Log.i(TAG, "No valid credentials...");
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(CredentialsManagerException error) {
-                    Log.w(TAG, "Couldn't get credentials");
-                }
-            });
+                    @Override
+                    public void onFailure(CredentialsManagerException error) {
+                        Log.w(TAG, "Couldn't get credentials");
+                    }
+                });
+            }
         }
     }
 }
