@@ -28,4 +28,14 @@
     <string name="filterLabel">Filtrar campionats:</string>
     <string name="filterHint">Escriu quelcom per filtrar els campionats</string>
     <string name="savingError">No s\'han pogut guardar les preferències: %1$s</string>
+    <string name="eventDetailsInfoTab">Info</string>
+    <string name="eventDetailsParticipantsTab">Participants</string>
+    <string name="eventDate">Data de l\'event:</string>
+    <string name="racetrackName">Circuit:</string>
+    <string name="eventSessions">Sessions</string>
+    <string name="minutes">minuts</string>
+    <string name="hours">hores</string>
+    <string name="laps">voltes</string>
+    <string name="miles">milles</string>
+    <string name="plusExtraLap">+ 1 volta</string>
 </resources>

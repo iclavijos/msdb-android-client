@@ -37,8 +37,15 @@
     <string name="filterLabel">Filter series:</string>
     <string name="filterHint">Type something to filter series</string>
     <string name="savingError">Couldn\'t save preferences: %1$s</string>
-    <string name="title_activity_event_details">EventDetailsActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="eventDetailsInfoTab">Info</string>
+    <string name="eventDetailsParticipantsTab">Participants</string>
+    <string name="eventDate">Event date:</string>
+    <string name="racetrackName">Racetrack:</string>
+    <string name="eventSessions">Sessions</string>
+    <string name="minutes">minutes</string>
+    <string name="hours">hours</string>
+    <string name="laps">laps</string>
+    <string name="km" translatable="false">km</string>
+    <string name="miles">miles</string>
+    <string name="plusExtraLap">+ 1 lap</string>
 </resources>

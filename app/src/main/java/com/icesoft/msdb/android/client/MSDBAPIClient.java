@@ -1,6 +1,8 @@
 package com.icesoft.msdb.android.client;
 
 import com.icesoft.msdb.android.model.ActiveSeries;
+import com.icesoft.msdb.android.model.EventEdition;
+import com.icesoft.msdb.android.model.EventSession;
 import com.icesoft.msdb.android.model.UpcomingSession;
 import com.icesoft.msdb.android.model.UserSubscription;
 
@@ -35,4 +37,10 @@ public interface MSDBAPIClient {
 
     @PUT("api/account/subscriptions")
     Call<Void> updateSubscriptions(@Header("Authorization") String accessToken, @Body List<UserSubscription> userSubscriptions);
+
+    @GET("api/event-editions/{id}")
+    Call<EventEdition> getEventDetails(@Header("Authorization") String accessToken, @Path("id") Long eventEditionId);
+
+    @GET("api/event-editions/{id}/sessions")
+    Call<List<EventSession>> getEventSessions(@Header("Authorization") String accessToken, @Path("id") Long eventEditionId);
 }

@@ -14,7 +14,6 @@
         android:theme="@style/Theme.MSDBClient">
         <activity
             android:name=".activity.EventDetailsActivity"
-            android:label="@string/title_activity_event_details"
             android:theme="@style/Theme.MSDBClient.NoActionBar"></activity>
         <activity
             android:name=".activity.UserSubscriptionsActivity"
