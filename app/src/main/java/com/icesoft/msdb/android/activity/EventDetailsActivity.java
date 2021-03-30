@@ -1,5 +1,6 @@
 package com.icesoft.msdb.android.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.auth0.android.Auth0;
@@ -29,7 +30,6 @@ import com.icesoft.msdb.android.tasks.GetEventSessionsTask;
 import com.icesoft.msdb.android.ui.eventdetails.EventDetailsInfoFragment;
 import com.icesoft.msdb.android.ui.eventdetails.EventDetailsPagerAdapter;
 import com.icesoft.msdb.android.ui.eventdetails.EventDetailsParticipantsFragment;
-import com.icesoft.msdb.android.ui.eventdetails.EventDetailsSessionsFragment;
 import com.icesoft.msdb.android.ui.eventdetails.EventDetailsViewModel;
 
 import java.util.List;
@@ -88,15 +88,22 @@ public class EventDetailsActivity extends AppCompatActivity {
             eventDetails = tmp[0];
         }
 
-        EventDetailsInfoFragment eventInfoFragment = new EventDetailsInfoFragment();
-        eventDetailsPagerAdapter.addInfoFragment(getString(R.string.eventDetailsInfoTab), eventInfoFragment);
+        if (eventDetails != null) {
+            EventDetailsInfoFragment eventInfoFragment = new EventDetailsInfoFragment();
+            eventDetailsPagerAdapter.addInfoFragment(getString(R.string.eventDetailsInfoTab), eventInfoFragment);
 
-        EventDetailsParticipantsFragment participantsFragment = new EventDetailsParticipantsFragment();
-        eventDetailsPagerAdapter.addParticipantsFragment(getString(R.string.eventDetailsParticipantsTab), participantsFragment);
-        eventDetailsPagerAdapter.notifyDataSetChanged();
+            EventDetailsParticipantsFragment participantsFragment = new EventDetailsParticipantsFragment();
+            eventDetailsPagerAdapter.addParticipantsFragment(getString(R.string.eventDetailsParticipantsTab), participantsFragment);
+            eventDetailsPagerAdapter.notifyDataSetChanged();
 
-        viewModel.setEventEdition(eventDetails);
-        viewModel.setEventSessions(getEventSessions(viewModel.getAccessToken(), eventDetails.getId()));
+            viewModel.setEventEdition(eventDetails);
+            viewModel.setEventSessions(getEventSessions(
+                    viewModel.getAccessToken(),
+                    eventDetails.getId()));
+        } else {
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+        }
     }
 
     private EventEdition getEventEdition(String accessToken, Long eventEditionId) {
