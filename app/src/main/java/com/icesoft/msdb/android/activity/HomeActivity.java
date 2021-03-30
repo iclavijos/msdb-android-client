@@ -286,12 +286,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onSuccess(UserProfile userInfo) {
                             runOnUiThread(() -> {
-                                ((TextView) findViewById(R.id.userNameView)).setText(userInfo.getName());
-                                ((TextView) findViewById(R.id.userEmailView)).setText(userInfo.getEmail());
-                                Glide.with(HomeActivity.this)
-                                        .load(userInfo.getPictureURL())
-                                        .circleCrop()
-                                        .into((ImageView) findViewById(R.id.avatarView));
+                                String name = "";
+                                String email = "";
+
+                                if (userInfo != null) {
+                                    name = userInfo.getName() != null ? userInfo.getName() : "";
+                                    email = userInfo.getEmail() != null ? userInfo.getEmail() : "";
+                                }
+                                ((TextView) findViewById(R.id.userNameView)).setText(name);
+                                ((TextView) findViewById(R.id.userEmailView)).setText(email);
+                                if (!isDestroyed()) {
+                                    Glide.with(HomeActivity.this)
+                                            .load(userInfo.getPictureURL())
+                                            .circleCrop()
+                                            .into((ImageView) findViewById(R.id.avatarView));
+                                }
                             });
                         }
 
