@@ -38,4 +38,5 @@
     <string name="laps">vueltas</string>
     <string name="miles">millas</string>
     <string name="plusExtraLap">+ 1 vuelta</string>
+    <string name="offline">Debido a los problemas sufridos por nuestro proveedor de hosting, la app estará offline como mínimo hasta el lunes 15 de marzo. Pedimos disculpas por las molestias.</string>
 </resources>
