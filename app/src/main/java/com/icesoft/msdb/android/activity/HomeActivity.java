@@ -260,11 +260,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 menu.clear();
                 navigationView.inflateMenu(R.menu.activity_main_drawer);
                 navigationView.invalidate();
-                ImageView avatarView = (ImageView)findViewById(R.id.avatarView);
+                ImageView avatarView = findViewById(R.id.avatarView);
                 Glide.with(HomeActivity.this)
                         .load(R.mipmap.ic_launcher)
                         .fitCenter()
-                        .into((ImageView)findViewById(R.id.avatarView));
+                        .into(avatarView);
 
                 ((TextView)findViewById(R.id.userNameView)).setText("");
                 ((TextView)findViewById(R.id.userEmailView)).setText("");
