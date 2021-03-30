@@ -45,8 +45,8 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         LocalDate startDate = upcomingSessionsViewModel.getDays().get(position);
-        String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(startDate);
-        holder.mIdView.setText(formattedDate);
+        String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(startDate);
+        holder.mIdView.setText(formattedDate.substring(0, 1).toUpperCase() + formattedDate.substring(1));
 
         UpcomingSessionsDayRecyclerViewAdapter sessionsDayViewAdapter =
                 new UpcomingSessionsDayRecyclerViewAdapter(upcomingSessionsViewModel.getSessionsDay(startDate), credentialsManager);
