@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/homeHeaderTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/upcomingEvents"
