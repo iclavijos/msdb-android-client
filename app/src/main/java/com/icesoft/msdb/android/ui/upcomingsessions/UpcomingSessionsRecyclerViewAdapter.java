@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.auth0.android.authentication.storage.CredentialsManager;
 import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.icesoft.msdb.android.R;
 
