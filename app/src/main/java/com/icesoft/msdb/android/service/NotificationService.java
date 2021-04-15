@@ -46,7 +46,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         Intent intent = new Intent(this, EventDetailsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("eventEditionId", remoteMessage.getData().get("eventEditionId"));
+        intent.putExtra("eventEditionId", Long.parseLong(remoteMessage.getData().get("eventEditionId")));
         intent.putExtra("eventName", remoteMessage.getData().get("eventName"));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
