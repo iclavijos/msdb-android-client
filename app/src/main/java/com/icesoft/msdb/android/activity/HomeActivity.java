@@ -42,6 +42,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -286,20 +287,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onSuccess(UserProfile userInfo) {
                             runOnUiThread(() -> {
-                                String name = "";
-                                String email = "";
+                                String name = " ";
+                                String email = " ";
 
                                 if (userInfo != null) {
-                                    name = userInfo.getName() != null ? userInfo.getName() : "";
-                                    email = userInfo.getEmail() != null ? userInfo.getEmail() : "";
+                                    name = userInfo.getName() != null ? userInfo.getName() : "-";
+                                    email = userInfo.getEmail() != null ? userInfo.getEmail() : "-";
                                 }
-                                ((TextView) findViewById(R.id.userNameView)).setText(name);
-                                ((TextView) findViewById(R.id.userEmailView)).setText(email);
-                                if (!isDestroyed()) {
-                                    Glide.with(HomeActivity.this)
-                                            .load(userInfo.getPictureURL())
-                                            .circleCrop()
-                                            .into((ImageView) findViewById(R.id.avatarView));
+                                // More defensive code that I don't really understand why it's necessary
+                                // Probably the NullPointer is related to the other error being reported
+                                TextView userNameTextView = (TextView) findViewById(R.id.userNameView);
+                                TextView userEmailTextView = (TextView) findViewById(R.id.userEmailView);
+                                if (!Objects.isNull(userNameTextView) && !Objects.isNull(userEmailTextView)) {
+                                    userNameTextView.setText(name);
+                                    userEmailTextView.setText(email);
+                                    if (!isDestroyed()) {
+                                        Glide.with(HomeActivity.this)
+                                                .load(userInfo.getPictureURL())
+                                                .circleCrop()
+                                                .into((ImageView) findViewById(R.id.avatarView));
+                                    }
                                 }
                             });
                         }
