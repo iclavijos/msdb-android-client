@@ -1,6 +1,8 @@
 package com.icesoft.msdb.android.ui.upcomingsessions;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,32 +86,6 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
     public int getItemCount() {
         return upcomingSessions.size();
     }
-
-//    @Override
-//    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-//        super.onAttachedToRecyclerView(recyclerView);
-//        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
-//        if(manager instanceof LinearLayoutManager && getItemCount() > 0) {
-//            LinearLayoutManager llm = (LinearLayoutManager) manager;
-//            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//                @Override
-//                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                    super.onScrollStateChanged(recyclerView, newState);
-//                }
-//
-//                @Override
-//                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//                    super.onScrolled(recyclerView, dx, dy);
-//                    int visiblePosition = llm.findFirstCompletelyVisibleItemPosition();
-//                    if(visiblePosition > -1) {
-//                        View v = llm.findViewByPosition(visiblePosition);
-//                        //do something
-//                        v.setBackgroundColor(Color.parseColor("#777777"));
-//                    }
-//                }
-//            });
-//        }
-//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private UpcomingSession upcomingSession;

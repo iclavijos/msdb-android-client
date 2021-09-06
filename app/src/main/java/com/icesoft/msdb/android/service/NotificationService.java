@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
@@ -118,6 +120,9 @@ public class NotificationService extends FirebaseMessagingService {
                 notificationId);
 
         String logoUrl = remoteMessage.getData().get("seriesLogoUrl");
+        if (isDarkMode()) {
+            logoUrl = logoUrl.replace("image/upload", "image/upload/e_negate");
+        }
         Glide.with(this)
                 .asBitmap()
                 .load(logoUrl)
@@ -128,12 +133,22 @@ public class NotificationService extends FirebaseMessagingService {
                 .load(logoUrl)
                 .fitCenter()
                 .into(notificationTargetSeriesLogoExpanded);
+        String racetrackLayoutUrl = remoteMessage.getData().get("racetrackLayoutUrl");
+        if (isDarkMode()) {
+            racetrackLayoutUrl = racetrackLayoutUrl.replace("image/upload", "image/upload/e_negate");
+        }
         Glide.with(this)
                 .asBitmap()
-                .load(remoteMessage.getData().get("racetrackLayoutUrl"))
+                .load(racetrackLayoutUrl)
                 .fitCenter()
                 .into(notificationTargetTrackLayoutExpanded);
 
         notificationManager.notify(notificationId, notification);
+    }
+
+    private boolean isDarkMode() {
+        int uiMode = this.getBaseContext().getResources().getConfiguration().uiMode;
+
+        return (uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
     }
 }

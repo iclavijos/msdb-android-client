@@ -1,5 +1,6 @@
 package com.icesoft.msdb.android.ui.eventdetails;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -45,13 +46,23 @@ public class EventDetailsInfoFragment extends Fragment {
         racetrackNameTextView.setText(eventDetails.getTrackLayout().getRacetrack().getName());
 
         ImageView trackLayoutImageview = eventDetailsView.findViewById(R.id.racetrackLayoutEventDetailsImageView);
+        String layoutUrl = eventDetails.getTrackLayout().getLayoutUrl();
+        if (isDarkMode()) {
+            layoutUrl = layoutUrl.replace("image/upload", "image/upload/e_negate");
+        }
         Glide.with(eventDetailsView)
-                .load(eventDetails.getTrackLayout().getLayoutUrl())
+                .load(layoutUrl)
                 //.override(150)
                 .centerInside()
                 .dontAnimate()
                 .into(trackLayoutImageview);
 
         return eventDetailsView;
+    }
+
+    private boolean isDarkMode() {
+        int uiMode = this.getResources().getConfiguration().uiMode;
+
+        return (uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
     }
 }
