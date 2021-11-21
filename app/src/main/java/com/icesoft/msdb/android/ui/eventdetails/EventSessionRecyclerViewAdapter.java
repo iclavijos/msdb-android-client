@@ -48,7 +48,12 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
                 ZoneId.systemDefault()
         );
         holder.startTimeTextView.setText(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(startTime));
-        holder.sessionNameTextView.setText(session.getName());
+        if (session.getSessionType().equals("STAGE")) {
+            holder.sessionNameTextView.setText(String.format("%s - %s", session.getShortname(), session.getName()));
+        } else {
+            holder.sessionNameTextView.setText(session.getName());
+        }
+
         holder.durationTextView.setText(
                 calculateDuration(session.getDuration(), session.getDurationType(), session.isAdditionalLap()));
     }
@@ -58,7 +63,7 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
         return sessions.size();
     }
 
-    private String calculateDuration(Integer duration, Integer durationType, Boolean extraLap) {
+    private String calculateDuration(Float duration, Integer durationType, Boolean extraLap) {
         String durationTypeStr;
         String extraLapStr = extraLap ? context.getString(R.string.plusExtraLap) : "";
 

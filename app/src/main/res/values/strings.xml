@@ -32,6 +32,7 @@
     <string name="session">Session: %1$s</string>
     <string name="startTime">Start time: %1$s</string>
     <string name="endTime">End time: %1$s</string>
+    <string name="distance">Distance: %1$s km</string>
     <string name="where">At: %1$s</string>
     <string name="event">Event: %1$s</string>
     <string name="filterLabel">Filter series:</string>

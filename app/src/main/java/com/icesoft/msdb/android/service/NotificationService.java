@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
@@ -39,11 +40,10 @@ public class NotificationService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.d(TAG, "onMessageReceived");
 
+        Boolean isRally = Boolean.parseBoolean(remoteMessage.getData().get("rally"));
+
         LocalDateTime startTime = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("startTime"))),
-                ZoneId.systemDefault());
-        LocalDateTime endTime = LocalDateTime.ofInstant(
-                Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("endTime"))),
                 ZoneId.systemDefault());
 
         Intent intent = new Intent(this, EventDetailsActivity.class);
@@ -67,8 +67,6 @@ public class NotificationService extends FirebaseMessagingService {
         expandedView.setTextViewText(R.id.eventTextView, getResources().getString(R.string.event, remoteMessage.getData().get("eventName")));
         expandedView.setTextViewText(R.id.sessionTextView, getResources().getString(R.string.session, remoteMessage.getData().get("sessionName")));
         expandedView.setTextViewText(R.id.startTimeTextView, getResources().getString(R.string.startTime, DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime)));
-        expandedView.setTextViewText(R.id.endTimeTextView, getResources().getString(R.string.endTime, DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(endTime)));
-        expandedView.setTextViewText(R.id.whereTextView, getResources().getString(R.string.where, remoteMessage.getData().get("racetrack")));
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
@@ -112,12 +110,6 @@ public class NotificationService extends FirebaseMessagingService {
                 expandedView,
                 notification,
                 notificationId);
-        NotificationTarget notificationTargetTrackLayoutExpanded = new NotificationTarget(
-                getApplicationContext(),
-                R.id.racetrackLayoutImageView,
-                expandedView,
-                notification,
-                notificationId);
 
         String logoUrl = remoteMessage.getData().get("seriesLogoUrl");
         if (isDarkMode()) {
@@ -133,15 +125,35 @@ public class NotificationService extends FirebaseMessagingService {
                 .load(logoUrl)
                 .fitCenter()
                 .into(notificationTargetSeriesLogoExpanded);
-        String racetrackLayoutUrl = remoteMessage.getData().get("racetrackLayoutUrl");
-        if (isDarkMode()) {
-            racetrackLayoutUrl = racetrackLayoutUrl.replace("image/upload", "image/upload/e_negate");
+
+        if (!isRally) {
+            expandedView.setTextViewText(R.id.whereTextView, getResources().getString(R.string.where, remoteMessage.getData().get("racetrack")));
+            LocalDateTime endTime = LocalDateTime.ofInstant(
+                    Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("endTime"))),
+                    ZoneId.systemDefault());
+            expandedView.setTextViewText(R.id.endTimeTextView, getResources().getString(R.string.endTime, DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(endTime)));
+
+            NotificationTarget notificationTargetTrackLayoutExpanded = new NotificationTarget(
+                    getApplicationContext(),
+                    R.id.racetrackLayoutImageView,
+                    expandedView,
+                    notification,
+                    notificationId);
+
+            String racetrackLayoutUrl = remoteMessage.getData().get("racetrackLayoutUrl");
+            if (isDarkMode()) {
+                racetrackLayoutUrl = racetrackLayoutUrl.replace("image/upload", "image/upload/e_negate");
+            }
+            Glide.with(this)
+                    .asBitmap()
+                    .load(racetrackLayoutUrl)
+                    .fitCenter()
+                    .into(notificationTargetTrackLayoutExpanded);
+        } else {
+            expandedView.setTextViewText(R.id.endTimeTextView, getResources().getString(R.string.distance, remoteMessage.getData().get("distance")));
+            expandedView.setViewVisibility(R.id.racetrackLayoutImageView, View.GONE);
+            expandedView.setViewVisibility(R.id.whereTextView, View.GONE);
         }
-        Glide.with(this)
-                .asBitmap()
-                .load(racetrackLayoutUrl)
-                .fitCenter()
-                .into(notificationTargetTrackLayoutExpanded);
 
         notificationManager.notify(notificationId, notification);
     }

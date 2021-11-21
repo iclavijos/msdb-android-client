@@ -13,7 +13,8 @@ public class EventSession extends BaseModel {
     private Long startTime;
     @JsonProperty("sessionEndTime")
     private Long endTime;
-    private Integer duration;
+    private Float duration;
     private Integer durationType;
     private boolean additionalLap;
+    private String sessionType;
 }

@@ -64,7 +64,7 @@ public class ParticipantsRecyclerViewAdapter extends RecyclerView.Adapter<Partic
         );
         holder.startTimeTextView.setText(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime));
         holder.sessionNameTextView.setText(session.getName());
-        holder.durationTextView.setText(session.getDuration());
+        holder.durationTextView.setText(session.getDuration().toString());
     }
 
     @Override

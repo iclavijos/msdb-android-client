@@ -70,6 +70,11 @@ public class UserSubscriptionsRecyclerViewAdapter extends RecyclerView.Adapter<U
         holder.mThreeHoursSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             userSubscription.setThreeHoursWarning(isChecked);
         });
+
+        if (userSubscription.getSeriesEditionName().toLowerCase().contains("rally")) {
+            holder.mView.findViewById(R.id.sessionTypesLayout).setVisibility(View.GONE);
+            holder.mView.findViewById(R.id.userSubscriptionsVerticalSplitter).setVisibility(View.GONE);
+        }
     }
 
     @Override

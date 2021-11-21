@@ -62,16 +62,28 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
                 Instant.ofEpochSecond(upcomingSession.getSessionStartTime()),
                 ZoneId.systemDefault()
         );
-        LocalDateTime endTime = LocalDateTime.ofInstant(
-                Instant.ofEpochSecond(upcomingSession.getSessionEndTime()),
-                ZoneId.systemDefault()
-        );
-        holder.mViewSessionHours.setText(
-                String.join((" "),
-                    DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime),
-                        " - ",
-                        DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(endTime)
-        ));
+        if (upcomingSession.isRally()) {
+            holder.mViewSessionHours.setText(
+                    String.join((" "),
+                            (" "),
+                            DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime),
+                            " - ",
+                            upcomingSession.getDuration().toString(),
+                            "KM"
+                    ));
+        } else {
+            LocalDateTime endTime = LocalDateTime.ofInstant(
+                    Instant.ofEpochSecond(upcomingSession.getSessionEndTime()),
+                    ZoneId.systemDefault()
+            );
+            holder.mViewSessionHours.setText(
+                    String.join((" "),
+                            DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime),
+                            " - ",
+                            DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(endTime)
+                    ));
+        }
+
 
         if (upcomingSession.getSeriesLogo() != null) {
             Glide.with(holder.mView)

@@ -32,8 +32,8 @@ public class BackendService {
     }
 
     private final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://www.motorsports-database.racing")
-            //.baseUrl("http://10.0.2.2:8080/")
+            //.baseUrl("https://www.motorsports-database.racing")
+            .baseUrl("http://10.0.2.2:8080/")
             //.baseUrl("http://192.168.1.185:8080")
             .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)))

@@ -15,9 +15,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.model.EventEdition;
+import com.icesoft.msdb.android.model.RacetrackLayout;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Optional;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,19 +45,28 @@ public class EventDetailsInfoFragment extends Fragment {
         eventDateTextView.setText(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(eventDetails.getEventDate()));
 
         TextView racetrackNameTextView = eventDetailsView.findViewById(R.id.racetrackNameEventDetailsTextView);
-        racetrackNameTextView.setText(eventDetails.getTrackLayout().getRacetrack().getName());
+        Optional<RacetrackLayout> optTrackLayout = Optional.ofNullable(eventDetails.getTrackLayout());
+        optTrackLayout.ifPresent(racetrackLayout -> {
+            racetrackNameTextView.setText(racetrackLayout.getRacetrack().getName());
 
-        ImageView trackLayoutImageview = eventDetailsView.findViewById(R.id.racetrackLayoutEventDetailsImageView);
-        String layoutUrl = eventDetails.getTrackLayout().getLayoutUrl();
-        if (isDarkMode()) {
-            layoutUrl = layoutUrl.replace("image/upload", "image/upload/e_negate");
+            ImageView trackLayoutImageview = eventDetailsView.findViewById(R.id.racetrackLayoutEventDetailsImageView);
+            String layoutUrl = racetrackLayout.getLayoutUrl();
+            if (isDarkMode()) {
+                layoutUrl = layoutUrl.replace("image/upload", "image/upload/e_negate");
+            }
+            Glide.with(eventDetailsView)
+                    .load(layoutUrl)
+                    //.override(150)
+                    .centerInside()
+                    .dontAnimate()
+                    .into(trackLayoutImageview);
+        });
+        if (!optTrackLayout.isPresent()) {
+            TextView racetrackLabel = eventDetailsView.findViewById(R.id.racetrackLabel);
+            racetrackLabel.setText(eventDetails.getLocation());
+            ImageView trackLayoutImageview = eventDetailsView.findViewById(R.id.racetrackLayoutEventDetailsImageView);
+            trackLayoutImageview.setVisibility(View.GONE);
         }
-        Glide.with(eventDetailsView)
-                .load(layoutUrl)
-                //.override(150)
-                .centerInside()
-                .dontAnimate()
-                .into(trackLayoutImageview);
 
         return eventDetailsView;
     }
