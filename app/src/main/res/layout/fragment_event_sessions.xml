@@ -8,12 +8,20 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/sessionStartTimeTextView"
+        android:id="@+id/sessionStartDayTextView"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/sessionStartTimeTextView"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sessionStartDayTextView" />
 
     <TextView
         android:id="@+id/sessionNameTextView"

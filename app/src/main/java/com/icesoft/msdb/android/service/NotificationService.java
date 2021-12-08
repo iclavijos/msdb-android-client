@@ -41,6 +41,7 @@ public class NotificationService extends FirebaseMessagingService {
         Log.d(TAG, "onMessageReceived");
 
         Boolean isRally = Boolean.parseBoolean(remoteMessage.getData().get("rally"));
+        Boolean isRaid = Boolean.parseBoolean(remoteMessage.getData().get("raid"));
 
         LocalDateTime startTime = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("startTime"))),
