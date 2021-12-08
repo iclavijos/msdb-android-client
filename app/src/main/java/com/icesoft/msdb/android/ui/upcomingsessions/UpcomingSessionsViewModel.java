@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 public class UpcomingSessionsViewModel extends ViewModel {
@@ -66,7 +68,7 @@ public class UpcomingSessionsViewModel extends ViewModel {
         UpcomingSessionsTask task = new UpcomingSessionsTask();
         Future<List<UpcomingSession>> opResult = Executors.newFixedThreadPool(1).submit(task);
         try {
-            List<UpcomingSession> sessions = opResult.get();
+            List<UpcomingSession> sessions = opResult.get(10000, TimeUnit.MILLISECONDS);
             if (sessions == null) {
                 return Collections.emptyList();
             }
@@ -80,7 +82,7 @@ public class UpcomingSessionsViewModel extends ViewModel {
                 sessionsPerDay.get(startDate).add(upcomingSession);
             });
             return sessions;
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (TimeoutException | ExecutionException | InterruptedException e) {
             Log.e(TAG, "Couldn't retrieve upcoming sessions", e);
             return Collections.emptyList();
         }
