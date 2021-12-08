@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.icesoft.msdb.android.R;
+import com.icesoft.msdb.android.model.EventEdition;
 import com.icesoft.msdb.android.model.EventSession;
 
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,9 +28,11 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
     private static final String TAG = "EventSessionRecyclerViewAdapter";
     private Context context;
 
+    private final EventEdition eventDetails;
     private final List<EventSession> sessions;
 
-    public EventSessionRecyclerViewAdapter(List<EventSession> sessions) {
+    public EventSessionRecyclerViewAdapter(EventEdition eventDetails, List<EventSession> sessions) {
+        this.eventDetails = eventDetails;
         this.sessions = sessions;
     }
 
@@ -47,8 +51,13 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
                 Instant.ofEpochSecond(session.getStartTime()),
                 ZoneId.systemDefault()
         );
-        holder.startTimeTextView.setText(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(startTime));
-        if (session.getSessionType().equals("STAGE")) {
+        if (eventDetails.isRaid()) {
+            holder.startDayTextView.setText(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(startTime));
+        } else {
+            holder.startDayTextView.setText(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(startTime));
+            holder.startTimeTextView.setText(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime));
+        }
+        if (eventDetails.isRally()) {
             holder.sessionNameTextView.setText(String.format("%s - %s", session.getShortname(), session.getName()));
         } else {
             holder.sessionNameTextView.setText(session.getName());
@@ -81,11 +90,20 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
             default: durationTypeStr = "unknown";
         }
 
-        return String.join(" ", Arrays.asList(duration.toString(), durationTypeStr, extraLapStr));
+        String durationStr;
+        DecimalFormat df;
+        if (eventDetails.isRally()) {
+            df = new DecimalFormat("0.00");
+        } else {
+            df = new DecimalFormat("#");
+        }
+        durationStr = df.format(duration);
+        return String.join(" ", Arrays.asList(durationStr, durationTypeStr, extraLapStr));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
+        public final TextView startDayTextView;
         public final TextView startTimeTextView;
         public final TextView sessionNameTextView;
         public final TextView durationTextView;
@@ -93,6 +111,7 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            startDayTextView = mView.findViewById(R.id.sessionStartDayTextView);
             startTimeTextView = mView.findViewById(R.id.sessionStartTimeTextView);
             sessionNameTextView = mView.findViewById(R.id.sessionNameTextView);
             durationTextView = mView.findViewById(R.id.sessionDurationTextView);

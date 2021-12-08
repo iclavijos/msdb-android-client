@@ -14,9 +14,14 @@ public class UpcomingSession extends BaseModel {
     String racetrack;
     String seriesLogo;
     Boolean rally;
+    Boolean raid;
     Float duration;
+    Float totalDuration;
 
     public boolean isRally() {
         return Optional.ofNullable(rally).orElse(false);
+    }
+    public boolean isRaid() {
+        return Optional.ofNullable(raid).orElse(false);
     }
 }

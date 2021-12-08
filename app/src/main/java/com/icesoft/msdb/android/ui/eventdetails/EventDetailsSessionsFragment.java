@@ -39,7 +39,7 @@ public class EventDetailsSessionsFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.eventSessionsRecyclerView);
         viewModel.getEventSessions().observe(getViewLifecycleOwner(), eventSessions -> {
-            recyclerView.setAdapter(new EventSessionRecyclerViewAdapter(eventSessions));
+            recyclerView.setAdapter(new EventSessionRecyclerViewAdapter(eventDetails, eventSessions));
         });
 
         return view;

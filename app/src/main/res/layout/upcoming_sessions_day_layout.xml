@@ -16,16 +16,28 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
-        android:id="@+id/textViewSessionName"
+        android:id="@+id/textViewEventName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewSessionHours"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/imageViewSeriesLogo"
+        android:paddingStart="8dp"
+        android:text="2021 Le Mans 24 Hours"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/textViewSessionName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewEventName"
         android:layout_alignParentBottom="false"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_toRightOf="@id/imageViewSeriesLogo"
         android:paddingStart="8dp"
-        android:text="Free Practice 1 - 2021 Le Mans 24 Hours"
+        android:text="Free Practice 1"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <ImageView

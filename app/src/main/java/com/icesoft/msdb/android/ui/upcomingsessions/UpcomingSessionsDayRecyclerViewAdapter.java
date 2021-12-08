@@ -22,6 +22,7 @@ import com.icesoft.msdb.android.activity.EventDetailsActivity;
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.model.UpcomingSession;
 
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -53,10 +54,8 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
     public void onBindViewHolder(@NonNull UpcomingSessionsDayRecyclerViewAdapter.ViewHolder holder, int position) {
         UpcomingSession upcomingSession = upcomingSessions.get(position);
         holder.setUpcomingSession(upcomingSession);
-        holder.mViewSessionName.setText(String.join(" ",
-                upcomingSession.getEventName(),
-                "-",
-                upcomingSession.getSessionName()));
+        holder.mViewEventName.setText(upcomingSession.getEventName());
+        holder.mViewSessionName.setText(upcomingSession.getSessionName());
         holder.mViewRacetrack.setText(upcomingSession.getRacetrack());
         LocalDateTime startTime = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(upcomingSession.getSessionStartTime()),
@@ -65,10 +64,18 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
         if (upcomingSession.isRally()) {
             holder.mViewSessionHours.setText(
                     String.join((" "),
-                            (" "),
                             DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime),
                             " - ",
                             upcomingSession.getDuration().toString(),
+                            "KM"
+                    ));
+        } else if (upcomingSession.isRaid()) {
+            DecimalFormat df = new DecimalFormat("#");
+            holder.mViewSessionHours.setText(
+                    String.join((" "),
+                            df.format(upcomingSession.getDuration()),
+                            "/",
+                            df.format(upcomingSession.getTotalDuration()),
                             "KM"
                     ));
         } else {
@@ -103,6 +110,7 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
         private UpcomingSession upcomingSession;
         public final View mView;
         public final TextView mViewSessionHours;
+        public final TextView mViewEventName;
         public final TextView mViewSessionName;
         public final TextView mViewRacetrack;
         public final ImageView mViewSeriesLogo;
@@ -112,6 +120,7 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
             mView = view;
             mView.setOnClickListener(this);
             mViewSessionHours = (TextView) view.findViewById(R.id.textViewSessionHours);
+            mViewEventName = (TextView) view.findViewById(R.id.textViewEventName);
             mViewSessionName = (TextView) view.findViewById(R.id.textViewSessionName);
             mViewRacetrack = (TextView) view.findViewById(R.id.textViewRacetrack);
             mViewSeriesLogo = (ImageView) view.findViewById(R.id.imageViewSeriesLogo);
