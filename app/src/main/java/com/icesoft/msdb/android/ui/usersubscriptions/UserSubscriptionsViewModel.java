@@ -81,7 +81,7 @@ public class UserSubscriptionsViewModel extends ViewModel {
 
             // Build data structure
             List<UserSubscription> currentSubs = opSubscriptions.get();
-            opSeries.get().forEach(currentSeries -> {
+            Optional.ofNullable(opSeries.get()).ifPresent(response -> response.forEach(currentSeries -> {
                 result.add(
                     currentSubs.stream()
                         .filter(currentSub -> currentSub.getSeriesEditionId().equals(currentSeries.getId()))
@@ -92,7 +92,7 @@ public class UserSubscriptionsViewModel extends ViewModel {
                                 return userSubscription;
                             })
                         .orElse(new UserSubscription(currentSeries.getId(), currentSeries.getEditionName())));
-            });
+            }));
             return result;
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Couldn't retrieve user subscriptions on time", e);
