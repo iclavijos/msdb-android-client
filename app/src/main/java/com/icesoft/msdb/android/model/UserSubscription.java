@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserSubscription extends BaseModel {
 
-    private Long seriesEditionId;
-    private String seriesEditionName;
+    private Long seriesId;
+    private String seriesName;
     private String seriesLogo;
     private boolean practiceSessions;
     private boolean qualiSessions;
@@ -17,9 +17,10 @@ public class UserSubscription extends BaseModel {
     private boolean oneHourWarning;
     private boolean threeHoursWarning;
 
-    public UserSubscription(Long seriesEditionId, String seriesEditionName) {
-        this.seriesEditionId = seriesEditionId;
-        this.seriesEditionName = seriesEditionName;
+    public UserSubscription(Long seriesId, String seriesName, String seriesLogo) {
+        this.seriesId = seriesId;
+        this.seriesName = seriesName;
+        this.seriesLogo = seriesLogo;
     }
 
     public boolean isValid() {

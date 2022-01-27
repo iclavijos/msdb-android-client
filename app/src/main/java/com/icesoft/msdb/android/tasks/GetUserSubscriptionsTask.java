@@ -1,6 +1,5 @@
 package com.icesoft.msdb.android.tasks;
 
-import com.icesoft.msdb.android.model.ActiveSeries;
 import com.icesoft.msdb.android.model.UserSubscription;
 import com.icesoft.msdb.android.service.BackendService;
 

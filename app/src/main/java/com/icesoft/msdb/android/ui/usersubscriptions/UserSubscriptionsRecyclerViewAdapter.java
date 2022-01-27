@@ -39,7 +39,7 @@ public class UserSubscriptionsRecyclerViewAdapter extends RecyclerView.Adapter<U
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         UserSubscription userSubscription = userSubscriptionsViewModel.getUserSubscriptions().get(position);
-        holder.mSeriesNameView.setText(userSubscription.getSeriesEditionName());
+        holder.mSeriesNameView.setText(userSubscription.getSeriesName());
         holder.mPracticesSwitch.setChecked(userSubscription.isPracticeSessions());
         holder.mQualifyingSwitch.setChecked(userSubscription.isQualiSessions());
         holder.mRacesSwitch.setChecked(userSubscription.isRaces());
@@ -71,7 +71,8 @@ public class UserSubscriptionsRecyclerViewAdapter extends RecyclerView.Adapter<U
             userSubscription.setThreeHoursWarning(isChecked);
         });
 
-        if (userSubscription.getSeriesEditionName().toLowerCase().contains("rally")) {
+        if (userSubscription.getSeriesName().toLowerCase().contains("rally") &&
+                userSubscription.getSeriesName().toLowerCase().contains("cross")) {
             holder.mView.findViewById(R.id.sessionTypesLayout).setVisibility(View.GONE);
             holder.mView.findViewById(R.id.userSubscriptionsVerticalSplitter).setVisibility(View.GONE);
         }

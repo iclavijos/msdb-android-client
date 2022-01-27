@@ -5,13 +5,14 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icesoft.msdb.android.client.MSDBAPIClient;
-import com.icesoft.msdb.android.model.ActiveSeries;
+import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.EventEdition;
 import com.icesoft.msdb.android.model.EventSession;
 import com.icesoft.msdb.android.model.UpcomingSession;
 import com.icesoft.msdb.android.model.UserSubscription;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -90,10 +91,10 @@ public class BackendService {
         return null;
     }
 
-    public List<ActiveSeries> getActiveSeries() {
-        Call<List<ActiveSeries>> msdbCall = msdbAPIClient.getActiveSeries();
+    public List<Series> getSeries() {
+        Call<List<Series>> msdbCall = msdbAPIClient.getSeries(0, "", 500, Arrays.asList("name", "asc"));
 
-        Response<List<ActiveSeries>> response;
+        Response<List<Series>> response;
         try {
             response = msdbCall.execute();
             if (response.isSuccessful()) {

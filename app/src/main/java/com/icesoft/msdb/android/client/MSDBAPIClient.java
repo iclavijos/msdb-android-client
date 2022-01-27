@@ -1,6 +1,6 @@
 package com.icesoft.msdb.android.client;
 
-import com.icesoft.msdb.android.model.ActiveSeries;
+import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.EventEdition;
 import com.icesoft.msdb.android.model.EventSession;
 import com.icesoft.msdb.android.model.UpcomingSession;
@@ -17,6 +17,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface MSDBAPIClient {
 
@@ -29,8 +30,8 @@ public interface MSDBAPIClient {
     @DELETE("api/account/device/{deviceId}")
     Call<Void> removeToken(@Header("Authorization") String accessToken, @Path("deviceId") String deviceId);
 
-    @GET("api/series-editions/active")
-    Call<List<ActiveSeries>> getActiveSeries();
+    @GET("api/series")
+    Call<List<Series>> getSeries(@Query("page") Integer page, @Query("query") String query, @Query("size") Integer size, @Query("sort") List<String> sort);
 
     @GET("api/account/subscriptions")
     Call<List<UserSubscription>> getUserSubscriptions(@Header("Authorization") String accessToken);

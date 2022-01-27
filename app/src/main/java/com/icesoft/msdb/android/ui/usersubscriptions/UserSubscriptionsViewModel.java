@@ -6,9 +6,9 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.icesoft.msdb.android.model.ActiveSeries;
+import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.UserSubscription;
-import com.icesoft.msdb.android.tasks.GetActiveSeriesTask;
+import com.icesoft.msdb.android.tasks.GetSeriesTask;
 import com.icesoft.msdb.android.tasks.GetUserSubscriptionsTask;
 
 import java.util.ArrayList;
@@ -59,21 +59,21 @@ public class UserSubscriptionsViewModel extends ViewModel {
         }
         userSubscriptionsMutableData.setValue(
             fullList.stream()
-                    .peek(userSubscription -> userSubscription.getSeriesEditionName().toLowerCase())
-                .filter(userSubscription -> userSubscription.getSeriesEditionName().toLowerCase().contains(filter.toLowerCase()))
+                    .peek(userSubscription -> userSubscription.getSeriesName().toLowerCase())
+                .filter(userSubscription -> userSubscription.getSeriesName().toLowerCase().contains(filter.toLowerCase()))
                 .collect(Collectors.toList()));
     }
 
     private List<UserSubscription> fetchUserSubscriptions() {
         CountDownLatch doneSignal = new CountDownLatch(2);
-        GetActiveSeriesTask getSeriesTask = new GetActiveSeriesTask(doneSignal);
+        GetSeriesTask getSeriesTask = new GetSeriesTask(doneSignal);
         GetUserSubscriptionsTask getUserSubscriptionsTask = new GetUserSubscriptionsTask(accessToken, doneSignal);
 
         List<UserSubscription> result = new ArrayList<>();
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
-        Future<List<ActiveSeries>> opSeries = executor.submit(getSeriesTask);
+        Future<List<Series>> opSeries = executor.submit(getSeriesTask);
         Future<List<UserSubscription>> opSubscriptions = executor.submit(getUserSubscriptionsTask);
 
         try {
@@ -84,14 +84,17 @@ public class UserSubscriptionsViewModel extends ViewModel {
             Optional.ofNullable(opSeries.get()).ifPresent(response -> response.forEach(currentSeries -> {
                 result.add(
                     currentSubs.stream()
-                        .filter(currentSub -> currentSub.getSeriesEditionId().equals(currentSeries.getId()))
+                        .filter(currentSub -> currentSub.getSeriesId().equals(currentSeries.getId()))
                         .findFirst()
                             .map(userSubscription -> {
-                                userSubscription.setSeriesEditionName(currentSeries.getEditionName());
-                                userSubscription.setSeriesLogo(currentSeries.getSeriesLogo());
+                                userSubscription.setSeriesName(currentSeries.getName());
+                                userSubscription.setSeriesLogo(currentSeries.getLogoUrl());
                                 return userSubscription;
                             })
-                        .orElse(new UserSubscription(currentSeries.getId(), currentSeries.getEditionName())));
+                        .orElse(new UserSubscription(
+                                currentSeries.getId(),
+                                currentSeries.getName(),
+                                currentSeries.getLogoUrl())));
             }));
             return result;
         } catch (ExecutionException | InterruptedException e) {
