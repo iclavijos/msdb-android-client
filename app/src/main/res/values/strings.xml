@@ -50,4 +50,5 @@
     <string name="miles">miles</string>
     <string name="plusExtraLap">+ 1 lap</string>
     <string name="offline">Due to the problems suffered by our hosting provider, this app is offline at least till Monday, March 15th. Apologies for all inconveniences</string>
+    <string name="cancelled">Cancelled</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.icesoft.msdb.android.ui.eventdetails;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -65,6 +66,10 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
 
         holder.durationTextView.setText(
                 calculateDuration(session.getDuration(), session.getDurationType(), session.isAdditionalLap()));
+
+        if (!session.isCancelled()) {
+            holder.cancelledCardView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -107,6 +112,7 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
         public final TextView startTimeTextView;
         public final TextView sessionNameTextView;
         public final TextView durationTextView;
+        public final CardView cancelledCardView;
 
         public ViewHolder(View view) {
             super(view);
@@ -115,6 +121,7 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
             startTimeTextView = mView.findViewById(R.id.sessionStartTimeTextView);
             sessionNameTextView = mView.findViewById(R.id.sessionNameTextView);
             durationTextView = mView.findViewById(R.id.sessionDurationTextView);
+            cancelledCardView = mView.findViewById(R.id.sessionCancelledCardView);
         }
     }
 }

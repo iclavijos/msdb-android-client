@@ -20,4 +20,5 @@ public class EventSession extends BaseModel {
     private String sessionType;
     private boolean rally;
     private boolean raid;
+    private boolean cancelled;
 }

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.auth0.android.authentication.storage.CredentialsManagerException;
@@ -57,6 +58,9 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
         holder.mViewEventName.setText(upcomingSession.getEventName());
         holder.mViewSessionName.setText(upcomingSession.getSessionName());
         holder.mViewRacetrack.setText(upcomingSession.getRacetrack());
+        if (!upcomingSession.isCancelled()) {
+            holder.mViewCancelled.setVisibility(View.GONE);
+        }
         LocalDateTime startTime = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(upcomingSession.getSessionStartTime()),
                 ZoneId.systemDefault()
@@ -114,6 +118,7 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
         public final TextView mViewSessionName;
         public final TextView mViewRacetrack;
         public final ImageView mViewSeriesLogo;
+        public final CardView mViewCancelled;
 
         public ViewHolder(View view) {
             super(view);
@@ -124,6 +129,7 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
             mViewSessionName = (TextView) view.findViewById(R.id.textViewSessionName);
             mViewRacetrack = (TextView) view.findViewById(R.id.textViewRacetrack);
             mViewSeriesLogo = (ImageView) view.findViewById(R.id.imageViewSeriesLogo);
+            mViewCancelled = view.findViewById(R.id.cancelledCardView);
         }
 
         protected void setUpcomingSession(UpcomingSession upcomingSession) {

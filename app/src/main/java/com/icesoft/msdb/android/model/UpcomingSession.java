@@ -17,6 +17,7 @@ public class UpcomingSession extends BaseModel {
     Boolean raid;
     Float duration;
     Float totalDuration;
+    Boolean cancelled;
 
     public boolean isRally() {
         return Optional.ofNullable(rally).orElse(false);
@@ -24,4 +25,5 @@ public class UpcomingSession extends BaseModel {
     public boolean isRaid() {
         return Optional.ofNullable(raid).orElse(false);
     }
+    public boolean isCancelled() { return Optional.ofNullable(cancelled).orElse(false); }
 }

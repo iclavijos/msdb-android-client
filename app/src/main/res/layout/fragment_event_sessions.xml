@@ -23,6 +23,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sessionStartDayTextView" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/sessionCancelledCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/sessionStartTimeTextView"
+        android:layout_toRightOf="@id/sessionNameTextView"
+        android:paddingStart="8dp"
+        android:paddingTop="6dp"
+        app:cardBackgroundColor="#ff0000"
+        app:cardCornerRadius="6dp"
+        app:layout_constraintStart_toEndOf="@id/sessionStartTimeTextView"
+        app:layout_constraintTop_toBottomOf="@id/sessionStartDayTextView">
+
+        <TextView
+            android:id="@+id/textViewCancelled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:text="@string/cancelled"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
     <TextView
         android:id="@+id/sessionNameTextView"
         android:layout_width="0dp"

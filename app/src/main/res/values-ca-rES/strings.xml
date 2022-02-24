@@ -40,4 +40,5 @@
     <string name="plusExtraLap">+ 1 volta</string>
     <string name="offline">Degut als problemes soferts el nostre proveïdor d\'hospedatge, l\'app estarà offline com a mínim fins al proper dilluns 15 de març. Preguem disculpeu les molèsties</string>
     <string name="distance">Distància: %1$s km</string>
+    <string name="cancelled">Cancel.lat</string>
 </resources>
