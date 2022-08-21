@@ -1,11 +1,17 @@
 package com.icesoft.msdb.android.ui.usersubscriptions;
 
+import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.icesoft.msdb.android.exception.MSDBException;
 import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.UserSubscription;
 import com.icesoft.msdb.android.tasks.GetSeriesTask;
@@ -22,14 +28,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-public class UserSubscriptionsViewModel extends ViewModel {
+public class UserSubscriptionsViewModel extends AndroidViewModel {
     private static final String TAG = "UserSubscriptionsViewModel";
 
     private List<UserSubscription> fullList;
     private MutableLiveData<List<UserSubscription>> userSubscriptionsMutableData;
     private String accessToken;
 
-    public UserSubscriptionsViewModel() {
+    public UserSubscriptionsViewModel(Application application) {
+        super(application);
         userSubscriptionsMutableData = new MutableLiveData<>();
     }
 
@@ -66,14 +73,13 @@ public class UserSubscriptionsViewModel extends ViewModel {
 
     private List<UserSubscription> fetchUserSubscriptions() {
         CountDownLatch doneSignal = new CountDownLatch(2);
-        GetSeriesTask getSeriesTask = new GetSeriesTask(doneSignal);
         GetUserSubscriptionsTask getUserSubscriptionsTask = new GetUserSubscriptionsTask(accessToken, doneSignal);
 
         List<UserSubscription> result = new ArrayList<>();
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
-        Future<List<Series>> opSeries = executor.submit(getSeriesTask);
+        List<Series> series = getSeriesList(executor, doneSignal);
         Future<List<UserSubscription>> opSubscriptions = executor.submit(getUserSubscriptionsTask);
 
         try {
@@ -81,25 +87,54 @@ public class UserSubscriptionsViewModel extends ViewModel {
 
             // Build data structure
             List<UserSubscription> currentSubs = opSubscriptions.get();
-            Optional.ofNullable(opSeries.get()).ifPresent(response -> response.forEach(currentSeries -> {
+            series.forEach(currentSeries -> {
                 result.add(
-                    currentSubs.stream()
-                        .filter(currentSub -> currentSub.getSeriesId().equals(currentSeries.getId()))
-                        .findFirst()
-                            .map(userSubscription -> {
-                                userSubscription.setSeriesName(currentSeries.getName());
-                                userSubscription.setSeriesLogo(currentSeries.getLogoUrl());
-                                return userSubscription;
-                            })
-                        .orElse(new UserSubscription(
-                                currentSeries.getId(),
-                                currentSeries.getName(),
-                                currentSeries.getLogoUrl())));
-            }));
+                        currentSubs.stream()
+                                .filter(currentSub -> currentSub.getSeriesId().equals(currentSeries.getId()))
+                                .findFirst()
+                                .map(userSubscription -> {
+                                    userSubscription.setSeriesName(currentSeries.getName());
+                                    userSubscription.setSeriesLogo(currentSeries.getLogoUrl());
+                                    return userSubscription;
+                                })
+                                .orElse(new UserSubscription(
+                                        currentSeries.getId(),
+                                        currentSeries.getName(),
+                                        currentSeries.getLogoUrl())));
+            });
             return result;
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Couldn't retrieve user subscriptions on time", e);
             return Collections.emptyList();
         }
+    }
+
+    private List<Series> getSeriesList(ExecutorService executor, CountDownLatch doneSignal) {
+        List<Series> result;
+
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getApplication());
+        if (sharedPreferences.contains("seriesList")) {
+            JsonMapper mapper = new JsonMapper();
+            String seriesList = sharedPreferences.getString("seriesList", "[]");
+            try {
+                result = mapper.readValue(seriesList, List.class);
+            } catch (JsonProcessingException e) {
+                Log.e(TAG, "Couldn't deserialize series list " + seriesList);
+                throw new MSDBException(e);
+            }
+            doneSignal.countDown();
+        } else {
+            GetSeriesTask getSeriesTask = new GetSeriesTask(doneSignal);
+            Future<List<Series>> opSeries = executor.submit(getSeriesTask);
+            try {
+                return Optional.ofNullable(opSeries.get()).orElseGet(() -> Collections.EMPTY_LIST);
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e(TAG, "Couldn't retrieve series list on time", e);
+                return Collections.emptyList();
+            }
+        }
+
+        return result;
     }
 }

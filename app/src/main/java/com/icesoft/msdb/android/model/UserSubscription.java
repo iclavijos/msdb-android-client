@@ -1,10 +1,12 @@
 package com.icesoft.msdb.android.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class UserSubscription extends BaseModel {
 
     private Long seriesId;

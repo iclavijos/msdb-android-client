@@ -34,7 +34,6 @@ public class EventDetailsSessionsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_event_sessions_list, container, false);
 
         auth0 = new Auth0(getContext());
-        auth0.setOIDCConformant(true);
         credentialsManager = new SecureCredentialsManager(getContext(), new AuthenticationAPIClient(auth0), new SharedPreferencesStorage(getContext()));
 
         RecyclerView recyclerView = view.findViewById(R.id.eventSessionsRecyclerView);

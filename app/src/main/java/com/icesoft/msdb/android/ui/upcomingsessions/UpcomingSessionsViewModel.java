@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.UpcomingSession;
 import com.icesoft.msdb.android.tasks.UpcomingSessionsTask;
 
@@ -28,6 +29,8 @@ public class UpcomingSessionsViewModel extends ViewModel {
 
     private static final String TAG = "UpcomingSessionsViewModel";
 
+    private List<String> enabledSeriesIds = Collections.EMPTY_LIST;
+    private List<UpcomingSession> upcomingSessions;
     private MutableLiveData<List<UpcomingSession>> upcomingSessionsMutableData;
 
     private Map<LocalDate, List<UpcomingSession>> sessionsPerDay = new HashMap<>();
@@ -36,7 +39,15 @@ public class UpcomingSessionsViewModel extends ViewModel {
         if (upcomingSessionsMutableData == null) {
             upcomingSessionsMutableData = new MutableLiveData<>();
         }
-        upcomingSessionsMutableData.setValue(fetchUpcomingSessions());
+        fetchUpcomingSessions();
+        upcomingSessionsMutableData.setValue(Collections.EMPTY_LIST);
+    }
+
+    public void setEnabledSeries(List<String> enabledSeries) {
+        this.enabledSeriesIds = enabledSeries;
+
+        upcomingSessionsMutableData.getValue().clear();
+        upcomingSessionsMutableData.setValue(filterUpcomingSessions());
     }
 
     public MutableLiveData<List<UpcomingSession>> getUpcomingSessions() {
@@ -60,31 +71,43 @@ public class UpcomingSessionsViewModel extends ViewModel {
     }
 
     public void refreshUpcomingSessions() {
+        fetchUpcomingSessions();
+        List<UpcomingSession> filteredSessions = filterUpcomingSessions();
         upcomingSessionsMutableData.getValue().clear();
-        upcomingSessionsMutableData.setValue(fetchUpcomingSessions());
+        upcomingSessionsMutableData.setValue(filteredSessions);
     }
 
-    private List<UpcomingSession> fetchUpcomingSessions() {
+    private List<UpcomingSession> filterUpcomingSessions() {
+        List<UpcomingSession> filteredSessions = upcomingSessions
+            .stream()
+            .filter(upcomingSession ->
+                    upcomingSession.getSeriesIds().stream()
+                            .anyMatch(id -> enabledSeriesIds.contains("series-" + id) || enabledSeriesIds.isEmpty()))
+            .peek(upcomingSession -> {
+                LocalDate startDate = LocalDateTime.ofInstant(
+                        Instant.ofEpochSecond(upcomingSession.getSessionStartTime()), ZoneId.systemDefault()).toLocalDate();
+
+                if (!sessionsPerDay.containsKey(startDate)) {
+                    sessionsPerDay.put(startDate, new ArrayList<>());
+                }
+                sessionsPerDay.get(startDate).add(upcomingSession);
+            }).collect(Collectors.toList());
+
+        return filteredSessions;
+    }
+
+    private void fetchUpcomingSessions() {
         UpcomingSessionsTask task = new UpcomingSessionsTask();
         Future<List<UpcomingSession>> opResult = Executors.newFixedThreadPool(1).submit(task);
         try {
             List<UpcomingSession> sessions = opResult.get(10000, TimeUnit.MILLISECONDS);
             if (sessions == null) {
-                return Collections.emptyList();
+                upcomingSessions = Collections.emptyList();
             }
-            sessions.forEach(upcomingSession -> {
-                LocalDate startDate = LocalDateTime.ofInstant(
-                    Instant.ofEpochSecond(upcomingSession.getSessionStartTime()), ZoneId.systemDefault()).toLocalDate();
-                List<UpcomingSession> sessionsDay;
-                if (!sessionsPerDay.containsKey(startDate)) {
-                    sessionsPerDay.put(startDate, new ArrayList<>());
-                }
-                sessionsPerDay.get(startDate).add(upcomingSession);
-            });
-            return sessions;
+            upcomingSessions = sessions;
         } catch (TimeoutException | ExecutionException | InterruptedException e) {
             Log.e(TAG, "Couldn't retrieve upcoming sessions", e);
-            return Collections.emptyList();
+            upcomingSessions = Collections.emptyList();
         }
     }
 }

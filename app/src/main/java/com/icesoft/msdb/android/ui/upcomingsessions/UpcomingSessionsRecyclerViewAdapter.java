@@ -1,6 +1,9 @@
 package com.icesoft.msdb.android.ui.upcomingsessions;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,25 +15,45 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.auth0.android.authentication.storage.SecureCredentialsManager;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.icesoft.msdb.android.R;
+import com.icesoft.msdb.android.exception.MSDBException;
+import com.icesoft.msdb.android.model.Series;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link com.icesoft.msdb.android.model.UpcomingSession}.
  */
 public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingSessionsRecyclerViewAdapter.ViewHolder> {
 
+    private static final String TAG = "UpcomingSessionsRecyclerViewAdapter";
+
     private final UpcomingSessionsViewModel upcomingSessionsViewModel;
     private final SecureCredentialsManager credentialsManager;
+    private final SharedPreferences sharedPreferences;
+
+    private List<String> enabledSeries;
 
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
     public UpcomingSessionsRecyclerViewAdapter(Context context, SecureCredentialsManager credentialsManager) {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        enabledSeries = sharedPreferences.getAll().entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith("series-") && ((Boolean)entry.getValue()))
+                .map(entry -> entry.getKey())
+                .collect(Collectors.toList());
+
         upcomingSessionsViewModel =
                 new ViewModelProvider((FragmentActivity)context).get(UpcomingSessionsViewModel.class);
+        upcomingSessionsViewModel.setEnabledSeries(enabledSeries);
+
         this.credentialsManager = credentialsManager;
     }
 
@@ -84,8 +107,8 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.day);
-            mUpcomingSessionsDayView = (RecyclerView) view.findViewById(R.id.upcomingSessionsDayReciclerView);
+            mIdView = view.findViewById(R.id.day);
+            mUpcomingSessionsDayView = view.findViewById(R.id.upcomingSessionsDayReciclerView);
         }
 
     }

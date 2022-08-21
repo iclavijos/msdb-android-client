@@ -13,6 +13,7 @@ import com.icesoft.msdb.android.model.UserSubscription;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -33,8 +34,8 @@ public class BackendService {
     }
 
     private final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://www.motorsports-database.racing")
-            //.baseUrl("http://10.0.2.2:8080/")
+            //.baseUrl("https://www.motorsports-database.racing")
+            .baseUrl("http://10.0.2.2:8080/")
             //.baseUrl("http://192.168.1.185:8080")
             .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)))
@@ -61,7 +62,7 @@ public class BackendService {
     }
 
     public Void registerToken(String accessToken, String deviceToken) {
-        RequestBody body = RequestBody.create(MediaType.parse("text/plain"), deviceToken);
+        RequestBody body = okhttp3.RequestBody.Companion.create(deviceToken, MediaType.get("text/plain"));
         Call<Void> msdbCall = msdbAPIClient.registerToken("Bearer " + accessToken, body);
         Response<Void> response;
         try {
@@ -168,12 +169,12 @@ public class BackendService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                Log.e("MSDBService", "Couldn't retrieve event sessions: " + response.errorBody().string());
+                Log.e("MSDBService", "Couldn't retrieve event sessions: " + response.code() + " - " + response.errorBody().string());
             }
         } catch (IOException e) {
             Log.e("MSDBService", "Couldn't process get event sessions request", e);
         }
 
-        return null;
+        return Collections.EMPTY_LIST;
     }
 }

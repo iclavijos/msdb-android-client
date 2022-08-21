@@ -1,10 +1,13 @@
 package com.icesoft.msdb.android.model;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class UpcomingSession extends BaseModel {
     Long eventEditionId;
     String sessionName;
@@ -13,6 +16,8 @@ public class UpcomingSession extends BaseModel {
     long sessionEndTime;
     String racetrack;
     String seriesLogo;
+    List<Long> seriesIds;
+    List<Long> seriesEditionIds;
     Boolean rally;
     Boolean raid;
     Float duration;

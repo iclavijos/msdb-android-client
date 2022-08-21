@@ -5,8 +5,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class EventEdition extends BaseModel {
 
     private Long id;

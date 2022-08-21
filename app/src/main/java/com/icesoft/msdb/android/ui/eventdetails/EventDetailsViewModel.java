@@ -10,8 +10,10 @@ import com.icesoft.msdb.android.model.EventSession;
 import java.util.List;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class EventDetailsViewModel extends ViewModel {
 
     private final MutableLiveData<List<EventSession>> sessions = new MutableLiveData<>();

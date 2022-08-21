@@ -38,7 +38,6 @@ public class UpcomingSessionsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_upcoming_sessions_list, container, false);
 
         auth0 = new Auth0(getContext());
-        auth0.setOIDCConformant(true);
         credentialsManager = new SecureCredentialsManager(getContext(), new AuthenticationAPIClient(auth0), new SharedPreferencesStorage(getContext()));
 
         upcomingSessionsViewModel =

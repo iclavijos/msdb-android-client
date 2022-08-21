@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.model.EventEdition;
 import com.icesoft.msdb.android.model.EventSession;
+import com.icesoft.msdb.android.model.enums.DurationType;
 
 import java.text.DecimalFormat;
 import java.time.Instant;
@@ -77,20 +78,20 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
         return sessions.size();
     }
 
-    private String calculateDuration(Float duration, Integer durationType, Boolean extraLap) {
+    private String calculateDuration(Float duration, DurationType durationType, Boolean extraLap) {
         String durationTypeStr;
         String extraLapStr = extraLap ? context.getString(R.string.plusExtraLap) : "";
 
         switch (durationType) {
-            case 1: durationTypeStr = context.getString(R.string.minutes);
+            case MINUTES: durationTypeStr = context.getString(R.string.minutes);
                 break;
-            case 2: durationTypeStr = context.getString(R.string.hours);
+            case HOURS: durationTypeStr = context.getString(R.string.hours);
                 break;
-            case 3: durationTypeStr = context.getString(R.string.km);
+            case KMS: durationTypeStr = context.getString(R.string.km);
                 break;
-            case 4: durationTypeStr = context.getString(R.string.miles);
+            case MILES: durationTypeStr = context.getString(R.string.miles);
                 break;
-            case 5: durationTypeStr = context.getString(R.string.laps);
+            case LAPS: durationTypeStr = context.getString(R.string.laps);
                 break;
             default: durationTypeStr = "unknown";
         }

@@ -1,10 +1,14 @@
 package com.icesoft.msdb.android.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.icesoft.msdb.android.model.enums.DurationType;
+import com.icesoft.msdb.android.model.enums.SessionType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class EventSession extends BaseModel {
 
     private String name;
@@ -15,9 +19,9 @@ public class EventSession extends BaseModel {
     private Long endTime;
     private Float duration;
     private Float totalDuration;
-    private Integer durationType;
+    private DurationType durationType;
     private boolean additionalLap;
-    private String sessionType;
+    private SessionType sessionType;
     private boolean rally;
     private boolean raid;
     private boolean cancelled;

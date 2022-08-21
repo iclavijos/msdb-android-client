@@ -59,7 +59,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
 
         auth0 = new Auth0(this);
-        auth0.setOIDCConformant(true);
         credentialsManager = new SecureCredentialsManager(this, new AuthenticationAPIClient(auth0), new SharedPreferencesStorage(this));
 
         TextView eventEditionNameTextView = findViewById(R.id.eventDetailsEventNameTextView);
