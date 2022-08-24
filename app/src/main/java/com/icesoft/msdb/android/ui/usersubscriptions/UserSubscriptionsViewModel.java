@@ -66,7 +66,6 @@ public class UserSubscriptionsViewModel extends AndroidViewModel {
         }
         userSubscriptionsMutableData.setValue(
             fullList.stream()
-                    .peek(userSubscription -> userSubscription.getSeriesName().toLowerCase())
                 .filter(userSubscription -> userSubscription.getSeriesName().toLowerCase().contains(filter.toLowerCase()))
                 .collect(Collectors.toList()));
     }

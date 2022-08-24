@@ -41,4 +41,6 @@
     <string name="offline">Debido a los problemas sufridos por nuestro proveedor de hosting, la app estará offline como mínimo hasta el lunes 15 de marzo. Pedimos disculpas por las molestias.</string>
     <string name="distance">Distancia: %1$s km</string>
     <string name="cancelled">Cancelado</string>
+    <string name="filterSeriesSettingsTitle">Campeonatos a mostrar</string>
+    <string name="filterSeriesSettingsDesc">Marca aquellos campeonatos que quieras ver en la página principal</string>
 </resources>

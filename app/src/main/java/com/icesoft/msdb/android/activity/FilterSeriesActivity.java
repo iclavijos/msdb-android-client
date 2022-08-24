@@ -4,10 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
@@ -15,11 +20,13 @@ import androidx.preference.SwitchPreferenceCompat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.google.android.gms.common.util.Strings;
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.exception.MSDBException;
 import com.icesoft.msdb.android.model.Series;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FilterSeriesActivity extends AppCompatActivity {
 
@@ -35,23 +42,41 @@ public class FilterSeriesActivity extends AppCompatActivity {
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
         }
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+
+        ((EditText) findViewById(R.id.filterEditText)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String filter = s.toString();
+
+                SettingsFragment settingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentById(R.id.settings);
+                settingsFragment.filterPreferences(filter);
+            }
+        });
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+
+        private PreferenceScreen preferenceScreen;
+        private List<Series> series = null;
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             Context context = getPreferenceManager().getContext();
-            PreferenceScreen screen = getPreferenceManager().createPreferenceScreen(context);
+            preferenceScreen = getPreferenceManager().createPreferenceScreen(context);
 
             SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(context);
             if (sharedPreferences.contains("seriesList")) {
                 JsonMapper mapper = new JsonMapper();
-                List<Series> series = null;
+
                 String seriesList = sharedPreferences.getString("seriesList", "[]");
                 try {
                     series = mapper.readValue(seriesList, new TypeReference<List<Series>>() {});
@@ -64,11 +89,35 @@ public class FilterSeriesActivity extends AppCompatActivity {
                     notificationPreference.setKey("series-" + item.getId());
                     notificationPreference.setTitle(item.getName());
 
-                    screen.addPreference(notificationPreference);
+                    preferenceScreen.addPreference(notificationPreference);
                 });
             }
 
-            setPreferenceScreen(screen);
+            setPreferenceScreen(preferenceScreen);
+        }
+
+        public void filterPreferences(String filter) {
+            final int preferencesCount = preferenceScreen.getPreferenceCount();
+            if (Strings.isEmptyOrWhitespace(filter)) {
+                for (int index = 0; index < preferencesCount; index++) {
+                    Preference preference = preferenceScreen.getPreference(index);
+                    if (preference.getTitle().toString().startsWith("series-")) {
+                        preference.setVisible(true);
+                    }
+                }
+            } else {
+                List<String> filteredSeriesNames = series.stream()
+                        .filter(seriesItem -> seriesItem.getName().toLowerCase().contains(filter.toLowerCase()))
+                        .map(seriesItem -> seriesItem.getName())
+                        .collect(Collectors.toList());
+
+                for (int index = 0; index < preferencesCount; index++) {
+                    Preference preference = preferenceScreen.getPreference(index);
+                    if (preference.getKey().startsWith("series-")) {
+                        preference.setVisible(filteredSeriesNames.contains(preference.getTitle()));
+                    }
+                }
+            }
         }
     }
 }
