@@ -83,10 +83,10 @@ public class BackendService {
         try {
             response = msdbCall.execute();
             if (!response.isSuccessful()) {
-                Log.e("MSDBService", "Couldn't register token " + response.errorBody().string());
+                Log.e("MSDBService", "Couldn't remove token " + response.errorBody().string());
             }
         } catch (IOException e) {
-            Log.e("MSDBService", "Register token request not processed", e);
+            Log.e("MSDBService", "Remove token request not processed", e);
         }
 
         return null;
