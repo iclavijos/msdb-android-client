@@ -135,7 +135,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onSuccess(final Credentials credentials) {
                         if (credentialsManager.hasValidCredentials()) {
-                            startUserSubscriptionsActivity(credentials.getIdToken());
+                            startUserSubscriptionsActivity(credentials.getAccessToken());
                         }
                     }
 
@@ -206,7 +206,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void doLogin() {
         WebAuthProvider.login(auth0)
             .withScheme("msdbclient")
-            // .withAudience(String.format("https://%s/userinfo", getString(R.string.com_auth0_domain)))
+            .withAudience("https://msdb.eu.auth0.com/api/v2/")
             .withScope("openid profile email offline_access user_metadata")
             .start(this, loginCallback);
     }
@@ -224,7 +224,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 credentialsManager.getCredentials(new Callback<Credentials, CredentialsManagerException>() {
                     @Override
                     public void onSuccess(final Credentials credentials) {
-                        RemoveTokenTask task = new RemoveTokenTask(credentials.getIdToken(), token);
+                        RemoveTokenTask task = new RemoveTokenTask(credentials.getAccessToken(), token);
                         Future<Void> opResult = Executors.newFixedThreadPool(1).submit(task);
                         try {
                             opResult.get();
@@ -273,7 +273,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     // Get new FCM registration token
                     String token = getTokenTask.getResult();
-                    RegisterTokenTask task = new RegisterTokenTask(credentials.getIdToken(), token);
+                    RegisterTokenTask task = new RegisterTokenTask(credentials.getAccessToken(), token);
                     Future<Void> opResult = Executors.newFixedThreadPool(1).submit(task);
                     try {
                         opResult.get();

@@ -75,8 +75,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
                 @Override
                 public void onSuccess(@Nullable Credentials payload) {
-                    viewModel.setAccessToken(payload.getIdToken());
-                    tmp[0] = getEventEdition(payload.getIdToken(), getIntent().getLongExtra("eventEditionId", 0L));
+                    viewModel.setAccessToken(payload.getAccessToken());
+                    tmp[0] = getEventEdition(payload.getAccessToken(), getIntent().getLongExtra("eventEditionId", 0L));
                 }
 
                 @Override

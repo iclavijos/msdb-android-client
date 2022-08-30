@@ -146,7 +146,7 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
                             Intent intent = new Intent(mView.getContext(), EventDetailsActivity.class);
                             intent.putExtra("eventEditionId", upcomingSession.getEventEditionId());
                             intent.putExtra("eventName", upcomingSession.getEventName());
-                            intent.putExtra("accessToken", credentials.getIdToken());
+                            intent.putExtra("accessToken", credentials.getAccessToken());
                             mView.getContext().startActivity(intent);
                         } else {
                             Log.i(TAG, "No valid credentials...");
