@@ -34,8 +34,8 @@ public class BackendService {
     }
 
     private final Retrofit retrofit = new Retrofit.Builder()
-            //.baseUrl("https://www.motorsports-database.racing")
-            .baseUrl("http://10.0.2.2:8080/")
+            .baseUrl("https://www.motorsports-database.racing")
+            //.baseUrl("http://10.0.2.2:8080/")
             //.baseUrl("http://192.168.1.185:8080")
             .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)))
@@ -129,7 +129,7 @@ public class BackendService {
     }
 
     public Void updateUserSubscriptions(String accessToken, List<UserSubscription> userSubscriptions) {
-        Call<Void> msdbCall = msdbAPIClient.updateSubscriptions(accessToken, userSubscriptions);
+        Call<Void> msdbCall = msdbAPIClient.updateSubscriptions("Bearer " + accessToken, userSubscriptions);
         Response<Void> response;
         try {
             response = msdbCall.execute();
@@ -143,7 +143,7 @@ public class BackendService {
     }
 
     public EventEdition getEventDetails(String accessToken, Long eventEditionId) {
-        Call<EventEdition> msdbCall = msdbAPIClient.getEventDetails(accessToken, eventEditionId);
+        Call<EventEdition> msdbCall = msdbAPIClient.getEventDetails("Bearer " + accessToken, eventEditionId);
 
         Response<EventEdition> response;
         try {
