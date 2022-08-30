@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.icesoft.msdb.android.exception.MSDBException;
 import com.icesoft.msdb.android.model.Series;
@@ -117,7 +118,7 @@ public class UserSubscriptionsViewModel extends AndroidViewModel {
             JsonMapper mapper = new JsonMapper();
             String seriesList = sharedPreferences.getString("seriesList", "[]");
             try {
-                result = mapper.readValue(seriesList, List.class);
+                result = mapper.readValue(seriesList, new TypeReference<ArrayList<Series>>(){});
             } catch (JsonProcessingException e) {
                 Log.e(TAG, "Couldn't deserialize series list " + seriesList);
                 throw new MSDBException(e);
