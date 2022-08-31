@@ -11,7 +11,7 @@ def getPropertiesFile = { path ->
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
 
     defaultConfig {
@@ -19,7 +19,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 31
         versionCode 21
-        versionName "1.4.1"
+        versionName "1.5.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -38,6 +38,12 @@ android {
         physical {
             debuggable true
             getPropertiesFile('./config/local-physical.properties').each { prop ->
+                buildConfigField 'String', prop.key, prop.value
+            }
+        }
+        physicalProd {
+            debuggable true
+            getPropertiesFile('./config/prod.properties').each { prop ->
                 buildConfigField 'String', prop.key, prop.value
             }
         }
