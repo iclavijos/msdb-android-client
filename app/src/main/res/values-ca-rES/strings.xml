@@ -43,4 +43,6 @@
     <string name="cancelled">Cancel.lat</string>
     <string name="filterSeriesSettingsTitle">Campionats a mostrar</string>
     <string name="filterSeriesSettingsDesc">Marca aquells campionats que vulguis veure a la pàgina principal</string>
+    <string name="maintenanceTitle">Apliació en manteniment</string>
+    <string name="maintenanceDescription">L\'aplicació es troba actualment en mode de manteniment. Tornarem a estar operatius tant aviat com sigui possible</string>
 </resources>

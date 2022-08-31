@@ -43,4 +43,6 @@
     <string name="cancelled">Cancelado</string>
     <string name="filterSeriesSettingsTitle">Campeonatos a mostrar</string>
     <string name="filterSeriesSettingsDesc">Marca aquellos campeonatos que quieras ver en la página principal</string>
+    <string name="maintenanceTitle">Aplicación en mantenimiento</string>
+    <string name="maintenanceDescription">La aplicación se encuentra en modo de mantenimiento. Volveremos a estar operativos tan pronto como sea posible</string>
 </resources>
