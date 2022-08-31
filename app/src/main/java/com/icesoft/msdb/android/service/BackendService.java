@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icesoft.msdb.android.BuildConfig;
 import com.icesoft.msdb.android.client.MSDBAPIClient;
 import com.icesoft.msdb.android.exception.MSDBMaintenanceException;
 import com.icesoft.msdb.android.model.Series;
@@ -52,9 +53,7 @@ public class BackendService {
             .build();
 
     private final Retrofit retrofit = new Retrofit.Builder()
-            //.baseUrl("https://www.motorsports-database.racing")
-            .baseUrl("http://10.0.2.2:8080/")
-            //.baseUrl("http://192.168.1.185:8080")
+            .baseUrl(BuildConfig.API_SERVER_URL)
             .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)))
             .client(okHttpClient)

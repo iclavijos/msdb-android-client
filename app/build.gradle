@@ -2,7 +2,12 @@ plugins {
     id 'com.android.application'
     id 'io.franzbecker.gradle-lombok' version '5.0.0'
     id 'com.google.gms.google-services'  // Google Services plugin
+}
 
+def getPropertiesFile = { path ->
+    Properties props = new Properties()
+    props.load(new FileInputStream(file(path)))
+    return props
 }
 
 android {
@@ -19,17 +24,32 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "msdbclient"]
+        signingConfig signingConfigs.debug
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            getPropertiesFile('./config/prod.properties').each { prop ->
+                buildConfigField 'String', prop.key, prop.value
+            }
+        }
+        physical {
+            debuggable true
+            getPropertiesFile('./config/local-physical.properties').each { prop ->
+                buildConfigField 'String', prop.key, prop.value
+            }
+        }
+        debug {
+            getPropertiesFile('./config/local.properties').each { prop ->
+                buildConfigField 'String', prop.key, prop.value
+            }
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     namespace 'com.icesoft.msdb.android'
     buildFeatures {
