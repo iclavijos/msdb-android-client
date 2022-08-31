@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.icesoft.msdb.android.exception.MSDBException;
 import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.UpcomingSession;
 import com.icesoft.msdb.android.tasks.UpcomingSessionsTask;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -101,13 +103,14 @@ public class UpcomingSessionsViewModel extends ViewModel {
         Future<List<UpcomingSession>> opResult = Executors.newFixedThreadPool(1).submit(task);
         try {
             List<UpcomingSession> sessions = opResult.get(10000, TimeUnit.MILLISECONDS);
-            if (sessions == null) {
-                upcomingSessions = Collections.emptyList();
-            }
-            upcomingSessions = sessions;
+            upcomingSessions = Optional.ofNullable(sessions).orElse(Collections.emptyList());
+
         } catch (TimeoutException | ExecutionException | InterruptedException e) {
             Log.e(TAG, "Couldn't retrieve upcoming sessions", e);
             upcomingSessions = Collections.emptyList();
+            if (e.getCause() instanceof MSDBException) {
+                throw (MSDBException)e.getCause();
+            }
         }
     }
 }

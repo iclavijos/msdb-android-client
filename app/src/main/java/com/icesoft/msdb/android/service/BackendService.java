@@ -5,6 +5,7 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icesoft.msdb.android.client.MSDBAPIClient;
+import com.icesoft.msdb.android.exception.MSDBMaintenanceException;
 import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.EventEdition;
 import com.icesoft.msdb.android.model.EventSession;
@@ -16,7 +17,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -33,12 +37,27 @@ public class BackendService {
         return _instance;
     }
 
+    private final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .followRedirects(false)
+            .addInterceptor(chain -> {
+                Request request = chain.request();
+                okhttp3.Response response = chain.proceed(request);
+
+                if (response.isRedirect()) {
+                    throw new MSDBMaintenanceException("Backend in maintenance mode");
+                }
+
+                return response;
+            })
+            .build();
+
     private final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://www.motorsports-database.racing")
-            //.baseUrl("http://10.0.2.2:8080/")
+            //.baseUrl("https://www.motorsports-database.racing")
+            .baseUrl("http://10.0.2.2:8080/")
             //.baseUrl("http://192.168.1.185:8080")
             .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)))
+            .client(okHttpClient)
             .build();
 
     private final MSDBAPIClient msdbAPIClient = retrofit.create(MSDBAPIClient.class);
