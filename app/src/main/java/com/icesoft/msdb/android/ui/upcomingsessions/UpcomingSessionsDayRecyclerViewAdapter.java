@@ -1,8 +1,6 @@
 package com.icesoft.msdb.android.ui.upcomingsessions;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.authentication.storage.SecureCredentialsManager;
-import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.callback.Callback;
 import com.auth0.android.result.Credentials;
 import com.bumptech.glide.Glide;
 import com.icesoft.msdb.android.activity.EventDetailsActivity;
@@ -139,7 +137,7 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
         @Override
         public void onClick(View v) {
             if (credentialsManager.hasValidCredentials()) {
-                credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
+                credentialsManager.getCredentials(new Callback<>() {
                     @Override
                     public void onSuccess(final Credentials credentials) {
                         if (credentialsManager.hasValidCredentials()) {

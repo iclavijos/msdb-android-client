@@ -20,7 +20,6 @@ import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.auth0.android.authentication.storage.SharedPreferencesStorage;
-import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.callback.Callback;
 import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.result.Credentials;
@@ -132,7 +131,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 doLogin();
                 break;
             case R.id.nav_subscriptions:
-                credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
+                credentialsManager.getCredentials(new Callback<>() {
                     @Override
                     public void onSuccess(final Credentials credentials) {
                         if (credentialsManager.hasValidCredentials()) {
@@ -324,7 +323,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void getProfile(String accessToken) {
         if (!isDestroyed()) {
             authenticationAPIClient.userInfo(accessToken)
-                    .start(new BaseCallback<UserProfile, AuthenticationException>() {
+                    .start(new Callback<>() {
                         @Override
                         public void onSuccess(UserProfile userInfo) {
                             runOnUiThread(() -> {

@@ -8,7 +8,7 @@ import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.auth0.android.authentication.storage.SharedPreferencesStorage;
-import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.callback.Callback;
 import com.auth0.android.result.Credentials;
 import com.google.android.material.tabs.TabLayout;
 
@@ -72,7 +72,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                     getIntent().getLongExtra("eventEditionId", 0L));
         } else {
             final EventEdition[] tmp = new EventEdition[1];
-            credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
+            credentialsManager.getCredentials(new Callback<>() {
                 @Override
                 public void onSuccess(@Nullable Credentials payload) {
                     viewModel.setAccessToken(payload.getAccessToken());
