@@ -86,7 +86,9 @@ public class UserSubscriptionsViewModel extends AndroidViewModel {
             doneSignal.await();
 
             // Build data structure
-            List<UserSubscription> currentSubs = opSubscriptions.get();
+            List<UserSubscription> currentSubs = Optional
+                    .ofNullable(opSubscriptions.get())
+                    .orElse(Collections.emptyList());
             series.forEach(currentSeries -> {
                 result.add(
                         currentSubs.stream()
