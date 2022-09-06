@@ -28,6 +28,7 @@ import com.auth0.android.result.UserProfile;
 import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.google.android.gms.common.util.Strings;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.icesoft.msdb.android.R;
@@ -46,6 +47,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -68,7 +70,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -184,6 +185,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         credentialsManager.getCredentials(new Callback<Credentials, CredentialsManagerException>() {
             @Override
             public void onSuccess(final Credentials credentials) {
+                String accessToken = credentials.getAccessToken();
+                String[] chunks = accessToken.split("\\.");
+                Base64.Decoder decoder = Base64.getUrlDecoder();
+                String payload = new String(decoder.decode(chunks[1]));
+                if (Strings.isEmptyOrWhitespace(payload)) {
+                    doLogout();
+                }
+
                 runOnUiThread(() -> {
                     NavigationView navigationView = findViewById(R.id.nav_view);
                     Menu menu = navigationView.getMenu();
