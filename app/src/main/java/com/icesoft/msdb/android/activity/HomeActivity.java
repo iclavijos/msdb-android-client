@@ -253,7 +253,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             .start(this, logoutCallback);
     }
 
-    private final Callback<Credentials, AuthenticationException> loginCallback = new Callback<Credentials, AuthenticationException>() {
+    private final Callback<Credentials, AuthenticationException> loginCallback = new Callback<>() {
 
         @Override
         public void onFailure(final AuthenticationException exception) {
