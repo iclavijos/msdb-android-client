@@ -36,7 +36,7 @@ public class UserSubscriptionsActivity extends AppCompatActivity {
                 if (!userSubscription.isValid()) userSubscription.reset();
             });
             UpdateUserSubscriptionsTask task = new UpdateUserSubscriptionsTask(
-                    "Bearer " + intent.getStringExtra("accessToken"),
+                    intent.getStringExtra("accessToken"),
                     viewModel.getUserSubscriptions()
             );
             Future<Void> opResult = Executors.newFixedThreadPool(1).submit(task);
