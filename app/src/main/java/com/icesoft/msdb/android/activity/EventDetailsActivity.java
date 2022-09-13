@@ -56,6 +56,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
+        Log.d(TAG, "onCreate: Instantiating view model");
         viewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
 
         auth0 = new Auth0(this);
@@ -64,30 +65,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         TextView eventEditionNameTextView = findViewById(R.id.eventDetailsEventNameTextView);
         eventEditionNameTextView.setText(getIntent().getStringExtra("eventName"));
 
+        Log.d(TAG, "onCreate: Preparing eventEdition");
         EventEdition eventDetails;
         if (getIntent().getStringExtra("accessToken") != null) {
             viewModel.setAccessToken(getIntent().getStringExtra("accessToken"));
             eventDetails = getEventEdition(
                     getIntent().getStringExtra("accessToken"),
                     getIntent().getLongExtra("eventEditionId", 0L));
-        } else {
-            final EventEdition[] tmp = new EventEdition[1];
-            credentialsManager.getCredentials(new Callback<>() {
-                @Override
-                public void onSuccess(@Nullable Credentials payload) {
-                    viewModel.setAccessToken(payload.getAccessToken());
-                    tmp[0] = getEventEdition(payload.getAccessToken(), getIntent().getLongExtra("eventEditionId", 0L));
-                }
 
-                @Override
-                public void onFailure(@NonNull CredentialsManagerException error) {
-
-                }
-            });
-            eventDetails = tmp[0];
-        }
-
-        if (eventDetails != null) {
             EventDetailsInfoFragment eventInfoFragment = new EventDetailsInfoFragment();
             eventDetailsPagerAdapter.addInfoFragment(getString(R.string.eventDetailsInfoTab), eventInfoFragment);
 
@@ -103,6 +88,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
         }
+
     }
 
     private EventEdition getEventEdition(String accessToken, Long eventEditionId) {

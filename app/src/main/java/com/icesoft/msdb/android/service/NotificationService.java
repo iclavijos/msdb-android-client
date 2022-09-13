@@ -4,9 +4,11 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -15,9 +17,19 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import com.auth0.android.Auth0;
+import com.auth0.android.authentication.AuthenticationAPIClient;
+import com.auth0.android.authentication.storage.CredentialsManagerException;
+import com.auth0.android.authentication.storage.SecureCredentialsManager;
+import com.auth0.android.authentication.storage.SharedPreferencesStorage;
+import com.auth0.android.callback.Callback;
+import com.auth0.android.result.Credentials;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.NotificationTarget;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -31,11 +43,15 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 public class NotificationService extends FirebaseMessagingService {
     private static final String TAG = "NotificationService";
 
     private static final Random random = new Random();
+    private Auth0 auth0;
+    private SecureCredentialsManager credentialsManager;
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.d(TAG, "onMessageReceived");
@@ -47,10 +63,41 @@ public class NotificationService extends FirebaseMessagingService {
                 Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("startTime"))),
                 ZoneId.systemDefault());
 
+        auth0 = new Auth0(this);
+        credentialsManager = new SecureCredentialsManager(this, new AuthenticationAPIClient(auth0), new SharedPreferencesStorage(this));
+
         Intent intent = new Intent(this, EventDetailsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("eventEditionId", Long.parseLong(remoteMessage.getData().get("eventEditionId")));
         intent.putExtra("eventName", remoteMessage.getData().get("eventName"));
+        intent.putExtra("accessToken", "");
+
+        Log.d(TAG, "onMessageReceived: countdown created");
+        final CountDownLatch awaitCredentialsSignal = new CountDownLatch(1);
+
+        credentialsManager.getCredentials(new Callback<>() {
+            @Override
+            public void onSuccess(@Nullable Credentials payload) {
+                intent.putExtra("accessToken", payload.getAccessToken());
+                awaitCredentialsSignal.countDown();
+                Log.d(TAG, "onSuccess: countdown decreased");
+            }
+
+            @Override
+            public void onFailure(@NonNull CredentialsManagerException error) {
+                awaitCredentialsSignal.countDown();
+                Log.d(TAG, "onSuccess: countdown decreased onFailure");
+            }
+        });
+
+        try {
+            Log.d(TAG, "onMessageReceived: awaiting...");
+            awaitCredentialsSignal.await();
+            Log.d(TAG, "onMessageReceived: proceeding...");
+        } catch (InterruptedException e) {
+            Log.e(TAG, "onMessageReceived: ", e);
+        }
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_IMMUTABLE);
 
@@ -127,7 +174,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .fitCenter()
                 .into(notificationTargetSeriesLogoExpanded);
 
-        if (!isRally) {
+        if (!isRally && !isRaid) {
             expandedView.setTextViewText(R.id.whereTextView, getResources().getString(R.string.where, remoteMessage.getData().get("racetrack")));
             LocalDateTime endTime = LocalDateTime.ofInstant(
                     Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("endTime"))),
