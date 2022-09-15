@@ -42,6 +42,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
@@ -102,7 +103,6 @@ public class NotificationService extends FirebaseMessagingService {
                 PendingIntent.FLAG_IMMUTABLE);
 
         String channelId = getString(R.string.default_notification_channel_id);
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         RemoteViews compactView = new RemoteViews(getPackageName(), R.layout.notification_compact_layout);
         RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded_layout);
 
@@ -116,6 +116,8 @@ public class NotificationService extends FirebaseMessagingService {
         expandedView.setTextViewText(R.id.sessionTextView, getResources().getString(R.string.session, remoteMessage.getData().get("sessionName")));
         expandedView.setTextViewText(R.id.startTimeTextView, getResources().getString(R.string.startTime, DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime)));
 
+        Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE+ "://" + getPackageName()+ "/" + R.raw.lights_out);
+
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.mipmap.ic_launcher_foreground)
@@ -123,27 +125,40 @@ public class NotificationService extends FirebaseMessagingService {
                         .setCustomContentView(compactView)
                         .setCustomBigContentView(expandedView)
                         .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
+                        .setSound(soundUri)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setCategory(NotificationCompat.CATEGORY_EVENT)
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "MSDB notifications channel",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
+//        // Delete old channel to ensure new notification sound is picked up
+//        notificationManager.deleteNotificationChannel("msdbChannel");
+//
+//        // Since android Oreo notification channel is needed.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            NotificationChannel channel = new NotificationChannel(channelId,
+//                    getString(R.string.default_notification_channel_name),
+//                    NotificationManager.IMPORTANCE_HIGH);
+//
+//            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+//                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                    .setUsage(AudioAttributes.USAGE_ALARM)
+//                    .build();
+//            channel.setSound(soundUri, audioAttributes);
+//            channel.enableLights(true);
+//            channel.enableVibration(true);
+//
+//            notificationManager.createNotificationChannel(channel);
+//        }
 
-        String sessionId = remoteMessage.getData().get("sessionId");
-        int notificationId = random.nextInt(Integer.MAX_VALUE);
-        if (sessionId != null) {
-            notificationId = Integer.parseInt(sessionId);
-        }
+
+        Integer notificationId = Optional.ofNullable(remoteMessage.getData().get("sessionId"))
+                .map(sessionId -> Integer.parseInt(sessionId))
+                .orElse(random.nextInt(Integer.MAX_VALUE));
+
         Notification notification = notificationBuilder.build();
 
         NotificationTarget notificationTargetCompact = new NotificationTarget(
