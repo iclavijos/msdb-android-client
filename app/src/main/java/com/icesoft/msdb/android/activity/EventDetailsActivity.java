@@ -33,9 +33,11 @@ import com.icesoft.msdb.android.ui.eventdetails.EventDetailsParticipantsFragment
 import com.icesoft.msdb.android.ui.eventdetails.EventDetailsViewModel;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
@@ -66,28 +68,61 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventEditionNameTextView.setText(getIntent().getStringExtra("eventName"));
 
         Log.d(TAG, "onCreate: Preparing eventEdition");
-        EventEdition eventDetails;
+        final AtomicReference<EventEdition> atomicEventDetails = new AtomicReference<>();
+
         if (getIntent().getStringExtra("accessToken") != null) {
             viewModel.setAccessToken(getIntent().getStringExtra("accessToken"));
-            eventDetails = getEventEdition(
+            atomicEventDetails.set(
+                    getEventEdition(
                     getIntent().getStringExtra("accessToken"),
-                    getIntent().getLongExtra("eventEditionId", 0L));
+                    getIntent().getLongExtra("eventEditionId", 0L)));
 
-            EventDetailsInfoFragment eventInfoFragment = new EventDetailsInfoFragment();
-            eventDetailsPagerAdapter.addInfoFragment(getString(R.string.eventDetailsInfoTab), eventInfoFragment);
 
-            EventDetailsParticipantsFragment participantsFragment = new EventDetailsParticipantsFragment();
-            eventDetailsPagerAdapter.addParticipantsFragment(getString(R.string.eventDetailsParticipantsTab), participantsFragment);
-            eventDetailsPagerAdapter.notifyDataSetChanged();
-
-            viewModel.setEventEdition(eventDetails);
-            viewModel.setEventSessions(getEventSessions(
-                    viewModel.getAccessToken(),
-                    eventDetails.getId()));
         } else {
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
+            Log.d(TAG, "onMessageReceived: countdown created");
+            final CountDownLatch awaitCredentialsSignal = new CountDownLatch(1);
+
+            credentialsManager.getCredentials(new Callback<>() {
+                @Override
+                public void onSuccess(@Nullable Credentials payload) {
+                    atomicEventDetails.set(getEventEdition(
+                            payload.getAccessToken(),
+                            getIntent().getLongExtra("eventEditionId", 0L)));
+                    viewModel.setAccessToken(payload.getAccessToken());
+                    awaitCredentialsSignal.countDown();
+                    Log.d(TAG, "onSuccess: countdown decreased");
+                }
+
+                @Override
+                public void onFailure(@NonNull CredentialsManagerException error) {
+                    awaitCredentialsSignal.countDown();
+                    Log.d(TAG, "onSuccess: countdown decreased onFailure");
+                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+            try {
+                Log.d(TAG, "onMessageReceived: awaiting...");
+                awaitCredentialsSignal.await();
+                Log.d(TAG, "onMessageReceived: proceeding...");
+            } catch (InterruptedException e) {
+                Log.e(TAG, "onMessageReceived: ", e);
+            }
         }
+
+        EventDetailsInfoFragment eventInfoFragment = new EventDetailsInfoFragment();
+        eventDetailsPagerAdapter.addInfoFragment(getString(R.string.eventDetailsInfoTab), eventInfoFragment);
+
+        EventDetailsParticipantsFragment participantsFragment = new EventDetailsParticipantsFragment();
+        eventDetailsPagerAdapter.addParticipantsFragment(getString(R.string.eventDetailsParticipantsTab), participantsFragment);
+        eventDetailsPagerAdapter.notifyDataSetChanged();
+
+        EventEdition eventEdition = atomicEventDetails.get();
+        viewModel.setEventEdition(eventEdition);
+        viewModel.setEventSessions(getEventSessions(
+                viewModel.getAccessToken(),
+                eventEdition.getId()));
 
     }
 
