@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioAttributes;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -99,8 +100,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             NotificationManager notificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            // Delete old channel to ensure new notification sound is picked up
+            // Delete old channels to ensure new notification sound is picked up
             notificationManager.deleteNotificationChannel("msdbChannel");
+            notificationManager.deleteNotificationChannel("MSDB Channel id");
 
             // Since android Oreo notification channel is needed.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -108,13 +110,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         getString(R.string.default_notification_channel_name),
                         NotificationManager.IMPORTANCE_HIGH);
 
-                Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE+ "://" + getPackageName()+ "/" + R.raw.lights_out);
-
                 AudioAttributes audioAttributes = new AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .build();
-                channel.setSound(soundUri, audioAttributes);
+                channel.setSound(RingtoneManager    .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), audioAttributes);
 
                 notificationManager.createNotificationChannel(channel);
             }

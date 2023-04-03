@@ -27,7 +27,7 @@
 
     <string name="upcomingSession">Upcoming event</string>
     <string name="upcomingSessionMessage">%1$s session of %2$s begins at %3$s</string>
-    <string name="default_notification_channel_id" translatable="false">MSDB Channel id</string>
+    <string name="default_notification_channel_id" translatable="false">msdb_channel_id</string>
     <string name="default_notification_channel_name" translatable="false">Motorsports Database channel</string>
     <string name="session">Session: %1$s</string>
     <string name="startTime">Start time: %1$s</string>

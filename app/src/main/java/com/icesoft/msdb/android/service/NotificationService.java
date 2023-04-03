@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -72,8 +73,6 @@ public class NotificationService extends FirebaseMessagingService {
         expandedView.setTextViewText(R.id.sessionTextView, getResources().getString(R.string.session, remoteMessage.getData().get("sessionName")));
         expandedView.setTextViewText(R.id.startTimeTextView, getResources().getString(R.string.startTime, DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime)));
 
-        Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE+ "://" + getPackageName()+ "/" + R.raw.lights_out);
-
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.mipmap.ic_launcher_foreground)
@@ -81,7 +80,7 @@ public class NotificationService extends FirebaseMessagingService {
                         .setCustomContentView(compactView)
                         .setCustomBigContentView(expandedView)
                         .setAutoCancel(true)
-                        .setSound(soundUri)
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setCategory(NotificationCompat.CATEGORY_EVENT)
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -114,9 +113,7 @@ public class NotificationService extends FirebaseMessagingService {
         String logoUrl250 = logoUrl
                 .replace("image/upload", "image/upload/w_250,c_scale")
                 .replace(".png", ".jpg");
-//        if (isDarkMode()) {
-//            logoUrl = logoUrl.replace("image/upload", "image/upload/e_negate");
-//        }
+
         Glide.with(this)
                 .asBitmap()
                 .load(logoUrl250)
@@ -124,7 +121,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .into(notificationTargetCompact);
         Glide.with(this)
                 .asBitmap()
-                .load(logoUrl250.replace("w_250", "w_1024"))
+                .load(logoUrl250.replace("w_250", "w_2048"))
                 .fitCenter()
                 .into(notificationTargetSeriesLogoExpanded);
 
@@ -143,9 +140,6 @@ public class NotificationService extends FirebaseMessagingService {
                     notificationId);
 
             String racetrackLayoutUrl = remoteMessage.getData().get("racetrackLayoutUrl");
-//            if (isDarkMode()) {
-//                racetrackLayoutUrl = racetrackLayoutUrl.replace("image/upload", "image/upload/e_negate");
-//            }
             Glide.with(this)
                     .asBitmap()
                     .load(racetrackLayoutUrl)
@@ -158,11 +152,5 @@ public class NotificationService extends FirebaseMessagingService {
         }
 
         notificationManager.notify(notificationId, notification);
-    }
-
-    private boolean isDarkMode() {
-        int uiMode = this.getBaseContext().getResources().getConfiguration().uiMode;
-
-        return (uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
     }
 }

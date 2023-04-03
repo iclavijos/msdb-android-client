@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/seriesLogoExpandedImageView"
-        android:layout_width="150dp"
+        android:layout_width="80dp"
         android:layout_height="75dp"
         android:padding="8dp"
         android:scaleType="centerInside"
