@@ -2,13 +2,11 @@ package com.icesoft.msdb.android.activity;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,18 +29,23 @@ import com.auth0.android.result.Credentials;
 import com.auth0.android.result.UserProfile;
 import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.icesoft.msdb.android.BuildConfig;
+import com.icesoft.msdb.android.ui.OldVersionDialogFragment;
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.exception.MSDBException;
 import com.icesoft.msdb.android.model.Series;
+import com.icesoft.msdb.android.tasks.GetLatestVersionTask;
 import com.icesoft.msdb.android.tasks.GetSeriesTask;
 import com.icesoft.msdb.android.tasks.RegisterTokenTask;
 import com.icesoft.msdb.android.tasks.RemoveTokenTask;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -126,6 +129,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
 
+        checkVersion();
         retrieveSeriesList();
         updateProfile();
     }
@@ -170,6 +174,38 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         return false;
+    }
+
+    private void checkVersion() {
+        String[] tokenizedLocalVersion = BuildConfig.VERSION_NAME.split("\\.");
+        CountDownLatch doneSignal = new CountDownLatch(1);
+        GetLatestVersionTask getLatestVersionTask = new GetLatestVersionTask(doneSignal);
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        Future<String> opVersion = executor.submit(getLatestVersionTask);
+
+        try {
+            doneSignal.await();
+            Optional.ofNullable(opVersion.get()).ifPresent(response -> {
+                String[] tokenizedRemoteVersion = response.split("\\.");
+                Version localVersion = new Version(
+                        Integer.parseInt(tokenizedLocalVersion[0]),
+                        Integer.parseInt(tokenizedLocalVersion[1]),
+                        Integer.parseInt(tokenizedLocalVersion[2]),
+                        null, null, null);
+                Version remoteVersion = new Version(
+                        Integer.parseInt(tokenizedRemoteVersion[0]),
+                        Integer.parseInt(tokenizedRemoteVersion[1]),
+                        Integer.parseInt(tokenizedRemoteVersion[2]),
+                        null, null, null);
+
+                if (localVersion.compareTo(remoteVersion) < 0) {
+                    DialogFragment newFragment = new OldVersionDialogFragment(localVersion.toString(), remoteVersion.toString());
+                    newFragment.show(getSupportFragmentManager(), "old version");
+                }
+            });
+        } catch (ExecutionException | InterruptedException e) {
+            Log.w(TAG, "Couldn't retrieve latest version on time", e);
+        }
     }
 
     private void retrieveSeriesList() {

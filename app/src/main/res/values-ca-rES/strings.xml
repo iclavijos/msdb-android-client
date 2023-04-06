@@ -45,4 +45,8 @@
     <string name="filterSeriesSettingsDesc">Marca aquells campionats que vulguis veure a la pàgina principal</string>
     <string name="maintenanceTitle">Apliació en manteniment</string>
     <string name="maintenanceDescription">L\'aplicació es troba actualment en mode de manteniment. Tornarem a estar operatius tant aviat com sigui possible</string>
+    <string name="oldVersionTitle">Versió desactualitzada</string>
+    <string name="oldVersionMsg">Actualment fas servir la versió %1$s quan ja està disponible la versió %2$s. Si us plau, actualitza tant bon punt et sigui possible</string>
+    <string name="oldVersionUpdate">Actualitza</string>
+    <string name="oldVersionLater">Més endavant</string>
 </resources>

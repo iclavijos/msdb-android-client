@@ -53,8 +53,11 @@
     <string name="cancelled">Cancelled</string>
     <string name="filterSeriesSettingsTitle">Series to be displayed</string>
     <string name="filterSeriesSettingsDesc">Enable which series you want to see in the home screen</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="maintenanceTitle">Maintenance mode</string>
     <string name="maintenanceDescription">Application is currently in maintenance mode. We will be back online as soon as possible.</string>
+    <string name="oldVersionTitle">Outdated Version</string>
+    <string name="oldVersionMsg">You are currently using version %1$s and version %2$s is available. Please update at your earliest convenience</string>
+    <string name="oldVersionUpdate">Update</string>
+    <string name="oldVersionLater">Later</string>
 
 </resources>

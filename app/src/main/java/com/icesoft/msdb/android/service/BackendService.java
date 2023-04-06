@@ -27,6 +27,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class BackendService {
 
@@ -54,6 +55,7 @@ public class BackendService {
 
     private final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BuildConfig.API_SERVER_URL)
+            .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)))
             .client(okHttpClient)
@@ -108,6 +110,24 @@ public class BackendService {
         }
 
         return null;
+    }
+
+    public String getLatestVersion() {
+        Call<String> msdbCall = msdbAPIClient.getLatestVersion("android");
+
+        Response<String> response;
+        try {
+            response = msdbCall.execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                Log.e("MSDBService", "Couldn't retrieve latest version: " + response.errorBody().string());
+            }
+        } catch (IOException e) {
+            Log.e("MSDBService", "Couldn't process get latest version request", e);
+        }
+
+        return "1.0.1";
     }
 
     public List<Series> getSeries() {

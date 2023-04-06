@@ -44,4 +44,7 @@ public interface MSDBAPIClient {
 
     @GET("api/event-editions/{id}/sessions")
     Call<List<EventSession>> getEventSessions(@Header("Authorization") String accessToken, @Path("id") Long eventEditionId);
+
+    @GET("api/mobile/version/{os}")
+    Call<String> getLatestVersion(@Path("os") String os);
 }
