@@ -8,5 +8,9 @@
             android:id="@+id/nav_login"
             android:icon="@drawable/ic_baseline_login_24"
             android:title="@string/login" />
+
+        <item
+            android:id="@+id/nav_apoyo"
+            android:title="Apoyo" />
     </group>
 </menu>

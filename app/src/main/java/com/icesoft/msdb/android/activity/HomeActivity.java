@@ -35,6 +35,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.icesoft.msdb.android.BuildConfig;
+import com.icesoft.msdb.android.client.MSDBBillingClient;
 import com.icesoft.msdb.android.ui.OldVersionDialogFragment;
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.exception.MSDBException;
@@ -74,6 +75,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Auth0 auth0;
     private AuthenticationAPIClient authenticationAPIClient;
     private SecureCredentialsManager credentialsManager;
+    private MSDBBillingClient billingClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         auth0 = new Auth0(this);
         authenticationAPIClient = new AuthenticationAPIClient(auth0);
         credentialsManager = new SecureCredentialsManager(this, new AuthenticationAPIClient(auth0), new SharedPreferencesStorage(this));
+        billingClient = new MSDBBillingClient(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager =
@@ -150,6 +153,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
+            case R.id.nav_apoyo:
+                billingClient.launchBillingFlow(this);
+                break;
             case R.id.nav_login:
                 doLogin();
                 break;
