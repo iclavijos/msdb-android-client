@@ -37,8 +37,6 @@ public class NotificationService extends FirebaseMessagingService {
     private static final String TAG = "NotificationService";
 
     private static final Random random = new Random();
-    private Auth0 auth0;
-    private SecureCredentialsManager credentialsManager;
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
