@@ -153,7 +153,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.nav_apoyo:
+            case R.id.nav_support:
                 billingClient.launchBillingFlow(this);
                 break;
             case R.id.nav_login:
@@ -256,9 +256,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 runOnUiThread(() -> {
                     NavigationView navigationView = findViewById(R.id.nav_view);
                     Menu menu = navigationView.getMenu();
-                    menu.clear();
-                    navigationView.inflateMenu(R.menu.activity_main_loggedin_drawer);
-                    navigationView.invalidate();
+                    menu.removeItem(R.id.nav_login);
+                    if (menu.findItem(R.id.nav_subscriptions) == null) {
+                        MenuItem mItemSubs = menu.add(0, R.id.nav_subscriptions, 0, R.string.subscriptions);
+                        mItemSubs.setIcon(R.drawable.ic_baseline_settings_24);
+                        MenuItem mItemLogout = menu.add(0, R.id.nav_logout, 1, R.string.logout);
+                        mItemLogout.setIcon(R.drawable.ic_log_out);
+                        menu.removeItem(R.id.nav_support);
+                        MenuItem mItemSupport = menu.add(0, R.id.nav_support, 2, R.string.nav_support);
+                        mItemSupport.setIcon(R.drawable.ic_support);
+                    }
                 });
                 if (credentialsManager.hasValidCredentials()) {
                     getProfile(credentials.getAccessToken());
@@ -361,6 +368,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Menu menu = navigationView.getMenu();
                 menu.clear();
                 navigationView.inflateMenu(R.menu.activity_main_drawer);
+                menu.removeItem(R.id.nav_subscriptions);
+                menu.removeItem(R.id.nav_logout);
                 navigationView.invalidate();
                 ImageView avatarView = findViewById(R.id.avatarView);
                 Glide.with(HomeActivity.this)

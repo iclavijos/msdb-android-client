@@ -49,4 +49,5 @@
     <string name="oldVersionMsg">Actualment fas servir la versió %1$s quan ja està disponible la versió %2$s. Si us plau, actualitza tant bon punt et sigui possible</string>
     <string name="oldVersionUpdate">Actualitza</string>
     <string name="oldVersionLater">Més endavant</string>
+    <string name="nav_support">Recolzament</string>
 </resources>

@@ -59,5 +59,6 @@
     <string name="oldVersionMsg">You are currently using version %1$s and version %2$s is available. Please update at your earliest convenience</string>
     <string name="oldVersionUpdate">Update</string>
     <string name="oldVersionLater">Later</string>
+    <string name="nav_support">Support</string>
 
 </resources>
