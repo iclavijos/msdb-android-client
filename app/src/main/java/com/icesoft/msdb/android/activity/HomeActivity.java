@@ -234,7 +234,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     Log.e(TAG, "Couldn't serialize series list " + this.toString());
                     throw new MSDBException(e);
                 }
-                editor.commit();
+                editor.apply();
             });
         } catch (ExecutionException | InterruptedException e) {
             Log.w(TAG, "Couldn't retrieve series list on time", e);
@@ -275,6 +275,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onFailure(CredentialsManagerException error) {
                 Log.w(TAG, "Couldn't get credentials");
+                runOnUiThread(() -> {
+                    NavigationView navigationView = findViewById(R.id.nav_view);
+                    Menu menu = navigationView.getMenu();
+                    menu.removeItem(R.id.nav_subscriptions);
+                    menu.removeItem(R.id.nav_logout);
+                });
             }
         });
     }
