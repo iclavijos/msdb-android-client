@@ -50,4 +50,6 @@
     <string name="oldVersionLater">Más tarde</string>
     <string name="oldVersionUpdate">Actualiza</string>
     <string name="nav_support">Apoyo</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_championships">Campeonatos</string>
 </resources>

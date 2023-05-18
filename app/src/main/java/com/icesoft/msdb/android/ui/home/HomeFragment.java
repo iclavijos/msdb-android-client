@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,7 +32,7 @@ public class HomeFragment extends Fragment {
             refreshLayout.setRefreshing(false);
         });
 
-        FloatingActionButton fab = view.findViewById(R.id.filterActionButton);
+        AppCompatImageButton fab = view.findViewById(R.id.filterActionButton);
         fab.setOnClickListener(vw -> {
             Intent intent = new Intent(getContext(), FilterSeriesActivity.class);
             startActivity(intent);

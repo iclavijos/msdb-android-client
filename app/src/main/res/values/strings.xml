@@ -60,5 +60,8 @@
     <string name="oldVersionUpdate">Update</string>
     <string name="oldVersionLater">Later</string>
     <string name="nav_support">Support</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_championships">Championships</string>
 
 </resources>

@@ -50,4 +50,6 @@
     <string name="oldVersionUpdate">Actualitza</string>
     <string name="oldVersionLater">Més endavant</string>
     <string name="nav_support">Recolzament</string>
+    <string name="title_home">Inici</string>
+    <string name="title_championships">Campionats</string>
 </resources>
