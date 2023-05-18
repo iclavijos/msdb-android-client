@@ -59,7 +59,7 @@ public class ParticipantsRecyclerViewAdapter extends RecyclerView.Adapter<Partic
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         EventSession session = sessions.get(position);
         LocalDateTime startTime = LocalDateTime.ofInstant(
-                Instant.ofEpochSecond(session.getStartTime()),
+                Instant.ofEpochSecond(session.getSessionStartTime()),
                 ZoneId.systemDefault()
         );
         holder.startTimeTextView.setText(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime));

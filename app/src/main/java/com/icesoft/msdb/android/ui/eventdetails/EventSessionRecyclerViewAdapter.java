@@ -50,7 +50,7 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
     public void onBindViewHolder(@NonNull EventSessionRecyclerViewAdapter.ViewHolder holder, int position) {
         EventSession session = sessions.get(position);
         LocalDateTime startTime = LocalDateTime.ofInstant(
-                Instant.ofEpochSecond(session.getStartTime()),
+                Instant.ofEpochSecond(session.getSessionStartTime()),
                 ZoneId.systemDefault()
         );
         if (eventDetails.isRaid()) {
@@ -66,7 +66,7 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
         }
 
         holder.durationTextView.setText(
-                calculateDuration(session.getDuration(), session.getDurationType(), session.isAdditionalLap()));
+                calculateDuration(session.getDuration(), session.getDurationType(), session.hasAdditionalLap()));
 
         if (!session.isCancelled()) {
             holder.cancelledCardView.setVisibility(View.GONE);

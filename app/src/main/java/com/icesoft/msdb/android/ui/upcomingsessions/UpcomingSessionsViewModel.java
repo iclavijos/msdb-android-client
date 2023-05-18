@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.icesoft.msdb.android.exception.MSDBException;
-import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.UpcomingSession;
 import com.icesoft.msdb.android.tasks.UpcomingSessionsTask;
 

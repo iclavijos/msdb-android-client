@@ -9,11 +9,6 @@ import com.icesoft.msdb.android.model.EventSession;
 
 import java.util.List;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-@Data
-@EqualsAndHashCode(callSuper=false)
 public class EventDetailsViewModel extends ViewModel {
 
     private final MutableLiveData<List<EventSession>> sessions = new MutableLiveData<>();
@@ -26,5 +21,21 @@ public class EventDetailsViewModel extends ViewModel {
 
     public LiveData<List<EventSession>> getEventSessions() {
         return sessions;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public EventEdition getEventEdition() {
+        return eventEdition;
+    }
+
+    public void setEventEdition(EventEdition eventEdition) {
+        this.eventEdition = eventEdition;
     }
 }

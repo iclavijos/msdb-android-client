@@ -21,6 +21,7 @@ import com.icesoft.msdb.android.tasks.GetUserSubscriptionsTask;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -92,7 +93,7 @@ public class UserSubscriptionsViewModel extends AndroidViewModel {
             series.forEach(currentSeries -> {
                 result.add(
                         currentSubs.stream()
-                                .filter(currentSub -> currentSub.getSeriesId().equals(currentSeries.getId()))
+                                .filter(currentSub -> Objects.equals(currentSub.getSeriesId(), currentSeries.getId()))
                                 .findFirst()
                                 .map(userSubscription -> {
                                     userSubscription.setSeriesName(currentSeries.getName());
