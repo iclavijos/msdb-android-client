@@ -10,16 +10,19 @@ import com.icesoft.msdb.android.exception.MSDBMaintenanceException;
 import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.EventEdition;
 import com.icesoft.msdb.android.model.EventSession;
+import com.icesoft.msdb.android.model.SeriesEdition;
 import com.icesoft.msdb.android.model.UpcomingSession;
 import com.icesoft.msdb.android.model.UserSubscription;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -42,13 +45,23 @@ public class BackendService {
             .followRedirects(false)
             .addInterceptor(chain -> {
                 Request request = chain.request();
-                okhttp3.Response response = chain.proceed(request);
+                try {
+                    okhttp3.Response response = chain.proceed(request);
 
-                if (response.isRedirect()) {
-                    throw new MSDBMaintenanceException("Backend in maintenance mode");
+                    if (response.isRedirect()) {
+                        throw new MSDBMaintenanceException("Backend in maintenance mode");
+                    }
+
+                    return response;
+                } catch (ConnectException e) {
+                    return new okhttp3.Response.Builder()
+                            .request(request)
+                            .protocol(Protocol.HTTP_1_1)
+                            .code(503)
+                            .message("Server down")
+                            // .body("{${e}}".toResponseBody(null))
+                            .build();
                 }
-
-                return response;
             })
             .build();
 
@@ -142,6 +155,24 @@ public class BackendService {
             }
         } catch (IOException e) {
             Log.e("MSDBService", "Couldn't process get active series request", e);
+        }
+
+        return null;
+    }
+
+    public List<SeriesEdition> getActiveSeriesEditions() {
+        Call<List<SeriesEdition>> msdbCall = msdbAPIClient.getActiveSeriesEditions();
+
+        Response<List<SeriesEdition>> response;
+        try {
+            response = msdbCall.execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                Log.e("MSDBService", "Couldn't retrieve active series editions: " + response.errorBody().string());
+            }
+        } catch (IOException e) {
+            Log.e("MSDBService", "Couldn't process get active series editions request", e);
         }
 
         return null;

@@ -97,7 +97,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 public void onFailure(@NonNull CredentialsManagerException error) {
                     awaitCredentialsSignal.countDown();
                     Log.d(TAG, "onSuccess: countdown decreased onFailure");
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                 }
             });

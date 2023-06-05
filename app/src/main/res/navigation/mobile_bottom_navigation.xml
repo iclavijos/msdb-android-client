@@ -7,14 +7,8 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.icesoft.msdb.android.activity.ui.home.HomeFragment"
+        android:name="com.icesoft.msdb.android.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
-
-    <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.icesoft.msdb.android.activity.ui.dashboard.DashboardFragment"
-        android:label="@string/title_championships"
-        tools:layout="@layout/fragment_dashboard" />
 
 </navigation>

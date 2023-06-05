@@ -3,6 +3,7 @@ package com.icesoft.msdb.android.client;
 import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.EventEdition;
 import com.icesoft.msdb.android.model.EventSession;
+import com.icesoft.msdb.android.model.SeriesEdition;
 import com.icesoft.msdb.android.model.UpcomingSession;
 import com.icesoft.msdb.android.model.UserSubscription;
 
@@ -32,6 +33,9 @@ public interface MSDBAPIClient {
 
     @GET("api/series")
     Call<List<Series>> getSeries(@Query("page") Integer page, @Query("query") String query, @Query("size") Integer size, @Query("sort") List<String> sort);
+
+    @GET("api/series-editions?active=true")
+    Call<List<SeriesEdition>> getActiveSeriesEditions();
 
     @GET("api/account/subscriptions")
     Call<List<UserSubscription>> getUserSubscriptions(@Header("Authorization") String accessToken);
