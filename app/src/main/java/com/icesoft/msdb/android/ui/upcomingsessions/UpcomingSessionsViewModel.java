@@ -5,6 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.icesoft.msdb.android.exception.MSDBException;
 import com.icesoft.msdb.android.model.UpcomingSession;
 import com.icesoft.msdb.android.tasks.UpcomingSessionsTask;
@@ -30,18 +32,39 @@ public class UpcomingSessionsViewModel extends ViewModel {
 
     private static final String TAG = "UpcomingSessionsViewModel";
 
-    private List<String> enabledSeriesIds = Collections.EMPTY_LIST;
+    private LoadingCache<String, List<UpcomingSession>> cache;
+
+    private List<String> enabledSeriesIds = Collections.emptyList();
     private List<UpcomingSession> upcomingSessions;
     private MutableLiveData<List<UpcomingSession>> upcomingSessionsMutableData;
 
-    private Map<LocalDate, List<UpcomingSession>> sessionsPerDay = new HashMap<>();
+    private final Map<LocalDate, List<UpcomingSession>> sessionsPerDay = new HashMap<>();
 
     public UpcomingSessionsViewModel() {
+        Log.d(TAG, "Instantiating fragment...");
+        cache = Caffeine.newBuilder()
+                .expireAfterWrite(10, TimeUnit.MINUTES)
+                .build(key -> {
+                        Log.d(TAG, "Launching task to retrieve upcoming sessions...");
+                        UpcomingSessionsTask task = new UpcomingSessionsTask();
+                        Future<List<UpcomingSession>> opResult = Executors.newFixedThreadPool(1).submit(task);
+                        try {
+                            List<UpcomingSession> sessions = opResult.get(10000, TimeUnit.MILLISECONDS);
+                            return Optional.ofNullable(sessions).orElse(Collections.emptyList());
+                        } catch (TimeoutException | ExecutionException | InterruptedException e) {
+                            Log.e(TAG, "Couldn't retrieve upcoming sessions", e);
+                            if (e.getCause() instanceof MSDBException) {
+                                throw (MSDBException) e.getCause();
+                            }
+                            return Collections.emptyList();
+                        }
+                    });
+
         if (upcomingSessionsMutableData == null) {
             upcomingSessionsMutableData = new MutableLiveData<>();
         }
         fetchUpcomingSessions();
-        upcomingSessionsMutableData.setValue(Collections.EMPTY_LIST);
+        upcomingSessionsMutableData.setValue(Collections.emptyList());
     }
 
     public void setEnabledSeries(List<String> enabledSeries) {
@@ -52,6 +75,7 @@ public class UpcomingSessionsViewModel extends ViewModel {
     }
 
     public MutableLiveData<List<UpcomingSession>> getUpcomingSessions() {
+        Log.d(TAG, "Getting mutable data object...");
         return upcomingSessionsMutableData;
     }
 
@@ -72,6 +96,7 @@ public class UpcomingSessionsViewModel extends ViewModel {
     }
 
     public void refreshUpcomingSessions() {
+        Log.d(TAG, "Refreshing upcoming sessions...");
         fetchUpcomingSessions();
         List<UpcomingSession> filteredSessions = filterUpcomingSessions();
         upcomingSessionsMutableData.getValue().clear();
@@ -79,6 +104,8 @@ public class UpcomingSessionsViewModel extends ViewModel {
     }
 
     private List<UpcomingSession> filterUpcomingSessions() {
+        Log.d(TAG, "Filtering upcoming sessions...");
+        sessionsPerDay.clear();
         List<UpcomingSession> filteredSessions = upcomingSessions
             .stream()
             .filter(upcomingSession ->
@@ -98,18 +125,7 @@ public class UpcomingSessionsViewModel extends ViewModel {
     }
 
     private void fetchUpcomingSessions() {
-        UpcomingSessionsTask task = new UpcomingSessionsTask();
-        Future<List<UpcomingSession>> opResult = Executors.newFixedThreadPool(1).submit(task);
-        try {
-            List<UpcomingSession> sessions = opResult.get(10000, TimeUnit.MILLISECONDS);
-            upcomingSessions = Optional.ofNullable(sessions).orElse(Collections.emptyList());
-
-        } catch (TimeoutException | ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Couldn't retrieve upcoming sessions", e);
-            upcomingSessions = Collections.emptyList();
-            if (e.getCause() instanceof MSDBException) {
-                throw (MSDBException)e.getCause();
-            }
-        }
+        Log.d(TAG, "Fetching upcoming sessions...");
+        upcomingSessions = cache.get("upcomingSessions");
     }
 }

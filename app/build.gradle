@@ -38,7 +38,7 @@ android {
 //            minifyEnabled true
 //            shrinkResources true
 //
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             getPropertiesFile('./config/prod.properties').each { prop ->
                 buildConfigField 'String', prop.key, prop.value
@@ -122,7 +122,8 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.browser:browser:1.5.0'
     implementation 'com.google.android.gms:play-services-wallet:19.1.0'
-    implementation 'com.google.guava:guava:31.1-android'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.9.3'
+
 
     implementation 'com.auth0.android:auth0:2.9.3'
     implementation 'com.auth0:java-jwt:3.12.1'

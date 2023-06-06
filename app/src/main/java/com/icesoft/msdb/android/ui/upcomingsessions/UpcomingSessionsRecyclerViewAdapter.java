@@ -2,8 +2,6 @@ package com.icesoft.msdb.android.ui.upcomingsessions;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,21 +9,18 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.auth0.android.authentication.storage.SecureCredentialsManager;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.icesoft.msdb.android.R;
-import com.icesoft.msdb.android.exception.MSDBException;
-import com.icesoft.msdb.android.model.Series;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +42,7 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         enabledSeries = sharedPreferences.getAll().entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith("series-") && ((Boolean)entry.getValue()))
-                .map(entry -> entry.getKey())
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
         upcomingSessionsViewModel =
