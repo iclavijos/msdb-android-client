@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             msdbService = binder.getService()
             serviceBound = true
             updateProfile()
+            retrieveSeriesList()
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
