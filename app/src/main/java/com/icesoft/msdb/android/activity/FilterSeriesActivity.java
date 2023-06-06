@@ -107,8 +107,8 @@ public class FilterSeriesActivity extends AppCompatActivity {
                 }
             } else {
                 List<String> filteredSeriesNames = series.stream()
-                        .filter(seriesItem -> seriesItem.getName().toLowerCase().contains(filter.toLowerCase()))
-                        .map(seriesItem -> seriesItem.getName())
+                        .map(Series::getName)
+                        .filter(name -> name.toLowerCase().contains(filter.toLowerCase()))
                         .collect(Collectors.toList());
 
                 for (int index = 0; index < preferencesCount; index++) {
