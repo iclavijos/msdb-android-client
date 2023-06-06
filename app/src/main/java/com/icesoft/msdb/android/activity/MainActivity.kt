@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home
+                R.id.nav_agenda, R.id.nav_championships
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

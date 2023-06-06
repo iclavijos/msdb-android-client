@@ -16,7 +16,6 @@
         <activity
             android:name=".activity.LoginActivity"
             android:exported="false"
-            android:label="@string/title_activity_login"
             android:theme="@style/Theme.MSDBClient" />
 
         <service

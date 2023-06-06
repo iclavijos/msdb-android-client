@@ -52,4 +52,6 @@
     <string name="nav_support">Recolzament</string>
     <string name="title_home">Inici</string>
     <string name="title_championships">Campionats</string>
+    <string name="menu_agenda">Agenda</string>
+    <string name="menu_championships">Campionats</string>
 </resources>
