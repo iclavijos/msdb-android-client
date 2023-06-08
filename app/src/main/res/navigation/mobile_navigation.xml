@@ -9,11 +9,25 @@
         android:id="@+id/nav_agenda"
         android:name="com.icesoft.msdb.android.ui.home.HomeFragment"
         android:label="@string/menu_agenda"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home"/>
 
     <fragment
         android:id="@+id/nav_championships"
-        android:name="com.icesoft.msdb.android.ui.seriesedition.SeriesEditionsFragment"
-        android:label="@string/menu_championships"
-        tools:layout="@layout/fragment_series_editions" />
+        android:name="com.icesoft.msdb.android.ui.serieseditions.SeriesEditionsFragment"
+        android:label="fragment_master"
+        tools:layout="@layout/fragment_series_editions">
+        <action
+            android:id="@+id/action_editions_list_to_edition_detail"
+            app:destination="@id/nav_championship_detail">
+            <argument
+                android:name="seriesEditionId"
+                app:argType="long" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_championship_detail"
+        android:name="com.icesoft.msdb.android.ui.serieseditions.SeriesEditionDetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_series_edition_detail" />
 </navigation>
