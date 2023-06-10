@@ -54,4 +54,6 @@
     <string name="title_championships">Campionats</string>
     <string name="menu_agenda">Agenda</string>
     <string name="menu_championships">Campionats</string>
+    <string name="logoContentDescription">Logo</string>
+    <string name="fragment_championship_detail">Calendari</string>
 </resources>

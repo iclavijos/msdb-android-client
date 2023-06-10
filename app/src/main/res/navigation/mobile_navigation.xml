@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/nav_championships"
         android:name="com.icesoft.msdb.android.ui.serieseditions.SeriesEditionsFragment"
-        android:label="fragment_master"
+        android:label="@string/menu_championships"
         tools:layout="@layout/fragment_series_editions">
         <action
             android:id="@+id/action_editions_list_to_edition_detail"
@@ -28,6 +28,6 @@
     <fragment
         android:id="@+id/nav_championship_detail"
         android:name="com.icesoft.msdb.android.ui.serieseditions.SeriesEditionDetailFragment"
-        android:label="fragment_detail"
+        android:label="@string/fragment_championship_detail"
         tools:layout="@layout/fragment_series_edition_detail" />
 </navigation>

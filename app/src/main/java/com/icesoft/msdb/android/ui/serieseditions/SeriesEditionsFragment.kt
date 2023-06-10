@@ -1,59 +1,43 @@
 package com.icesoft.msdb.android.ui.serieseditions
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.icesoft.msdb.android.R
-import com.icesoft.msdb.android.databinding.FragmentSeriesEditionsBinding
+import com.icesoft.msdb.android.model.SeriesEdition
+import com.icesoft.msdb.android.tasks.GetActiveSeriesTask
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
-class SeriesEditionsFragment : Fragment(), View.OnClickListener {
-
-    companion object {
-        fun newInstance() = SeriesEditionsFragment()
-    }
-
-    private var _binding: FragmentSeriesEditionsBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+class SeriesEditionsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSeriesEditionsBinding.inflate(inflater, container, false)
-        binding.masterButton?.setOnClickListener(this)
-        return binding.root
-    }
+        val view = inflater.inflate(R.layout.fragment_series_editions, container, false)
 
-    override fun onResume() {
-        super.onResume()
-        // true only in landscape
-        if (binding.detailFragmentContainer != null) {
-            childFragmentManager.beginTransaction()
-                .replace(binding.detailFragmentContainer!!.id, SeriesEditionDetailFragment())
-                .commit()
-        }
-    }
+        val doneSignal = CountDownLatch(1)
+        val getActiveSeriesTask = GetActiveSeriesTask(doneSignal)
+        val executor = Executors.newFixedThreadPool(1)
+        val opActiveSeries: Future<List<SeriesEdition>> =
+            executor.submit<List<SeriesEdition>>(getActiveSeriesTask)
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+        doneSignal.await()
+        val series = opActiveSeries.get()
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            // navigating to detail fragment
-            binding.masterButton?.id -> {
-                v?.findNavController()?.navigate(SeriesEditionsFragmentDirections.actionEditionsListToEditionDetail(2L))
-            }
-        }
+        // Set the adapter
+        val recyclerView = view.findViewById<RecyclerView>(R.id.series_editions_recycler)
+        recyclerView.layoutManager = GridLayoutManager(context, 2)// LinearLayoutManager(context)
+        recyclerView.adapter = SeriesEditionsRecyclerViewAdapter(series)
+
+        return view
     }
 
 }
