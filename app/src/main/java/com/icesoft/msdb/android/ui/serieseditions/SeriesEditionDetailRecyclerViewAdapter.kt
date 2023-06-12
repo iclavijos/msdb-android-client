@@ -29,12 +29,12 @@ class SeriesEditionDetailRecyclerViewAdapter(private val values: List<EventEditi
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        val pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "ddMMMMyyyy");
-        val dateFormat = SimpleDateFormat(pattern);
+        val pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "ddMMMMyyyy")
+        val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         holder.eventDateTextView.text = dateFormat.format(
             Date.from(item.getEventDate()?.atStartOfDay(ZoneId.systemDefault())?.toInstant()))
         holder.eventNameTextView.text = item.longEventName
-        Picasso.get().load(item.trackLayout?.layoutImageUrl)
+        Picasso.get().load(item.trackLayout?.layoutImageUrl ?: item.posterUrl)
             .resize(140, 0)
             .centerInside()
             .into(holder.racetrackImageView)
