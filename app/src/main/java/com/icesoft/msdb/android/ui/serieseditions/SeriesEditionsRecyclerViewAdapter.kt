@@ -28,7 +28,9 @@ class SeriesEditionsRecyclerViewAdapter(private val values: List<SeriesEdition>)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
         holder.itemView.setOnClickListener(View.OnClickListener { view ->
-            view.findNavController().navigate(SeriesEditionsFragmentDirections.actionEditionsListToEditionDetail(item.id!!))
+            view.findNavController().navigate(
+                SeriesEditionsFragmentDirections
+                    .actionEditionsListToEditionDetail(item.id!!, item.editionName!!))
         })
         holder.editionNameView.text = item.editionName
         Picasso.get().load(item.logoUrl)

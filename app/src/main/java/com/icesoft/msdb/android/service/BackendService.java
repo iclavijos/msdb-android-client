@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icesoft.msdb.android.BuildConfig;
 import com.icesoft.msdb.android.client.MSDBAPIClient;
 import com.icesoft.msdb.android.exception.MSDBMaintenanceException;
+import com.icesoft.msdb.android.model.EventEditionAndWinners;
 import com.icesoft.msdb.android.model.Series;
 import com.icesoft.msdb.android.model.EventEdition;
 import com.icesoft.msdb.android.model.EventSession;
@@ -19,6 +20,7 @@ import java.net.ConnectException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -173,6 +175,24 @@ public class BackendService {
             }
         } catch (IOException e) {
             Log.e("MSDBService", "Couldn't process get active series editions request", e);
+        }
+
+        return null;
+    }
+
+    public List<EventEdition> getSeriesEditionEvents(Long seriesEditionId) {
+        Call<List<EventEditionAndWinners>> msdbCall = msdbAPIClient.getSeriesEditionEvents(seriesEditionId);
+
+        Response<List<EventEditionAndWinners>> response;
+        try {
+            response = msdbCall.execute();
+            if (response.isSuccessful()) {
+                return response.body().stream().map(EventEditionAndWinners::getEventEdition).collect(Collectors.toList());
+            } else {
+                Log.e("MSDBService", "Couldn't retrieve series edition events: " + response.errorBody().string());
+            }
+        } catch (IOException e) {
+            Log.e("MSDBService", "Couldn't process get series edition events request", e);
         }
 
         return null;

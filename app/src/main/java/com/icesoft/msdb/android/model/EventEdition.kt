@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 data class EventEdition(
     val id: Long? = null,
+    val longEventName: String? = null,
     val event: Event? = null,
     private val eventDate: Array<Int?>?,
     val trackLayout: RacetrackLayout? = null,
@@ -12,7 +13,7 @@ data class EventEdition(
     val location: String? = null
 ): BaseModel() {
 
-    constructor(): this(null, null, null, null, null, false, null)
+    constructor(): this(null, null,null, null, null, null, false, null)
 
     fun getEventDate(): LocalDate? {
         return LocalDate.of(

@@ -4,21 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D81B60"
     tools:context=".ui.serieseditions.SeriesEditionDetailFragment">
 
 
     <TextView
-        android:id="@+id/textViewDummy"
+        android:id="@+id/series_edition_name"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/series_edition_events_recycler"
+        android:layout_width="fill_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:gravity="center"
-        tools:text="Detail fragment"
-        tools:textColor="@color/white"
-        tools:textSize="24sp" />
+        app:layout_constraintTop_toBottomOf="@id/series_edition_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

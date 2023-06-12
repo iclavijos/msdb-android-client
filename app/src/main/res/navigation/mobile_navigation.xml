@@ -22,6 +22,9 @@
             <argument
                 android:name="seriesEditionId"
                 app:argType="long" />
+            <argument
+                android:name="seriesEditionName"
+                app:argType="string" />
         </action>
     </fragment>
 
