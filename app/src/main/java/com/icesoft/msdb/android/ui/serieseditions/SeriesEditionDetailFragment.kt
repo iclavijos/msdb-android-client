@@ -1,44 +1,54 @@
 package com.icesoft.msdb.android.ui.serieseditions
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.LoadingCache
 import com.icesoft.msdb.android.R
 import com.icesoft.msdb.android.model.EventEdition
 import com.icesoft.msdb.android.tasks.GetSeriesEditionEventsTask
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 class SeriesEditionDetailFragment : Fragment() {
+    private lateinit var cache: LoadingCache<Long, List<EventEdition>>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val seriesEditionId = arguments?.getLong("seriesEditionId")
+        val seriesEditionId = arguments?.getLong("seriesEditionId")!!
         val view = inflater.inflate(R.layout.fragment_series_edition_detail, container, false)
 
-        val doneSignal = CountDownLatch(1)
-        val getSeriesEditionEventsTask = GetSeriesEditionEventsTask(seriesEditionId!!, doneSignal)
-        val executor = Executors.newFixedThreadPool(1)
-        val opSeriesEditionEvents: Future<List<EventEdition>> =
-            executor.submit(getSeriesEditionEventsTask)
+        cache = Caffeine.newBuilder()
+            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .build { id ->
+                val doneSignal = CountDownLatch(1)
+                val getSeriesEditionEventsTask = GetSeriesEditionEventsTask(id, doneSignal)
+                val executor = Executors.newFixedThreadPool(1)
+                val opSeriesEditionEvents: Future<List<EventEdition>> =
+                    executor.submit(getSeriesEditionEventsTask)
 
-        doneSignal.await()
-        val events = opSeriesEditionEvents.get()
+                // All this smells as too much Java approach. Should properly learn coroutines, suspend and so
+                doneSignal.await()
+                opSeriesEditionEvents.get()
+            }
 
         // Set the adapter
         val recyclerView = view.findViewById<RecyclerView>(R.id.series_edition_events_recycler)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = SeriesEditionDetailRecyclerViewAdapter(events)
+        recyclerView.adapter = SeriesEditionDetailRecyclerViewAdapter(
+            cache.get(seriesEditionId) ?: Collections.emptyList())
 
         val textView = view.findViewById<TextView>(R.id.series_edition_name)
         textView.text = arguments?.getString("seriesEditionName")
