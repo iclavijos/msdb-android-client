@@ -1,89 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="8dp"
-    android:layout_marginTop="8dp"
-    android:paddingTop="6dp">
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/textViewSessionHours"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="10:00AM - 11:00AM"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-    <TextView
-        android:id="@+id/textViewEventName"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewSessionHours"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_toRightOf="@id/imageViewSeriesLogo"
-        android:paddingStart="8dp"
-        android:text="2021 Le Mans 24 Hours"
-        android:textAppearance="?attr/textAppearanceListItem" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cancelledCardView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewEventName"
-        android:layout_alignLeft="@id/textViewEventName"
-        android:layout_alignTop="@id/textViewSessionName"
-        android:layout_toRightOf="@id/imageViewSeriesLogo"
-        android:paddingStart="8dp"
-        android:paddingTop="6dp"
-        app:cardBackgroundColor="#ff0000"
-        app:cardCornerRadius="6dp">
+        android:paddingTop="6dp">
 
         <TextView
-            android:id="@+id/textViewCancelled"
+            android:id="@+id/textViewSessionHours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="3dp"
-            android:text="@string/cancelled"
-            android:textColor="#ffffff"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-    <TextView
-        android:id="@+id/textViewSessionName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewEventName"
-        android:layout_alignParentBottom="false"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_toRightOf="@id/cancelledCardView"
-        android:paddingStart="8dp"
-        android:text="Free Practice 1"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        <TextView
+            android:id="@+id/textViewEventName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewSessionHours"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/imageViewSeriesLogo"
+            android:paddingStart="8dp"
+            android:textAppearance="?attr/textAppearanceListItem" />
 
-    <ImageView
-        android:id="@+id/imageViewSeriesLogo"
-        android:layout_width="99dp"
-        android:layout_height="66dp"
-        android:layout_below="@id/textViewSessionHours"
-        android:paddingTop="8dp"
-        tools:src="@tools:sample/avatars" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cancelledCardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewEventName"
+            android:layout_alignLeft="@id/textViewEventName"
+            android:layout_alignTop="@id/textViewSessionName"
+            android:layout_toRightOf="@id/imageViewSeriesLogo"
+            android:paddingStart="8dp"
+            android:paddingTop="6dp"
+            app:cardBackgroundColor="#ff0000"
+            app:cardCornerRadius="6dp">
 
-    <TextView
-        android:id="@+id/textViewRacetrack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewSessionName"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_toRightOf="@id/imageViewSeriesLogo"
-        android:paddingStart="8dp"
-        android:paddingLeft="8dp"
-        android:text="Circuit La Sarthe"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:id="@+id/textViewCancelled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                android:text="@string/cancelled"
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/textViewSessionName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewEventName"
+            android:layout_alignParentBottom="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/cancelledCardView"
+            android:paddingStart="8dp"
+            android:textAppearance="?attr/textAppearanceListItem" />
+
+        <ImageView
+            android:id="@+id/imageViewSeriesLogo"
+            android:layout_width="99dp"
+            android:layout_height="66dp"
+            android:layout_below="@id/textViewSessionHours"
+            android:paddingTop="8dp"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/textViewRacetrack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewSessionName"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/imageViewSeriesLogo"
+            android:paddingStart="8dp"
+            android:paddingLeft="8dp"
+            android:paddingBottom="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
