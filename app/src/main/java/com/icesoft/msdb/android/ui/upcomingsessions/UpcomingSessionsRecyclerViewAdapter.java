@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -28,30 +29,23 @@ import java.util.stream.Collectors;
  */
 public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingSessionsRecyclerViewAdapter.ViewHolder> {
 
-    private static final String TAG = "UpcomingSessionsRecyclerViewAdapter";
-
     private final UpcomingSessionsViewModel upcomingSessionsViewModel;
     private final SecureCredentialsManager credentialsManager;
     private final SharedPreferences sharedPreferences;
 
-    private List<String> enabledSeries;
-
-    private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
     public UpcomingSessionsRecyclerViewAdapter(Context context, SecureCredentialsManager credentialsManager) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        enabledSeries = sharedPreferences.getAll().entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith("series-") && ((Boolean)entry.getValue()))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-
         upcomingSessionsViewModel =
                 new ViewModelProvider((FragmentActivity)context).get(UpcomingSessionsViewModel.class);
-        upcomingSessionsViewModel.setEnabledSeries(enabledSeries);
+
+        filterSeries();
 
         this.credentialsManager = credentialsManager;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -94,7 +88,16 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public void filterSeries() {
+        List<String> enabledSeries = sharedPreferences.getAll().entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith("series-") && ((Boolean) entry.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        upcomingSessionsViewModel.setEnabledSeries(enabledSeries);
+        notifyDataSetChanged();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final RecyclerView mUpcomingSessionsDayView;
