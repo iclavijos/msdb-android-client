@@ -17,8 +17,7 @@
             android:layout_width="140dp"
             android:layout_height="80dp"
             android:contentDescription="Racetrack"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:padding="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +25,6 @@
             android:id="@+id/event_edition_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/event_edition_racetrack"
@@ -36,7 +34,6 @@
             android:id="@+id/event_edition_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
             android:paddingRight="2dp"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
