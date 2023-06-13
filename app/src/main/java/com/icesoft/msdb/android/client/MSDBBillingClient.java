@@ -5,7 +5,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
@@ -13,22 +12,17 @@ import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.ConsumeParams;
-import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.ProductDetails;
-import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
-import com.android.billingclient.api.QueryPurchasesParams;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MSDBBillingClient implements PurchasesUpdatedListener {
 
-    private BillingClient billingClient;
+    private final BillingClient billingClient;
 
     private ProductDetails supportSubscriptionProduct;
 
@@ -40,7 +34,7 @@ public class MSDBBillingClient implements PurchasesUpdatedListener {
 
         this.billingClient.startConnection(new BillingClientStateListener() {
             @Override
-            public void onBillingSetupFinished(BillingResult billingResult) {
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 if (billingResult.getResponseCode() ==  BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
                     showProducts();
@@ -73,7 +67,7 @@ public class MSDBBillingClient implements PurchasesUpdatedListener {
         QueryProductDetailsParams queryProductDetailsParams =
                 QueryProductDetailsParams.newBuilder()
                         .setProductList(
-                                Arrays.asList(
+                                List.of(
                                         QueryProductDetailsParams.Product.newBuilder()
                                                 .setProductId("com.icesoft.msdb.support_subscription")
                                                 .setProductType(BillingClient.ProductType.SUBS)
@@ -92,7 +86,7 @@ public class MSDBBillingClient implements PurchasesUpdatedListener {
 
     public void launchBillingFlow(Activity activity) {
         List<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
-                Arrays.asList(
+                List.of(
                         BillingFlowParams.ProductDetailsParams.newBuilder()
                                 // retrieve a value for "productDetails" by calling queryProductDetailsAsync()
                                 .setProductDetails(supportSubscriptionProduct)

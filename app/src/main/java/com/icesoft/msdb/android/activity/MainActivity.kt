@@ -65,8 +65,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var msdbService: MSDBService
     private var serviceBound: Boolean = false
 
-    private lateinit var billingClient: MSDBBillingClient
-
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -152,8 +150,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
             audioAttributes
         )
-
-        billingClient = MSDBBillingClient(this)
     }
 
     override fun onStop() {
@@ -164,7 +160,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-//            R.id.nav_support -> billingClient.launchBillingFlow(this)
+            R.id.nav_support -> {
+                // billingClient.launchBillingFlow(this)
+                val intent = Intent(this, SupportActivity::class.java)
+                startActivity(intent)
+            }
             R.id.nav_login -> msdbService.doLogin(loginCallback)
             R.id.nav_subscriptions -> {
                 val credentials: Credentials? = msdbService.getCredentials()

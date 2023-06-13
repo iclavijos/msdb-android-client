@@ -18,6 +18,7 @@ import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
 import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
+import com.icesoft.msdb.android.client.MSDBBillingClient
 import com.icesoft.msdb.android.tasks.RemoveTokenTask
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
@@ -32,6 +33,8 @@ class MSDBService : Service() {
     private lateinit var auth0: Auth0
     private lateinit var authenticationAPIClient: AuthenticationAPIClient
     private lateinit var credentialsManager: SecureCredentialsManager
+
+    private lateinit var billingClient: MSDBBillingClient
 
     inner class LocalBinder: Binder() {
         fun getService(): MSDBService = this@MSDBService
@@ -50,6 +53,7 @@ class MSDBService : Service() {
             AuthenticationAPIClient(auth0),
             SharedPreferencesStorage(this)
         )
+        billingClient = MSDBBillingClient(this)
         initialized = true
     }
 

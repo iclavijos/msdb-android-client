@@ -14,6 +14,11 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.MSDBClient">
         <activity
+            android:name=".activity.SupportActivity"
+            android:exported="false"
+            android:label="@string/title_support_activity"
+            android:theme="@style/Theme.MSDBClient.NoActionBar" />
+        <activity
             android:name=".activity.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.MSDBClient" />
