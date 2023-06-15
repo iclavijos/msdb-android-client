@@ -57,4 +57,5 @@
     <string name="logoContentDescription">Logo</string>
     <string name="fragment_championship_detail">Calendari</string>
     <string name="title_support_activity">Recolzament</string>
+    <string name="user_info_request_failed">No s\'ha pogut recuperar el perfil d\'usuari</string>
 </resources>

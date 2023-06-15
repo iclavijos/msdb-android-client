@@ -1,5 +1,6 @@
 package com.icesoft.msdb.android.service
 
+import android.app.Activity
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
@@ -19,9 +20,14 @@ import com.auth0.android.result.UserProfile
 import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
 import com.icesoft.msdb.android.client.MSDBBillingClient
+import com.icesoft.msdb.android.exception.MSDBException
 import com.icesoft.msdb.android.tasks.RemoveTokenTask
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class MSDBService : Service() {
 
@@ -35,6 +41,8 @@ class MSDBService : Service() {
     private lateinit var credentialsManager: SecureCredentialsManager
 
     private lateinit var billingClient: MSDBBillingClient
+
+    private var cachedCredentials: Credentials? = null
 
     inner class LocalBinder: Binder() {
         fun getService(): MSDBService = this@MSDBService
@@ -57,21 +65,30 @@ class MSDBService : Service() {
         initialized = true
     }
 
-    fun initialized(): Boolean = this.initialized
+    fun initialized() = this.initialized
 
-    fun getCredentials(): Credentials? {
-        var credentials: Credentials? = null
-        credentialsManager.getCredentials(object: Callback<Credentials, CredentialsManagerException> {
-            override fun onSuccess(result: Credentials) {
-                credentials = result
-            }
+    suspend fun getCredentials(): Credentials? {
+        if (cachedCredentials == null) {
+            Log.d(TAG, "Retrieving user credentials")
+            cachedCredentials = suspendCoroutine { continuation ->
+                credentialsManager.getCredentials(object :
+                    Callback<Credentials, CredentialsManagerException> {
+                    override fun onSuccess(result: Credentials) {
+                        // Use credentials
+                        Log.d(TAG, "Retrieved user credentials")
+                        continuation.resume(result)
+                    }
 
-            override fun onFailure(error: CredentialsManagerException) {
-                Log.w(TAG, "Couldn't get credentials")
-                credentials = null
+                    override fun onFailure(error: CredentialsManagerException) {
+                        // No credentials were previously saved or they couldn't be refreshed
+                        Log.w(TAG, "Couldn't get credentials")
+                        continuation.resumeWith(Result.success(null))
+                    }
+                })
             }
-        })
-        return credentials
+        }
+
+        return cachedCredentials
     }
 
     fun hasValidCredentials(): Boolean = credentialsManager.hasValidCredentials()
@@ -80,37 +97,38 @@ class MSDBService : Service() {
 
     fun saveCredentials(credentials: Credentials) = credentialsManager.saveCredentials(credentials)
 
-    fun getUserInfo(): UserProfile? {
-        var userProfile: UserProfile? = null
-
-        val credentials = getCredentials()
-
-        if (credentials != null) {
-            authenticationAPIClient.userInfo(credentials.accessToken)
-                .start(object : Callback<UserProfile, AuthenticationException> {
-                    override fun onSuccess(result: UserProfile) {
-                        userProfile = result
-                    }
-
-                    override fun onFailure(error: AuthenticationException) {
-                        Log.w(TAG, "Couldn't retrieve user profile", error)
-                    }
-                })
+    fun getUserInfo(updateUICallback:(UserProfile) -> Unit) {
+        if (cachedCredentials == null) {
+            cachedCredentials = runBlocking {
+                getCredentials()
+            }
         }
 
-        return userProfile
+        Log.d(TAG, "Using user credentials to retrieve profile")
+
+        authenticationAPIClient.userInfo(cachedCredentials!!.accessToken)
+            .start(object : Callback<UserProfile, AuthenticationException> {
+                override fun onSuccess(result: UserProfile) {
+                    Log.d(TAG, "Successfully retrieved user profile")
+                    updateUICallback.invoke(result)
+                }
+
+                override fun onFailure(error: AuthenticationException) {
+                    Log.w(TAG, "Couldn't retrieve user profile", error)
+                }
+            })
     }
 
-    fun doLogin(loginCallback: Callback<Credentials, AuthenticationException>) {
+    fun doLogin(parentActivity: Activity, loginCallback: Callback<Credentials, AuthenticationException>) {
 
         login(auth0)
             .withScheme("msdbclient")
             .withAudience("https://msdb.eu.auth0.com/api/v2/")
             .withScope("openid profile email offline_access user_metadata")
-            .start(this, loginCallback)
+            .start(parentActivity, loginCallback)
     }
 
-    fun doLogout(logoutCallback: Callback<Void?, AuthenticationException>) {
+    fun doLogout(parentActivity: Activity, logoutCallback: Callback<Void?, AuthenticationException>) {
         FirebaseMessaging.getInstance().token
             .addOnCompleteListener { getTokenTask: Task<String?> ->
                 if (!getTokenTask.isSuccessful) {
@@ -148,10 +166,7 @@ class MSDBService : Service() {
 
         logout(auth0)
             .withScheme("msdbclient")
-            .start(this, logoutCallback)
+            .start(parentActivity, logoutCallback)
     }
 
-    fun getUserProfile(accessToken: String) {
-
-    }
 }

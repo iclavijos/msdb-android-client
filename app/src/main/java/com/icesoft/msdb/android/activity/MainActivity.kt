@@ -50,6 +50,7 @@ import com.icesoft.msdb.android.tasks.GetLatestVersionTask
 import com.icesoft.msdb.android.tasks.GetSeriesTask
 import com.icesoft.msdb.android.tasks.RegisterTokenTask
 import com.icesoft.msdb.android.ui.OldVersionDialogFragment
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutionException
@@ -107,14 +108,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navView.setNavigationItemSelectedListener(this)
 
+        checkVersion()
         val content: View = binding.navView
         content.viewTreeObserver.addOnPreDrawListener {
-            checkVersion()
-            if (serviceBound) {
-                msdbService.initialized()
-            } else {
-                false
-            }
+            serviceBound && msdbService.initialized()
         }
     }
 
@@ -165,9 +162,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, SupportActivity::class.java)
                 startActivity(intent)
             }
-            R.id.nav_login -> msdbService.doLogin(loginCallback)
+            R.id.nav_login -> msdbService.doLogin(this, loginCallback)
             R.id.nav_subscriptions -> {
-                val credentials: Credentials? = msdbService.getCredentials()
+                val credentials = runBlocking { msdbService.getCredentials() }
                 if (credentials != null) {
                     if (msdbService.hasValidCredentials()) {
                         startUserSubscriptionsActivity(credentials.accessToken)
@@ -176,13 +173,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
 
-            R.id.nav_logout -> msdbService.doLogout(logoutCallback)
+            R.id.nav_logout -> msdbService.doLogout(this, logoutCallback)
         }
         return false
     }
 
     private fun updateProfile() {
-        val credentials: Credentials? = msdbService.getCredentials()
+        Log.d(TAG, "Retrieving user credentials")
+        val credentials = runBlocking { msdbService.getCredentials() }
         if (credentials != null) {
             val accessToken = credentials.accessToken
             val chunks = accessToken.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
@@ -190,7 +188,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val decoder = Base64.getUrlDecoder()
             val payload = String(decoder.decode(chunks[1]))
             if (Strings.isEmptyOrWhitespace(payload)) {
-                msdbService.doLogout(logoutCallback)
+                msdbService.doLogout(this, logoutCallback)
             }
             runOnUiThread {
                 val navigationView = findViewById<NavigationView>(R.id.nav_view)
@@ -210,7 +208,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
             if (msdbService.hasValidCredentials()) {
-                getProfile()
+                runBlocking {
+                    getProfile()
+                }
             }
         } else {
             Log.w(TAG, "Couldn't get credentials")
@@ -226,46 +226,48 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun getProfile() {
         if (!isDestroyed) {
-            val userInfo: UserProfile? = msdbService.getUserInfo()
+            Log.d(TAG, "Retrieving user profile")
+            msdbService.getUserInfo(::updateUserProfile)
+        }
+    }
 
-            if (userInfo != null) {
-                runOnUiThread {
-                    var name: String? = " "
-                    var email: String? = " "
-                    if (userInfo != null) {
-                        name = if (userInfo.name != null) userInfo.name else "-"
-                        email = if (userInfo.email != null) userInfo.email else "-"
-                    }
-                    // More defensive code that I don't really understand why it's necessary
-                    // Probably the NullPointer is related to the other error being reported
-                    val userNameTextView =
-                        findViewById<View>(R.id.userNameView) as TextView
-                    val userEmailTextView =
-                        findViewById<View>(R.id.userEmailView) as TextView
-                    if (!Objects.isNull(userNameTextView) && !Objects.isNull(
-                            userEmailTextView
-                        )
-                    ) {
-                        userNameTextView.text = name
-                        userEmailTextView.text = email
-                        if (!isDestroyed) {
-                            Glide.with(this@MainActivity)
-                                .load(userInfo.pictureURL)
-                                .circleCrop()
-                                .into(findViewById<View>(R.id.avatarView) as ImageView)
-                        }
-                    }
+    private fun updateUserProfile(userInfo: UserProfile?) {
+        if (userInfo != null) {
+            runOnUiThread {
+                var name: String? = " "
+                var email: String? = " "
+                if (userInfo != null) {
+                    name = if (userInfo.name != null) userInfo.name else "-"
+                    email = if (userInfo.email != null) userInfo.email else "-"
                 }
-            } else {
-                runOnUiThread {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "User Info Request Failed",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                // More defensive code that I don't really understand why it's necessary
+                // Probably the NullPointer is related to the other error being reported
+                val userNameTextView =
+                    findViewById<View>(R.id.userNameView) as TextView
+                val userEmailTextView =
+                    findViewById<View>(R.id.userEmailView) as TextView
+                if (!Objects.isNull(userNameTextView) && !Objects.isNull(
+                        userEmailTextView
+                    )
+                ) {
+                    userNameTextView.text = name
+                    userEmailTextView.text = email
+                    if (!isDestroyed) {
+                        Glide.with(this@MainActivity)
+                            .load(userInfo.pictureURL)
+                            .circleCrop()
+                            .into(findViewById<View>(R.id.avatarView) as ImageView)
+                    }
                 }
             }
-
+        } else {
+            runOnUiThread {
+                Toast.makeText(
+                    this@MainActivity,
+                    getString(R.string.user_info_request_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

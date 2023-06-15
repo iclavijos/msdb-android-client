@@ -263,6 +263,6 @@ public class BackendService {
             Log.e("MSDBService", "Couldn't process get event sessions request", e);
         }
 
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 }
