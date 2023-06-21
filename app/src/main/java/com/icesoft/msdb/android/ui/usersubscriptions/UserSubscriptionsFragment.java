@@ -28,7 +28,8 @@ public class UserSubscriptionsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user_subscriptions_list, container, false);
 
         mViewModel = new ViewModelProvider(requireActivity()).get(UserSubscriptionsViewModel.class);
-        RecyclerView.Adapter adapter = new UserSubscriptionsRecyclerViewAdapter(getContext());
+        RecyclerView.Adapter<UserSubscriptionsRecyclerViewAdapter.ViewHolder> adapter =
+                new UserSubscriptionsRecyclerViewAdapter(getContext());
         // Set the adapter
         RecyclerView recyclerView = view.findViewById(R.id.userSubscriptionsRecyclerView);
         mViewModel.getMutableUserSubscriptions().observe(getViewLifecycleOwner(), userSubscriptions -> {

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -63,7 +64,7 @@ public class UpcomingSessionsViewModel extends ViewModel {
         if (upcomingSessionsMutableData == null) {
             upcomingSessionsMutableData = new MutableLiveData<>();
         }
-        fetchUpcomingSessions();
+
         upcomingSessionsMutableData.setValue(Collections.emptyList());
     }
 
@@ -106,10 +107,11 @@ public class UpcomingSessionsViewModel extends ViewModel {
     private List<UpcomingSession> filterUpcomingSessions() {
         Log.d(TAG, "Filtering upcoming sessions...");
         sessionsPerDay.clear();
-        List<UpcomingSession> filteredSessions = upcomingSessions
+
+        return upcomingSessions
             .stream()
             .filter(upcomingSession ->
-                    upcomingSession.getSeriesIds().stream()
+                    Objects.requireNonNull(upcomingSession.getSeriesIds()).stream()
                             .anyMatch(id -> enabledSeriesIds.contains("series-" + id) || enabledSeriesIds.isEmpty()))
             .peek(upcomingSession -> {
                 LocalDate startDate = LocalDateTime.ofInstant(
@@ -118,10 +120,8 @@ public class UpcomingSessionsViewModel extends ViewModel {
                 if (!sessionsPerDay.containsKey(startDate)) {
                     sessionsPerDay.put(startDate, new ArrayList<>());
                 }
-                sessionsPerDay.get(startDate).add(upcomingSession);
+                Objects.requireNonNull(sessionsPerDay.get(startDate)).add(upcomingSession);
             }).collect(Collectors.toList());
-
-        return filteredSessions;
     }
 
     private void fetchUpcomingSessions() {

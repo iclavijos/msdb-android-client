@@ -40,7 +40,7 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
         upcomingSessionsViewModel =
                 new ViewModelProvider((FragmentActivity)context).get(UpcomingSessionsViewModel.class);
 
-        filterSeries();
+        upcomingSessionsViewModel.refreshUpcomingSessions();
 
         this.credentialsManager = credentialsManager;
     }

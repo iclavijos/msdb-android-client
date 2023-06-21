@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
             val binder = service as MSDBService.LocalBinder
             msdbService = binder.getService()
             serviceBound = true

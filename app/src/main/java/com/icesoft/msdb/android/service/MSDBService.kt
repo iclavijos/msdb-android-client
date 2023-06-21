@@ -65,11 +65,17 @@ class MSDBService : Service() {
         initialized = true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        cachedCredentials = null
+    }
+
     fun initialized() = this.initialized
 
     suspend fun getCredentials(): Credentials? {
+        Log.d(TAG, "Getting credentials")
         if (cachedCredentials == null) {
-            Log.d(TAG, "Retrieving user credentials")
+            Log.d(TAG, "Credentials are null")
             cachedCredentials = suspendCoroutine { continuation ->
                 credentialsManager.getCredentials(object :
                     Callback<Credentials, CredentialsManagerException> {
@@ -167,6 +173,7 @@ class MSDBService : Service() {
         logout(auth0)
             .withScheme("msdbclient")
             .start(parentActivity, logoutCallback)
+        cachedCredentials = null
     }
 
 }

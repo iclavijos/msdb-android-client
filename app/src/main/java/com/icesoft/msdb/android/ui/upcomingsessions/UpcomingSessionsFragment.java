@@ -19,29 +19,27 @@ import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.auth0.android.authentication.storage.SharedPreferencesStorage;
 import com.icesoft.msdb.android.R;
 
+import java.util.Objects;
+
 /**
  * A fragment representing a list of Items.
  */
 public class UpcomingSessionsFragment extends Fragment {
 
-    private Auth0 auth0;
     private SecureCredentialsManager credentialsManager;
-
-    private UpcomingSessionsViewModel upcomingSessionsViewModel;
-
-    public UpcomingSessionsFragment() {
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upcoming_sessions_list, container, false);
 
-        auth0 = new Auth0(getContext());
-        credentialsManager = new SecureCredentialsManager(getContext(), new AuthenticationAPIClient(auth0), new SharedPreferencesStorage(getContext()));
+        Auth0 auth0 = new Auth0(requireContext());
+        credentialsManager = new SecureCredentialsManager(
+                requireContext(),
+                new AuthenticationAPIClient(auth0),
+                new SharedPreferencesStorage(requireContext()));
 
-        upcomingSessionsViewModel =
-                new ViewModelProvider(this).get(UpcomingSessionsViewModel.class);
+        UpcomingSessionsViewModel upcomingSessionsViewModel = new ViewModelProvider(this).get(UpcomingSessionsViewModel.class);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
