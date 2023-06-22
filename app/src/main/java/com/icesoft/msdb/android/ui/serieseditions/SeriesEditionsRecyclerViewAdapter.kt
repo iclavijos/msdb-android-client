@@ -7,10 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.icesoft.msdb.android.databinding.FragmentSeriesEditionDetailBinding
+import com.bumptech.glide.Glide
 import com.icesoft.msdb.android.databinding.FragmentSeriesEditionsItemBinding
 import com.icesoft.msdb.android.model.SeriesEdition
-import com.squareup.picasso.Picasso
 
 class SeriesEditionsRecyclerViewAdapter(private val values: List<SeriesEdition>):
     RecyclerView.Adapter<SeriesEditionsRecyclerViewAdapter.ViewHolder>() {
@@ -33,8 +32,8 @@ class SeriesEditionsRecyclerViewAdapter(private val values: List<SeriesEdition>)
                     .actionEditionsListToEditionDetail(item.id!!, item.editionName!!))
         })
         holder.editionNameView.text = item.editionName
-        Picasso.get().load(item.logoUrl)
-            .resize(140, 0)
+        Glide.with(holder.itemView)
+            .load(item.logoUrl) //.override(150)
             .centerInside()
             .into(holder.logoImageView)
     }

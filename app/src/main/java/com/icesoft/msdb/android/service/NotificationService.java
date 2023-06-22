@@ -3,12 +3,9 @@ package com.icesoft.msdb.android.service;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -16,8 +13,6 @@ import android.widget.RemoteViews;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.auth0.android.Auth0;
-import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.NotificationTarget;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -42,8 +37,8 @@ public class NotificationService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.d(TAG, "onMessageReceived");
 
-        Boolean isRally = Boolean.parseBoolean(remoteMessage.getData().get("rally"));
-        Boolean isRaid = Boolean.parseBoolean(remoteMessage.getData().get("raid"));
+        boolean isRally = Boolean.parseBoolean(remoteMessage.getData().get("rally"));
+        boolean isRaid = Boolean.parseBoolean(remoteMessage.getData().get("raid"));
 
         LocalDateTime startTime = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(Long.parseLong(remoteMessage.getData().get("startTime"))),

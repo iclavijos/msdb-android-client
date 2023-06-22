@@ -6,13 +6,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.icesoft.msdb.android.databinding.FragmentSeriesEditionDetailItemBinding
 import com.icesoft.msdb.android.model.EventEdition
-import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.time.ZoneId
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class SeriesEditionDetailRecyclerViewAdapter(private val values: List<EventEdition>):
     RecyclerView.Adapter<SeriesEditionDetailRecyclerViewAdapter.ViewHolder>() {
@@ -34,8 +33,9 @@ class SeriesEditionDetailRecyclerViewAdapter(private val values: List<EventEditi
         holder.eventDateTextView.text = dateFormat.format(
             Date.from(item.getEventDate()?.atStartOfDay(ZoneId.systemDefault())?.toInstant()))
         holder.eventNameTextView.text = item.longEventName
-        Picasso.get().load(item.trackLayout?.layoutImageUrl ?: item.posterUrl)
-            .resize(140, 0)
+        Glide.with(holder.itemView)
+            .load(item.trackLayout?.layoutImageUrl ?: item.posterUrl)
+            // .resize(140, 0)
             .centerInside()
             .into(holder.racetrackImageView)
     }
