@@ -1,14 +1,11 @@
 package com.icesoft.msdb.android.ui.upcomingsessions;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +15,6 @@ import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.auth0.android.authentication.storage.SharedPreferencesStorage;
 import com.icesoft.msdb.android.R;
-
-import java.util.Objects;
 
 /**
  * A fragment representing a list of Items.
@@ -44,9 +39,8 @@ public class UpcomingSessionsFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             RecyclerView recyclerView = (RecyclerView) view;
-            upcomingSessionsViewModel.getUpcomingSessions().observe(getViewLifecycleOwner(), upcomingSessions -> {
-                recyclerView.setAdapter(new UpcomingSessionsRecyclerViewAdapter(getContext(), credentialsManager));
-            });
+            upcomingSessionsViewModel.getUpcomingSessions().observe(getViewLifecycleOwner(), upcomingSessions ->
+                    recyclerView.setAdapter(new UpcomingSessionsRecyclerViewAdapter(getContext(), credentialsManager)));
         }
         return view;
     }

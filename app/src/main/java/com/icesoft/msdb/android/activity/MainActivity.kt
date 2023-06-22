@@ -34,14 +34,12 @@ import com.bumptech.glide.Glide
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.json.JsonMapper
-import com.google.android.gms.common.util.Strings
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.messaging.FirebaseMessaging
 import com.icesoft.msdb.android.BuildConfig
 import com.icesoft.msdb.android.R
-import com.icesoft.msdb.android.client.MSDBBillingClient
 import com.icesoft.msdb.android.databinding.ActivityMainBinding
 import com.icesoft.msdb.android.exception.MSDBException
 import com.icesoft.msdb.android.model.Series

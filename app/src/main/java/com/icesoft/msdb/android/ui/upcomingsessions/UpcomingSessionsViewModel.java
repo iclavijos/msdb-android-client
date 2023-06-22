@@ -33,7 +33,7 @@ public class UpcomingSessionsViewModel extends ViewModel {
 
     private static final String TAG = "UpcomingSessionsViewModel";
 
-    private LoadingCache<String, List<UpcomingSession>> cache;
+    private final LoadingCache<String, List<UpcomingSession>> cache;
 
     private List<String> enabledSeriesIds = Collections.emptyList();
     private List<UpcomingSession> upcomingSessions;
