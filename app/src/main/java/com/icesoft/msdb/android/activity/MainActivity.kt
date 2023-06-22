@@ -178,17 +178,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun updateProfile() {
-        Log.d(TAG, "Retrieving user credentials")
-        val credentials = runBlocking { msdbService.getCredentials() }
-        if (credentials != null) {
-            val accessToken = credentials.accessToken
-            val chunks = accessToken.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-                .toTypedArray()
-            val decoder = Base64.getUrlDecoder()
-            val payload = String(decoder.decode(chunks[1]))
-            if (Strings.isEmptyOrWhitespace(payload)) {
-                msdbService.doLogout(this, logoutCallback)
+        Log.d(TAG, "Updating user profile")
+        var credentials = runBlocking { msdbService.getCredentials() }
+        if (credentials == null) {
+            Log.w(TAG, "Couldn't get credentials")
+            runOnUiThread {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                val menu = navigationView.menu
+                menu.removeItem(R.id.nav_subscriptions)
+                menu.removeItem(R.id.nav_logout)
             }
+        } else if (credentials.expiresAt.before(Date())) {
+            credentials = runBlocking { msdbService.refreshToken() }
+        }
+
+        if (credentials != null) {
             runOnUiThread {
                 val navigationView = findViewById<NavigationView>(R.id.nav_view)
                 val menu = navigationView.menu
@@ -206,21 +210,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     mItemSupport.setIcon(R.drawable.ic_support)
                 }
             }
-            if (msdbService.hasValidCredentials()) {
-                runBlocking {
-                    getProfile()
-                }
-            }
-        } else {
-            Log.w(TAG, "Couldn't get credentials")
-            runOnUiThread {
-                val navigationView = findViewById<NavigationView>(R.id.nav_view)
-                val menu = navigationView.menu
-                menu.removeItem(R.id.nav_subscriptions)
-                menu.removeItem(R.id.nav_logout)
-            }
+            getProfile()
         }
-
     }
 
     private fun getProfile() {
@@ -233,22 +224,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun updateUserProfile(userInfo: UserProfile?) {
         if (userInfo != null) {
             runOnUiThread {
-                var name: String? = " "
-                var email: String? = " "
-                if (userInfo != null) {
-                    name = if (userInfo.name != null) userInfo.name else "-"
-                    email = if (userInfo.email != null) userInfo.email else "-"
-                }
-                // More defensive code that I don't really understand why it's necessary
-                // Probably the NullPointer is related to the other error being reported
-                val userNameTextView =
-                    findViewById<View>(R.id.userNameView) as TextView
-                val userEmailTextView =
-                    findViewById<View>(R.id.userEmailView) as TextView
-                if (!Objects.isNull(userNameTextView) && !Objects.isNull(
-                        userEmailTextView
-                    )
-                ) {
+                val name = if (userInfo.name != null) userInfo.name else "-"
+                val email = if (userInfo.email != null) userInfo.email else "-"
+
+                val userNameTextView = findViewById<View>(R.id.userNameView) as TextView
+                val userEmailTextView = findViewById<View>(R.id.userEmailView) as TextView
+                if (!Objects.isNull(userNameTextView) && !Objects.isNull(userEmailTextView)) {
                     userNameTextView.text = name
                     userEmailTextView.text = email
                     if (!isDestroyed) {
