@@ -83,8 +83,8 @@ public class NotificationService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        Integer notificationId = Optional.ofNullable(remoteMessage.getData().get("sessionId"))
-                .map(sessionId -> Integer.parseInt(sessionId))
+        int notificationId = Optional.ofNullable(remoteMessage.getData().get("sessionId"))
+                .map(Integer::parseInt)
                 .orElse(random.nextInt(Integer.MAX_VALUE));
 
         Notification notification = notificationBuilder.build();
