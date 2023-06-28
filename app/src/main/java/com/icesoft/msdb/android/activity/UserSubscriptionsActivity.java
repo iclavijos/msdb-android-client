@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.icesoft.msdb.android.R;
@@ -28,6 +29,11 @@ public class UserSubscriptionsActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(UserSubscriptionsViewModel.class);
         viewModel.setAccessToken(intent.getStringExtra("accessToken"));
         setContentView(R.layout.activity_user_subscriptions);
+
+        Toolbar toolbar = findViewById(R.id.userSubscriptionsToolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         findViewById(R.id.saveButton).setOnClickListener((view) -> {
             Toast.makeText(this, R.string.saving, Toast.LENGTH_SHORT).show();

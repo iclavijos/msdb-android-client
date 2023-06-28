@@ -14,11 +14,13 @@ import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +54,12 @@ public class EventDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+
+        Toolbar toolbar = findViewById(R.id.eventDetailsToolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         EventDetailsPagerAdapter eventDetailsPagerAdapter = new EventDetailsPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.event_details_pager);
         viewPager.setAdapter(eventDetailsPagerAdapter);
@@ -123,7 +131,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         viewModel.setEventSessions(getEventSessions(
                 viewModel.getAccessToken(),
                 eventEdition.getId()));
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        finish();
+        return true;
     }
 
     private EventEdition getEventEdition(String accessToken, Long eventEditionId) {

@@ -31,7 +31,9 @@
         <activity
             android:name=".activity.FilterSeriesActivity"
             android:parentActivityName=".activity.MainActivity" />
-        <activity android:name=".activity.EventDetailsActivity" />
+        <activity
+            android:name=".activity.EventDetailsActivity"
+            android:parentActivityName=".activity.MainActivity"/>
         <activity
             android:name=".activity.UserSubscriptionsActivity"
             android:parentActivityName=".activity.MainActivity" />
