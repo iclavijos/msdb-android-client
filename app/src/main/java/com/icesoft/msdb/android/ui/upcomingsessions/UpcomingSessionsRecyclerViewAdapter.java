@@ -14,7 +14,6 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.icesoft.msdb.android.R;
 
 import java.time.LocalDate;
@@ -30,19 +29,16 @@ import java.util.stream.Collectors;
 public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingSessionsRecyclerViewAdapter.ViewHolder> {
 
     private final UpcomingSessionsViewModel upcomingSessionsViewModel;
-    private final SecureCredentialsManager credentialsManager;
     private final SharedPreferences sharedPreferences;
 
     private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
-    public UpcomingSessionsRecyclerViewAdapter(Context context, SecureCredentialsManager credentialsManager) {
+    public UpcomingSessionsRecyclerViewAdapter(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         upcomingSessionsViewModel =
                 new ViewModelProvider((FragmentActivity)context).get(UpcomingSessionsViewModel.class);
 
         upcomingSessionsViewModel.refreshUpcomingSessions();
-
-        this.credentialsManager = credentialsManager;
     }
 
     @NonNull
@@ -60,7 +56,7 @@ public class UpcomingSessionsRecyclerViewAdapter extends RecyclerView.Adapter<Up
         holder.mIdView.setText(formattedDate.substring(0, 1).toUpperCase() + formattedDate.substring(1));
 
         UpcomingSessionsDayRecyclerViewAdapter sessionsDayViewAdapter =
-                new UpcomingSessionsDayRecyclerViewAdapter(upcomingSessionsViewModel.getSessionsDay(startDate), credentialsManager);
+                new UpcomingSessionsDayRecyclerViewAdapter(holder.mView.getContext(), upcomingSessionsViewModel.getSessionsDay(startDate));
         holder.mUpcomingSessionsDayView.setAdapter(sessionsDayViewAdapter);
         holder.mUpcomingSessionsDayView.setRecycledViewPool(viewPool);
 

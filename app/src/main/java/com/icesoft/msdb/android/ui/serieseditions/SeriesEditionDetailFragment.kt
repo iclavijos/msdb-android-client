@@ -86,4 +86,10 @@ class SeriesEditionDetailFragment : Fragment() {
             requireActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().unbindService(connection)
+        serviceBound = false
+    }
 }

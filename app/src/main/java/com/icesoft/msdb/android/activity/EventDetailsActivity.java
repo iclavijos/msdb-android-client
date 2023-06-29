@@ -1,24 +1,21 @@
 package com.icesoft.msdb.android.activity;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 
-import com.auth0.android.Auth0;
-import com.auth0.android.authentication.AuthenticationAPIClient;
-import com.auth0.android.authentication.storage.CredentialsManagerException;
-import com.auth0.android.authentication.storage.SecureCredentialsManager;
-import com.auth0.android.authentication.storage.SharedPreferencesStorage;
-import com.auth0.android.callback.Callback;
 import com.auth0.android.result.Credentials;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -27,6 +24,7 @@ import android.widget.Toast;
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.model.EventEdition;
 import com.icesoft.msdb.android.model.EventSession;
+import com.icesoft.msdb.android.service.MSDBService;
 import com.icesoft.msdb.android.tasks.GetEventDetailsTask;
 import com.icesoft.msdb.android.tasks.GetEventSessionsTask;
 import com.icesoft.msdb.android.ui.eventdetails.EventDetailsInfoFragment;
@@ -35,20 +33,49 @@ import com.icesoft.msdb.android.ui.eventdetails.EventDetailsParticipantsFragment
 import com.icesoft.msdb.android.ui.eventdetails.EventDetailsViewModel;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.BuildersKt;
+
 public class EventDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "EventDetailsActivity";
 
-    private Auth0 auth0;
-    private SecureCredentialsManager credentialsManager;
+    private MSDBService msdbService;
 
-    private EventDetailsViewModel viewModel;
+    private final ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            MSDBService.LocalBinder binder = (MSDBService.LocalBinder) service;
+            msdbService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, MSDBService.class);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        unbindService(connection);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +84,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.eventDetailsToolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         EventDetailsPagerAdapter eventDetailsPagerAdapter = new EventDetailsPagerAdapter(getSupportFragmentManager());
@@ -67,10 +94,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
 
         Log.d(TAG, "onCreate: Instantiating view model");
-        viewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
-
-        auth0 = new Auth0(this);
-        credentialsManager = new SecureCredentialsManager(this, new AuthenticationAPIClient(auth0), new SharedPreferencesStorage(this));
+        EventDetailsViewModel viewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
 
         TextView eventEditionNameTextView = findViewById(R.id.eventDetailsEventNameTextView);
         eventEditionNameTextView.setText(getIntent().getStringExtra("eventName"));
@@ -90,25 +114,30 @@ public class EventDetailsActivity extends AppCompatActivity {
             Log.d(TAG, "onMessageReceived: countdown created");
             final CountDownLatch awaitCredentialsSignal = new CountDownLatch(1);
 
-            credentialsManager.getCredentials(new Callback<>() {
-                @Override
-                public void onSuccess(@Nullable Credentials payload) {
-                    atomicEventDetails.set(getEventEdition(
-                            payload.getAccessToken(),
-                            getIntent().getLongExtra("eventEditionId", 0L)));
-                    viewModel.setAccessToken(payload.getAccessToken());
-                    awaitCredentialsSignal.countDown();
-                    Log.d(TAG, "onSuccess: countdown decreased");
-                }
+            Credentials credentials;
+            try {
+                credentials = BuildersKt.runBlocking(
+                        EmptyCoroutineContext.INSTANCE,
+                        (scope, continuation) -> msdbService.getCredentials(continuation)
+                );
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Couldn't retrieve credentials");
+                credentials = null;
+            }
 
-                @Override
-                public void onFailure(@NonNull CredentialsManagerException error) {
-                    awaitCredentialsSignal.countDown();
-                    Log.d(TAG, "onSuccess: countdown decreased onFailure");
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                }
-            });
+            if (credentials != null) {
+                atomicEventDetails.set(getEventEdition(
+                        credentials.getAccessToken(),
+                        getIntent().getLongExtra("eventEditionId", 0L)));
+                viewModel.setAccessToken(credentials.getAccessToken());
+                awaitCredentialsSignal.countDown();
+                Log.d(TAG, "onSuccess: countdown decreased");
+            } else {
+                awaitCredentialsSignal.countDown();
+                Log.d(TAG, "onSuccess: countdown decreased onFailure");
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
 
             try {
                 Log.d(TAG, "onMessageReceived: awaiting...");
@@ -134,14 +163,14 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
         finish();
         return true;
     }
 
     private EventEdition getEventEdition(String accessToken, Long eventEditionId) {
-        EventEdition eventDetails = null;
+        EventEdition eventDetails;
         GetEventDetailsTask eventDetailsTask = new GetEventDetailsTask(accessToken, eventEditionId);
         Future<EventEdition> opResult = Executors.newFixedThreadPool(1).submit(eventDetailsTask);
         try {
@@ -156,7 +185,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private List<EventSession> getEventSessions(String accessToken, Long eventEditionId) {
-        List<EventSession> eventSessions = null;
+        List<EventSession> eventSessions;
         GetEventSessionsTask task = new GetEventSessionsTask(accessToken, eventEditionId);
         Future<List<EventSession>> opResult = Executors.newFixedThreadPool(1).submit(task);
         try {

@@ -1,6 +1,10 @@
 package com.icesoft.msdb.android.ui.upcomingsessions;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.auth0.android.authentication.storage.CredentialsManagerException;
-import com.auth0.android.authentication.storage.SecureCredentialsManager;
-import com.auth0.android.callback.Callback;
 import com.auth0.android.result.Credentials;
 import com.bumptech.glide.Glide;
 import com.icesoft.msdb.android.activity.EventDetailsActivity;
 import com.icesoft.msdb.android.R;
 import com.icesoft.msdb.android.model.UpcomingSession;
+import com.icesoft.msdb.android.service.MSDBService;
 
 import java.text.DecimalFormat;
 import java.time.Instant;
@@ -28,17 +30,35 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Objects;
+
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.BuildersKt;
 
 public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingSessionsDayRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = "UpcomingSessionsDayViewAdapter";
 
     private final List<UpcomingSession> upcomingSessions;
-    private final SecureCredentialsManager credentialsManager;
+    private MSDBService msdbService;
 
-    public UpcomingSessionsDayRecyclerViewAdapter(List<UpcomingSession> upcomingSessions, SecureCredentialsManager credentialsManager) {
+    public UpcomingSessionsDayRecyclerViewAdapter(Context context, List<UpcomingSession> upcomingSessions) {
         this.upcomingSessions = upcomingSessions;
-        this.credentialsManager = credentialsManager;
+
+        Intent intent = new Intent(context, MSDBService.class);
+        ServiceConnection connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName className,
+                                           IBinder service) {
+                MSDBService.LocalBinder binder = (MSDBService.LocalBinder) service;
+                msdbService = binder.getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName arg0) {
+            }
+        };
+        context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
     @NonNull
@@ -68,7 +88,7 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
                     String.join((" "),
                             DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime),
                             " - ",
-                            upcomingSession.getDuration().toString(),
+                            Objects.requireNonNull(upcomingSession.getDuration()).toString(),
                             "KM"
                     ));
         } else if (upcomingSession.isRaid()) {
@@ -136,26 +156,23 @@ public class UpcomingSessionsDayRecyclerViewAdapter extends RecyclerView.Adapter
 
         @Override
         public void onClick(View v) {
-            if (credentialsManager.hasValidCredentials()) {
-                credentialsManager.getCredentials(new Callback<>() {
-                    @Override
-                    public void onSuccess(final Credentials credentials) {
-                        if (credentialsManager.hasValidCredentials()) {
-                            Intent intent = new Intent(mView.getContext(), EventDetailsActivity.class);
-                            intent.putExtra("eventEditionId", upcomingSession.getEventEditionId());
-                            intent.putExtra("eventName", upcomingSession.getEventName());
-                            intent.putExtra("accessToken", credentials.getAccessToken());
-                            mView.getContext().startActivity(intent);
-                        } else {
-                            Log.i(TAG, "No valid credentials...");
-                        }
-                    }
+            Credentials credentials;
+            try {
+                credentials = BuildersKt.runBlocking(
+                        EmptyCoroutineContext.INSTANCE,
+                        (scope, continuation) -> msdbService.getCredentials(continuation)
+                );
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Couldn't retrieve credentials");
+                credentials = null;
+            }
 
-                    @Override
-                    public void onFailure(CredentialsManagerException error) {
-                        Log.w(TAG, "Couldn't get credentials");
-                    }
-                });
+            if (credentials != null) {
+                Intent intent = new Intent(mView.getContext(), EventDetailsActivity.class);
+                intent.putExtra("eventEditionId", upcomingSession.getEventEditionId());
+                intent.putExtra("eventName", upcomingSession.getEventName());
+                intent.putExtra("accessToken", credentials.getAccessToken());
+                mView.getContext().startActivity(intent);
             }
         }
     }

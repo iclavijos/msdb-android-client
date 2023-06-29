@@ -10,10 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.auth0.android.Auth0;
-import com.auth0.android.authentication.AuthenticationAPIClient;
-import com.auth0.android.authentication.storage.SecureCredentialsManager;
-import com.auth0.android.authentication.storage.SharedPreferencesStorage;
 import com.icesoft.msdb.android.R;
 
 /**
@@ -21,18 +17,10 @@ import com.icesoft.msdb.android.R;
  */
 public class UpcomingSessionsFragment extends Fragment {
 
-    private SecureCredentialsManager credentialsManager;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upcoming_sessions_list, container, false);
-
-        Auth0 auth0 = new Auth0(requireContext());
-        credentialsManager = new SecureCredentialsManager(
-                requireContext(),
-                new AuthenticationAPIClient(auth0),
-                new SharedPreferencesStorage(requireContext()));
 
         UpcomingSessionsViewModel upcomingSessionsViewModel = new ViewModelProvider(this).get(UpcomingSessionsViewModel.class);
 
@@ -40,7 +28,7 @@ public class UpcomingSessionsFragment extends Fragment {
         if (view instanceof RecyclerView) {
             RecyclerView recyclerView = (RecyclerView) view;
             upcomingSessionsViewModel.getUpcomingSessions().observe(getViewLifecycleOwner(), upcomingSessions ->
-                    recyclerView.setAdapter(new UpcomingSessionsRecyclerViewAdapter(getContext(), credentialsManager)));
+                    recyclerView.setAdapter(new UpcomingSessionsRecyclerViewAdapter(getContext())));
         }
         return view;
     }
