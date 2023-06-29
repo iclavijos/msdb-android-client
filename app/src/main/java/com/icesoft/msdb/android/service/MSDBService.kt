@@ -22,6 +22,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.icesoft.msdb.android.client.MSDBBillingClient
 import com.icesoft.msdb.android.tasks.RemoveTokenTask
 import kotlinx.coroutines.runBlocking
+import java.util.Date
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
@@ -60,6 +61,12 @@ class MSDBService : Service() {
             SharedPreferencesStorage(this)
         )
         billingClient = MSDBBillingClient(this)
+        val credentials = runBlocking { getCredentials() }
+        if (credentials != null) {
+            if (credentials.expiresAt.before(Date())) {
+                runBlocking { cachedCredentials = refreshToken() }
+            }
+        }
         initialized = true
     }
 

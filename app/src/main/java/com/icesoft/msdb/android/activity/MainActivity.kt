@@ -69,9 +69,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             val binder = service as MSDBService.LocalBinder
             msdbService = binder.getService()
-            serviceBound = true
             updateProfile()
             retrieveSeriesList()
+            serviceBound = true
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
