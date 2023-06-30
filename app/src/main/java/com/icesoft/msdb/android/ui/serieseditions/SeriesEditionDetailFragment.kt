@@ -46,6 +46,19 @@ class SeriesEditionDetailFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Intent(requireContext(), MSDBService::class.java).also { intent ->
+            requireActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().unbindService(connection)
+        serviceBound = false
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -72,24 +85,15 @@ class SeriesEditionDetailFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.series_edition_events_recycler)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = SeriesEditionDetailRecyclerViewAdapter(
-            cache.get(seriesEditionId) ?: Collections.emptyList())
+            if (seriesEditionId == 0L) {
+                Collections.emptyList()
+            } else {
+                cache.get(seriesEditionId) ?: Collections.emptyList()
+            })
 
         val textView = view.findViewById<TextView>(R.id.series_edition_name)
         textView.text = arguments?.getString("seriesEditionName")
 
         return view
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Intent(requireContext(), MSDBService::class.java).also { intent ->
-            requireActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        requireActivity().unbindService(connection)
-        serviceBound = false
     }
 }

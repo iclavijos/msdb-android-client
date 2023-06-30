@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragmentSeriesEditionDetail"
     tools:context=".ui.serieseditions.SeriesEditionDetailFragment">
-
 
     <TextView
         android:id="@+id/series_edition_name"

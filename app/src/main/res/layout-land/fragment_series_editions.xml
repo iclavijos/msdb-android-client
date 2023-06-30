@@ -4,33 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#5E35B1"
     tools:context=".ui.serieseditions.SeriesEditionsFragment">
 
-    <TextView
-        android:id="@+id/master_text_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/series_editions_recycler"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/detail_fragment_container"
-        app:layout_constraintHorizontal_weight="4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:gravity="center"
-        tools:text="Master fragment"
-        tools:textColor="@color/white"
-        tools:textSize="24sp" />
+        app:layout_constraintWidth_percent=".45"/>
 
-    <androidx.fragment.app.FragmentContainerView
+    <View style="@style/Divider"
+        android:id="@+id/series_editions_divider"
+        app:layout_constraintStart_toEndOf="@id/series_editions_recycler"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <fragment
         android:id="@+id/detail_fragment_container"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        app:defaultNavHost="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="7"
-        app:layout_constraintStart_toEndOf="@id/master_text_view"
+        app:layout_constraintStart_toEndOf="@+id/series_editions_divider"
         app:layout_constraintTop_toTopOf="parent"
         tools:background="#D81B60"
-        tools:layout="@layout/fragment_series_edition_detail" />
+        app:navGraph="@navigation/navigation_detail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

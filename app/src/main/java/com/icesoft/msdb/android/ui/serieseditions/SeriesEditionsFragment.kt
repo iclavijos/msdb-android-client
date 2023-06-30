@@ -1,11 +1,13 @@
 package com.icesoft.msdb.android.ui.serieseditions
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
@@ -43,10 +45,18 @@ class SeriesEditionsFragment : Fragment() {
             }
 
         // Set the adapter
+        val itemDetailFragmentContainer: View? =
+            view.findViewById(R.id.detail_fragment_container)
         val recyclerView = view.findViewById<RecyclerView>(R.id.series_editions_recycler)
-        recyclerView.layoutManager = GridLayoutManager(context, 2)// LinearLayoutManager(context)
+        val orientation = resources.configuration.orientation
+        recyclerView.layoutManager = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            GridLayoutManager(context, 2)
+        } else {
+            LinearLayoutManager(context)
+        }
         recyclerView.adapter = SeriesEditionsRecyclerViewAdapter(
-            cache.get("seriesEditions") ?: Collections.emptyList()
+            cache.get("seriesEditions") ?: Collections.emptyList(),
+            itemDetailFragmentContainer
         )
 
         return view

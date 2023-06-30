@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_detail"
+    app:startDestination="@id/nav_championship_detail">
+
+    <fragment
+        android:id="@+id/nav_championship_detail"
+        android:name="com.icesoft.msdb.android.ui.serieseditions.SeriesEditionDetailFragment"
+        android:label="@string/fragment_championship_detail"
+        tools:layout="@layout/fragment_series_edition_detail" >
+        <argument
+            android:name="seriesEditionId"
+            app:argType="long"
+            android:defaultValue="0L"/>
+        <argument
+            android:name="seriesEditionName"
+            app:argType="string"
+            app:nullable="true"/>
+    </fragment>
+</navigation>
