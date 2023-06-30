@@ -98,6 +98,7 @@ public class UpcomingSessionsViewModel extends ViewModel {
 
     public void refreshUpcomingSessions() {
         Log.d(TAG, "Refreshing upcoming sessions...");
+        cache.invalidateAll();
         fetchUpcomingSessions();
         List<UpcomingSession> filteredSessions = filterUpcomingSessions();
         upcomingSessionsMutableData.getValue().clear();
