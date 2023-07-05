@@ -3,7 +3,6 @@ package com.icesoft.msdb.android.ui.serieseditions
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,15 +16,12 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import com.icesoft.msdb.android.R
 import com.icesoft.msdb.android.model.SeriesEdition
-import com.icesoft.msdb.android.model.UserSubscription
 import com.icesoft.msdb.android.tasks.GetActiveSeriesTask
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
-import java.util.function.Predicate
-import java.util.stream.Collectors
 
 class SeriesEditionsFragment : Fragment() {
 

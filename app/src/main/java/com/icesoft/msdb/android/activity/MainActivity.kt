@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun updateProfile() {
         Log.d(TAG, "Updating user profile")
-        var credentials = runBlocking { msdbService.getCredentials() }
+        val credentials = runBlocking { msdbService.getCredentials() }
         if (credentials == null) {
             Log.w(TAG, "Couldn't get credentials")
             runOnUiThread {
@@ -186,8 +186,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 menu.removeItem(R.id.nav_subscriptions)
                 menu.removeItem(R.id.nav_logout)
             }
-        } else if (credentials.expiresAt.before(Date())) {
-            credentials = runBlocking { msdbService.refreshToken() }
         }
 
         if (credentials != null) {
@@ -220,6 +218,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun updateUserProfile(userInfo: UserProfile?) {
+        Log.d(TAG,"Updating user profile with retrieved object")
         if (userInfo != null) {
             runOnUiThread {
                 val name = if (userInfo.name != null) userInfo.name else "-"

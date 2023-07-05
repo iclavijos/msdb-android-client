@@ -22,7 +22,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.icesoft.msdb.android.client.MSDBBillingClient
 import com.icesoft.msdb.android.tasks.RemoveTokenTask
 import kotlinx.coroutines.runBlocking
-import java.util.Date
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
@@ -61,12 +60,12 @@ class MSDBService : Service() {
             SharedPreferencesStorage(this)
         )
         billingClient = MSDBBillingClient(this)
-        val credentials = runBlocking { getCredentials() }
-        if (credentials != null) {
-            if (credentials.expiresAt.before(Date())) {
-                runBlocking { cachedCredentials = refreshToken() }
-            }
-        }
+        runBlocking { getCredentials() }
+//        if (credentials != null) {
+//            if (credentials.expiresAt.before(Date())) {
+//                runBlocking { cachedCredentials = refreshToken() }
+//            }
+//        }
         initialized = true
     }
 
@@ -82,7 +81,7 @@ class MSDBService : Service() {
         if (cachedCredentials == null) {
             Log.d(TAG, "Credentials are null")
             cachedCredentials = suspendCoroutine { continuation ->
-                credentialsManager.getCredentials(object :
+                credentialsManager.getCredentials("openid profile email", 600, object :
                     Callback<Credentials, CredentialsManagerException> {
                     override fun onSuccess(result: Credentials) {
                         // Use credentials
@@ -103,26 +102,6 @@ class MSDBService : Service() {
     }
 
     fun hasValidCredentials(): Boolean = credentialsManager.hasValidCredentials(600)
-
-    suspend fun refreshToken(): Credentials? {
-        val request = authenticationAPIClient.renewAuth(cachedCredentials!!.refreshToken!!)
-        return suspendCoroutine { continuation ->
-            request.start(object :
-                Callback<Credentials, AuthenticationException> {
-                override fun onSuccess(result: Credentials) {
-                    // Use credentials
-                    Log.d(TAG, "Refreshed user credentials")
-                    continuation.resume(result)
-                }
-
-                override fun onFailure(error: AuthenticationException) {
-                    // No credentials were previously saved or they couldn't be refreshed
-                    Log.w(TAG, "Couldn't refresh credentials")
-                    continuation.resumeWith(Result.success(null))
-                }
-            })
-        }
-    }
 
     fun clearCredentials() = credentialsManager.clearCredentials()
 
