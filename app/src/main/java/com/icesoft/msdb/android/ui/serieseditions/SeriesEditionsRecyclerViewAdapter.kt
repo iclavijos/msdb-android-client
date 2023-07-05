@@ -1,17 +1,14 @@
 package com.icesoft.msdb.android.ui.serieseditions
 
-import android.content.res.Configuration
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.bumptech.glide.Glide
@@ -19,11 +16,14 @@ import com.bumptech.glide.Glide
 import com.icesoft.msdb.android.R
 import com.icesoft.msdb.android.databinding.FragmentSeriesEditionsItemBinding
 import com.icesoft.msdb.android.model.SeriesEdition
+import java.util.*
 
 class SeriesEditionsRecyclerViewAdapter(
     private val values: List<SeriesEdition>,
     private val detailViewContainer: View?):
     RecyclerView.Adapter<SeriesEditionsRecyclerViewAdapter.ViewHolder>() {
+
+    private val filteredValues: MutableLiveData<List<SeriesEdition>> = MutableLiveData(values)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -36,9 +36,7 @@ class SeriesEditionsRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
-
-        val orientation = holder.itemView.resources.configuration.orientation
+        val item = filteredValues.value?.get(position)!!
 
         holder.itemView.setOnClickListener { view ->
             if (detailViewContainer != null) {
@@ -61,7 +59,20 @@ class SeriesEditionsRecyclerViewAdapter(
             .into(holder.logoImageView)
     }
 
-    override fun getItemCount(): Int = values.size
+    override fun getItemCount(): Int = filteredValues.value?.size ?: 0
+
+    fun filterSeries(filter: String) {
+        filteredValues.value
+        if (TextUtils.isEmpty(filter)) {
+            filteredValues.value = values
+            return
+        }
+        filteredValues.value = values.filter {
+            seriesEdition -> seriesEdition.editionName!!.lowercase(
+                Locale.getDefault()
+            ).contains(filter.lowercase(Locale.getDefault()))
+        }
+    }
 
     inner class ViewHolder(binding: FragmentSeriesEditionsItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val editionNameView: TextView = binding.editionName

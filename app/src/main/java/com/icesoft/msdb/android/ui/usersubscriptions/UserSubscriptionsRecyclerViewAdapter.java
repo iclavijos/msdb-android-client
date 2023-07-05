@@ -22,7 +22,6 @@ import com.icesoft.msdb.android.model.UserSubscription;
 public class UserSubscriptionsRecyclerViewAdapter extends RecyclerView.Adapter<UserSubscriptionsRecyclerViewAdapter.ViewHolder> {
 
     private final UserSubscriptionsViewModel userSubscriptionsViewModel;
-    private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
     public UserSubscriptionsRecyclerViewAdapter(Context context) {
         userSubscriptionsViewModel =

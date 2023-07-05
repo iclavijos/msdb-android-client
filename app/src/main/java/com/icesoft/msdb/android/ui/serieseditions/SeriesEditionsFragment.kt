@@ -2,9 +2,13 @@ package com.icesoft.msdb.android.ui.serieseditions
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,12 +17,15 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import com.icesoft.msdb.android.R
 import com.icesoft.msdb.android.model.SeriesEdition
+import com.icesoft.msdb.android.model.UserSubscription
 import com.icesoft.msdb.android.tasks.GetActiveSeriesTask
-import java.util.Collections
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
+import java.util.function.Predicate
+import java.util.stream.Collectors
 
 class SeriesEditionsFragment : Fragment() {
 
@@ -58,6 +65,18 @@ class SeriesEditionsFragment : Fragment() {
             cache.get("seriesEditions") ?: Collections.emptyList(),
             itemDetailFragmentContainer
         )
+
+        val filterEditText = view.findViewById<EditText>(R.id.filterSeriesEditText)
+        filterEditText.addTextChangedListener {
+            editable: Editable? ->
+            run {
+                if (editable != null) {
+                    val adapter = recyclerView.adapter as SeriesEditionsRecyclerViewAdapter
+                    adapter.filterSeries(editable.toString())
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
 
         return view
     }
