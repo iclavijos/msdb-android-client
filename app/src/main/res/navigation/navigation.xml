@@ -20,10 +20,10 @@
             android:id="@+id/action_editions_list_to_edition_detail"
             app:destination="@id/nav_championship_detail">
             <argument
-                android:name="seriesEditionId"
+                android:name="seriesId"
                 app:argType="long" />
             <argument
-                android:name="seriesEditionName"
+                android:name="seriesName"
                 app:argType="string" />
         </action>
     </fragment>

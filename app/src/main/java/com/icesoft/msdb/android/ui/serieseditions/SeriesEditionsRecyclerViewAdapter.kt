@@ -15,15 +15,15 @@ import com.bumptech.glide.Glide
 
 import com.icesoft.msdb.android.R
 import com.icesoft.msdb.android.databinding.FragmentSeriesEditionsItemBinding
-import com.icesoft.msdb.android.model.SeriesEdition
+import com.icesoft.msdb.android.model.Series
 import java.util.*
 
 class SeriesEditionsRecyclerViewAdapter(
-    private val values: List<SeriesEdition>,
+    private val values: List<Series>,
     private val detailViewContainer: View?):
     RecyclerView.Adapter<SeriesEditionsRecyclerViewAdapter.ViewHolder>() {
 
-    private val filteredValues: MutableLiveData<List<SeriesEdition>> = MutableLiveData(values)
+    private val filteredValues: MutableLiveData<List<Series>> = MutableLiveData(values)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -41,18 +41,18 @@ class SeriesEditionsRecyclerViewAdapter(
         holder.itemView.setOnClickListener { view ->
             if (detailViewContainer != null) {
                 val bundle = Bundle()
-                bundle.putLong("seriesEditionId", item.id!!)
-                bundle.putString("seriesEditionName", item.editionName)
+                bundle.putLong("seriesId", item.id!!)
+                bundle.putString("seriesName", item.name)
                 detailViewContainer.findNavController()
                     .navigate(R.id.nav_championship_detail, bundle)
             } else {
                 view.findNavController().navigate(
                     SeriesEditionsFragmentDirections
-                        .actionEditionsListToEditionDetail(item.id!!, item.editionName!!)
+                        .actionEditionsListToEditionDetail(item.id!!, item.name!!)
                 )
             }
         }
-        holder.editionNameView.text = item.editionName
+        holder.editionNameView.text = item.name
         Glide.with(holder.itemView)
             .load(item.logoUrl) //.override(150)
             .centerInside()
@@ -68,7 +68,7 @@ class SeriesEditionsRecyclerViewAdapter(
             return
         }
         filteredValues.value = values.filter {
-            seriesEdition -> seriesEdition.editionName!!.lowercase(
+            seriesEdition -> seriesEdition.name!!.lowercase(
                 Locale.getDefault()
             ).contains(filter.lowercase(Locale.getDefault()))
         }

@@ -12,20 +12,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.benmanes.caffeine.cache.Caffeine
-import com.github.benmanes.caffeine.cache.LoadingCache
 import com.icesoft.msdb.android.R
-import com.icesoft.msdb.android.model.SeriesEdition
-import com.icesoft.msdb.android.tasks.GetActiveSeriesTask
-import java.util.*
+import com.icesoft.msdb.android.model.Series
+import com.icesoft.msdb.android.tasks.GetSeriesTask
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
 
 class SeriesEditionsFragment : Fragment() {
-
-    private lateinit var cache: LoadingCache<String, List<SeriesEdition>>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,19 +27,6 @@ class SeriesEditionsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_series_editions, container, false)
-
-        cache = Caffeine.newBuilder()
-            .expireAfterWrite(10, TimeUnit.MINUTES)
-            .build {
-                val doneSignal = CountDownLatch(1)
-                val getActiveSeriesTask = GetActiveSeriesTask(doneSignal)
-                val executor = Executors.newFixedThreadPool(1)
-                val opActiveSeries: Future<List<SeriesEdition>> =
-                    executor.submit<List<SeriesEdition>>(getActiveSeriesTask)
-
-                doneSignal.await()
-                opActiveSeries.get()
-            }
 
         // Set the adapter
         val itemDetailFragmentContainer: View? =
@@ -57,10 +38,16 @@ class SeriesEditionsFragment : Fragment() {
         } else {
             LinearLayoutManager(context)
         }
-        recyclerView.adapter = SeriesEditionsRecyclerViewAdapter(
-            cache.get("seriesEditions") ?: Collections.emptyList(),
-            itemDetailFragmentContainer
-        )
+
+        val doneSignal = CountDownLatch(1)
+        val getSeriesTask = GetSeriesTask(doneSignal) // GetActiveSeriesTask(doneSignal)
+        val executor = Executors.newFixedThreadPool(1)
+        val opSeries: Future<List<Series>> = executor.submit<List<Series>>(getSeriesTask)
+
+        doneSignal.await()
+        val series = opSeries.get()
+
+        recyclerView.adapter = SeriesEditionsRecyclerViewAdapter(series, itemDetailFragmentContainer)
 
         val filterEditText = view.findViewById<EditText>(R.id.filterSeriesEditText)
         filterEditText.addTextChangedListener {
