@@ -60,7 +60,6 @@
         app:layout_constraintHorizontal_weight="7"
         app:layout_constraintStart_toEndOf="@+id/series_editions_divider"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="#D81B60"
         app:navGraph="@navigation/navigation_detail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

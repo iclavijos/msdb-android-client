@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.icesoft.msdb.android.activity.EventDetailsActivity
@@ -18,12 +19,14 @@ import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.util.*
 
-class SeriesEditionDetailRecyclerViewAdapter(private val values: List<EventEdition>):
+class SeriesEditionDetailRecyclerViewAdapter(values: List<EventEdition>):
     RecyclerView.Adapter<SeriesEditionDetailRecyclerViewAdapter.ViewHolder>() {
 
     private val TAG = "SeriesEditionDetailRecyclerViewAdapter"
 
     lateinit var msdbService: MSDBService
+
+    private var eventsList: MutableLiveData<List<EventEdition>> = MutableLiveData(values)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -36,7 +39,7 @@ class SeriesEditionDetailRecyclerViewAdapter(private val values: List<EventEditi
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
+        val item = eventsList.value!![position]
         holder.itemView.setOnClickListener(holder)
         holder.eventEdition = item
         val pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "ddMMMMyyyy")
@@ -51,7 +54,12 @@ class SeriesEditionDetailRecyclerViewAdapter(private val values: List<EventEditi
             .into(holder.racetrackImageView)
     }
 
-    override fun getItemCount(): Int = values.size
+    override fun getItemCount(): Int = eventsList.value!!.size
+
+    fun updateEventsList(updatedValues: List<EventEdition>) {
+        eventsList = MutableLiveData(updatedValues)
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(binding: FragmentSeriesEditionDetailItemBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         val eventDateTextView: TextView = binding.eventEditionDate

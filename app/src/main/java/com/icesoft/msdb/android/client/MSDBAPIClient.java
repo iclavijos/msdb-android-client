@@ -35,8 +35,8 @@ public interface MSDBAPIClient {
     @GET("api/series")
     Call<List<Series>> getSeries(@Query("page") Integer page, @Query("query") String query, @Query("size") Integer size, @Query("sort") List<String> sort);
 
-    @GET("api/series-editions?active=true")
-    Call<List<SeriesEdition>> getActiveSeriesEditions();
+    @GET("api/series/{seriesId}/editions")
+    Call<List<SeriesEdition>> getSeriesEditions(@Path("seriesId") Long seriesId);
 
     @GET("api/series-editions/{seriesEditionId}/events")
     Call<List<EventEditionAndWinners>> getSeriesEditionEvents(@Path("seriesEditionId") Long seriesEditionId);

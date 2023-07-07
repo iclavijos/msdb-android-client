@@ -162,8 +162,8 @@ public class BackendService {
         return null;
     }
 
-    public List<SeriesEdition> getActiveSeriesEditions() {
-        Call<List<SeriesEdition>> msdbCall = msdbAPIClient.getActiveSeriesEditions();
+    public List<SeriesEdition> getSeriesEditions(Long seriesId) {
+        Call<List<SeriesEdition>> msdbCall = msdbAPIClient.getSeriesEditions(seriesId);
 
         Response<List<SeriesEdition>> response;
         try {
@@ -171,10 +171,10 @@ public class BackendService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                Log.e("MSDBService", "Couldn't retrieve active series editions: " + response.errorBody().string());
+                Log.e("MSDBService", "Couldn't retrieve series editions: " + response.errorBody().string());
             }
         } catch (IOException e) {
-            Log.e("MSDBService", "Couldn't process get active series editions request", e);
+            Log.e("MSDBService", "Couldn't process get series editions request", e);
         }
 
         return null;
