@@ -5,7 +5,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,23 +26,26 @@ import java.util.List;
 
 public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventSessionRecyclerViewAdapter.ViewHolder> {
 
-    private static final String TAG = "EventSessionRecyclerViewAdapter";
     private Context context;
 
     private final EventEdition eventDetails;
     private final List<EventSession> sessions;
+
+    private boolean isTablet = false;
 
     public EventSessionRecyclerViewAdapter(EventEdition eventDetails, List<EventSession> sessions) {
         this.eventDetails = eventDetails;
         this.sessions = sessions;
     }
 
+    @NonNull
     @Override
     public EventSessionRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
+        isTablet = context.getResources().getBoolean(R.bool.isTablet);
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_event_sessions, parent, false);
-        return new EventSessionRecyclerViewAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -53,10 +55,11 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
                 Instant.ofEpochSecond(session.getSessionStartTime()),
                 ZoneId.systemDefault()
         );
+        FormatStyle dateFormatStyle = isTablet ? FormatStyle.LONG : FormatStyle.SHORT;
         if (eventDetails.isRaid()) {
-            holder.startDayTextView.setText(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(startTime));
+            holder.startDayTextView.setText(DateTimeFormatter.ofLocalizedDate(dateFormatStyle).format(startTime));
         } else {
-            holder.startDayTextView.setText(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(startTime));
+            holder.startDayTextView.setText(DateTimeFormatter.ofLocalizedDate(dateFormatStyle).format(startTime));
             holder.startTimeTextView.setText(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(startTime));
         }
         if (eventDetails.isRally()) {
@@ -107,7 +110,7 @@ public class EventSessionRecyclerViewAdapter extends RecyclerView.Adapter<EventS
         return String.join(" ", Arrays.asList(durationStr, durationTypeStr, extraLapStr));
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView startDayTextView;
         public final TextView startTimeTextView;

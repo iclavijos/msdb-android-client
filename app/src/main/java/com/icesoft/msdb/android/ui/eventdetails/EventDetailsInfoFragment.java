@@ -3,6 +3,7 @@ package com.icesoft.msdb.android.ui.eventdetails;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -27,16 +28,13 @@ import java.util.Optional;
  */
 public class EventDetailsInfoFragment extends Fragment {
 
-    private EventEdition eventDetails;
-    private EventDetailsViewModel viewModel;
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(EventDetailsViewModel.class);
-        eventDetails = viewModel.getEventEdition();
+        EventDetailsViewModel viewModel = new ViewModelProvider(requireActivity()).get(EventDetailsViewModel.class);
+        EventEdition eventDetails = viewModel.getEventEdition();
 
         // Inflate the layout for this fragment
         View eventDetailsView = inflater.inflate(R.layout.fragment_event_details_info, container, false);
@@ -60,6 +58,16 @@ public class EventDetailsInfoFragment extends Fragment {
                     .centerInside()
                     .dontAnimate()
                     .into(trackLayoutImageview);
+        });
+        Optional.ofNullable(eventDetails.getPosterUrl()).ifPresent(posterUrl -> {
+            ImageView posterImageView = eventDetailsView.findViewById(R.id.posterImageView);
+            if (posterImageView != null) {
+                Glide.with(eventDetailsView)
+                        .load(posterUrl)
+                        .centerInside()
+                        .dontAnimate()
+                        .into(posterImageView);
+            }
         });
         if (!optTrackLayout.isPresent()) {
             TextView racetrackLabel = eventDetailsView.findViewById(R.id.racetrackLabel);

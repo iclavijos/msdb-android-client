@@ -33,6 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/eventDateLabel"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,13 +51,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/racetrackLabel"
             app:layout_constraintTop_toBottomOf="@id/eventDetailsEventDateTextView" />
 
         <ImageView
             android:id="@+id/racetrackLayoutEventDetailsImageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
