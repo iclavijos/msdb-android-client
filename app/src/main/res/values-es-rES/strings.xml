@@ -58,4 +58,8 @@
     <string name="fragment_championship_detail">Series calendar</string>
     <string name="title_support_activity">Apoyo</string>
     <string name="user_info_request_failed">No se ha podido recuperar el perfil de usuario</string>
+    <string name="support_title">Apoya a MSDB</string>
+    <string name="support_subscribed">Thanks!</string>
+    <string name="support_cannot_subscribe">You cannot subscribe</string>
+    <string name="support_subscribe">Subscribe!</string>
 </resources>

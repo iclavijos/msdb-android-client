@@ -58,4 +58,8 @@
     <string name="fragment_championship_detail">Calendari</string>
     <string name="title_support_activity">Recolzament</string>
     <string name="user_info_request_failed">No s\'ha pogut recuperar el perfil d\'usuari</string>
+    <string name="support_title">Recolza MSDB</string>
+    <string name="support_subscribed">Thanks!</string>
+    <string name="support_cannot_subscribe">You cannot subscribe</string>
+    <string name="support_subscribe">Subscribe!</string>
 </resources>

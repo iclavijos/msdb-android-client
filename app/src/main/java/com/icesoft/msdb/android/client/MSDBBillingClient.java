@@ -14,10 +14,13 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchaseHistoryResponseListener;
+import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryPurchaseHistoryParams;
+import com.android.billingclient.api.QueryPurchasesParams;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MSDBBillingClient implements PurchasesUpdatedListener {
@@ -26,27 +29,49 @@ public class MSDBBillingClient implements PurchasesUpdatedListener {
 
     private ProductDetails supportSubscriptionProduct;
 
+    private boolean billingUnavailable = false;
+    private boolean serviceConnected = false;
+    private boolean subscribed = false;
+
+    private final BillingClientStateListener clientStateListener = new BillingClientStateListener() {
+        @Override
+        public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                serviceConnected = true;
+                getProducts();
+                checkSubscriptionStatus();
+                Log.d("MDSDB", "Products retrieved");
+//                billingClient.queryPurchaseHistoryAsync(
+//                        QueryPurchaseHistoryParams.newBuilder()
+//                                .setProductType(BillingClient.ProductType.SUBS)
+//                                .build(),
+//                        new PurchaseHistoryResponseListener() {
+//                            public void onPurchaseHistoryResponse(
+//                                    BillingResult billingResult, List purchasesHistoryList) {
+//                                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+//                                    System.out.println(purchasesHistoryList);
+//                                }
+//                            }
+//                        }
+//                );
+            } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.BILLING_UNAVAILABLE) {
+                billingUnavailable = true;
+            }
+        }
+
+        @Override
+        public void onBillingServiceDisconnected() {
+            serviceConnected = false;
+        }
+    };
+
     public MSDBBillingClient(Context context) {
         this.billingClient = BillingClient.newBuilder(context)
                 .enablePendingPurchases()
                 .setListener(this)
                 .build();
 
-        this.billingClient.startConnection(new BillingClientStateListener() {
-            @Override
-            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-                if (billingResult.getResponseCode() ==  BillingClient.BillingResponseCode.OK) {
-                    // The BillingClient is ready. You can query purchases here.
-                    showProducts();
-                    Log.d("MDSDB", "Products retrieved");
-                }
-            }
-            @Override
-            public void onBillingServiceDisconnected() {
-                // Try to restart the connection on the next request to
-                // Google Play by calling the startConnection() method.
-            }
-        });
+        this.billingClient.startConnection(clientStateListener);
     }
 
     @Override
@@ -63,7 +88,7 @@ public class MSDBBillingClient implements PurchasesUpdatedListener {
         }
     }
 
-    public void showProducts() {
+    public void getProducts() {
         QueryProductDetailsParams queryProductDetailsParams =
                 QueryProductDetailsParams.newBuilder()
                         .setProductList(
@@ -73,13 +98,14 @@ public class MSDBBillingClient implements PurchasesUpdatedListener {
                                                 .setProductType(BillingClient.ProductType.SUBS)
                                                 .build()))
                         .build();
-        List<ProductDetails> products = new ArrayList<>();
+        // products = Collections.emptyList();
         billingClient.queryProductDetailsAsync(
                 queryProductDetailsParams,
                 (billingResult, productDetailsList) -> {
                     // check billingResult
                     // process returned productDetailsList
-                   supportSubscriptionProduct = productDetailsList.get(0);
+                    supportSubscriptionProduct = productDetailsList.get(0);
+                   // products.addAll(productDetailsList);
                 }
         );
     }
@@ -100,13 +126,24 @@ public class MSDBBillingClient implements PurchasesUpdatedListener {
                 .setProductDetailsParamsList(productDetailsParamsList)
                 .build();
 
-        // Launch the billing flow
         BillingResult billingResult = billingClient.launchBillingFlow(activity, billingFlowParams);
+        subscribed = billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK;
     }
 
     AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = billingResult -> {
-
+         subscribed = billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK;
     };
+
+    public void checkSubscriptionStatus() {
+        billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.SUBS)
+                        .build(),
+                (billingResult, purchases) -> {
+                    subscribed = purchases.size() > 0;
+                }
+        );
+    }
 
     private void handlePurchase(Purchase purchase) {
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
@@ -120,4 +157,9 @@ public class MSDBBillingClient implements PurchasesUpdatedListener {
         }
     }
 
+    public boolean isBillingAvailable() {
+        return !billingUnavailable;
+    }
+
+    public boolean isSubscribed() { return subscribed; }
 }

@@ -70,5 +70,9 @@
     <string name="title_support_activity">Support</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="user_info_request_failed">User Info Request Failed</string>
+    <string name="support_title">Support MSDB</string>
+    <string name="support_subscribed">Thanks!</string>
+    <string name="support_cannot_subscribe">You cannot subscribe</string>
+    <string name="support_subscribe">Subscribe!</string>
 
 </resources>

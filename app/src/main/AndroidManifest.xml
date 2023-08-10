@@ -14,17 +14,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/Theme.MSDBClient">
-        <activity
-            android:name=".activity.SupportActivity"
-            android:exported="false"
-            android:label="@string/title_support_activity"
-            android:theme="@style/Theme.MSDBClient.NoActionBar" />
 
         <service
             android:name=".service.MSDBService"
             android:enabled="true"
             android:exported="false" />
 
+        <activity
+            android:name=".activity.SupportActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:exported="false"
+            android:label="@string/title_support_activity" />
         <activity
             android:name=".activity.MaintenanceActivity"
             android:exported="false" />

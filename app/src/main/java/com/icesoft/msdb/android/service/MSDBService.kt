@@ -61,11 +61,7 @@ class MSDBService : Service() {
         )
         billingClient = MSDBBillingClient(this)
         runBlocking { getCredentials() }
-//        if (credentials != null) {
-//            if (credentials.expiresAt.before(Date())) {
-//                runBlocking { cachedCredentials = refreshToken() }
-//            }
-//        }
+
         initialized = true
     }
 
@@ -179,4 +175,8 @@ class MSDBService : Service() {
         cachedCredentials = null
     }
 
+    fun isBillingAvailable() = billingClient.isBillingAvailable
+    fun initBillingFlow(activity: Activity) = billingClient.launchBillingFlow(activity)
+
+    fun isSubscribed() = billingClient.isSubscribed
 }

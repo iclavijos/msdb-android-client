@@ -155,7 +155,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_support -> {
-                // billingClient.launchBillingFlow(this)
                 val intent = Intent(this, SupportActivity::class.java)
                 startActivity(intent)
             }

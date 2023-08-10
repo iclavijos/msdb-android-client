@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="support_text">La le li lo lu</string>
+    <string name="support_text">Dicen que es más triste pedir que robar, y que si buscas en internet, sólo salgo pidiendo perras, pero aquí me tienes, y ojo que se viene turra &#128517;\n
+        \n
+MSDB nació hace ya más tiempo del que me imaginaba. La primera subida de código al repositorio público fue un 28 de febrero de 2017, así que, entre pruebas varias previas que había hecho y lo que fue empezar con la solución que está en marcha desde entonces, o ha cumplido o está a punto a punto de cumplir los 7 años de vida.\n
+        \n
+Tal vez sea necesario comentar que esto nació por puro y absoluto egoísmo profesional mío. Venía de un "desengaño" profesional y busqué algo que me motivase a tener mi proyecto personal paralelo que me ayudase a aprender ciertas cosas nuevas, así que pensé que usar el motorsport como base del proyecto era lo mejor que podía hacer... y si estás leyendo esto es porque he conseguido cumplir con parte de mi objetivo &#128516;\n
+        \n
+Lo que empezó siendo una web para recoger resultados de carreras pronto mutó en una herramienta para consultar horarios de carreras venideras y, poco a poco, fui añadiendo más inventos en la trastienda que acabaron dando pie a esta apliación que tienes en la pantalla de tu dispositivo Android ahora mismo, un pequeño bot de Telegram que espero poder retomar e implementar algunas de las ideas que tengo en mente y veremos qué más en el futuro, siempre buscando que la información que hay en la página sea lo más accesible y útil posible. Y, por si fuera poco, cada vez añadiendo más campeonatos que registrar en la web, lo que me lleva al último punto y deja ya de molestar.\n
+        \n
+La infraestructura que hay detrás de esto no es nada del otro mundo, pero ya tiene unas dimensiones y, obviamente, unos costes que no son despreciables (a día de hoy, unos 300€ anuales). Si a eso le sumas que las semanas de más actividad en pista puedo tardar hasta un par de horas en tener todos los horarios registrados, al final llevar la página es un esfuerzo que no se puede obviar. Por eso, si realmente consideras que todo el sistema que he montado te es útil y crees que vale la pena, he añadido un modelo de suscripción, a través de Google, de 2€ al año. Por ahora no puedo prometer que te vaya a dar ventaja alguna más alla de saber que este nerdo con gafas se emociona con estas cositas, pero estoy abierto a ideas y sugerencias. Igualmente, si no quieres hacer nada a través de Google, también tienes la opción de hacer donaciones puntuales en buymeacoffee punto com barra iclavijos (lo siento, no puedo poner el enlace por políticas de Google).\n
+        \n
+Decidas lo que decidas, gracias mil por haber leído hasta aquí y por estar usando esta aplicación &#128522;\n
+        \n
+Iván
+    </string>
 </resources>
