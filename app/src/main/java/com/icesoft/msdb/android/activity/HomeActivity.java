@@ -149,29 +149,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.nav_login:
-                doLogin();
-                break;
-            case R.id.nav_subscriptions:
-                credentialsManager.getCredentials(new Callback<>() {
-                    @Override
-                    public void onSuccess(final Credentials credentials) {
-                        if (credentialsManager.hasValidCredentials()) {
-                            startUserSubscriptionsActivity(credentials.getAccessToken());
-                        }
+        if (item.getItemId() == R.id.nav_login) {
+            doLogin();
+        } else if (item.getItemId() ==R.id.nav_subscriptions) {
+            credentialsManager.getCredentials(new Callback<>() {
+                @Override
+                public void onSuccess(final Credentials credentials) {
+                    if (credentialsManager.hasValidCredentials()) {
+                        startUserSubscriptionsActivity(credentials.getAccessToken());
                     }
+                }
 
-                    @Override
-                    public void onFailure(CredentialsManagerException error) {
-                        Log.w(TAG, "Couldn't get credentials");
-                    }
-                });
-
-                break;
-            case R.id.nav_logout:
-                doLogout();
-                break;
+                @Override
+                public void onFailure(CredentialsManagerException error) {
+                    Log.w(TAG, "Couldn't get credentials");
+                }
+            });
+        } else if (item.getItemId() == R.id.nav_logout) {
+            doLogout();
         }
         return false;
     }
