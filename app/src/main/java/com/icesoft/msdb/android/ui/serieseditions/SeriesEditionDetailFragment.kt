@@ -90,7 +90,7 @@ class SeriesEditionDetailFragment : Fragment(), AdapterView.OnItemSelectedListen
                 executor.submit(getSeriesEditionsTask)
             doneSignal.await()
             seriesEditions =
-                opSeriesEditions.get().sortedByDescending { edition -> edition.periodEnd }
+                opSeriesEditions.get().sortedByDescending(SeriesEdition::periodEnd)
             val currentYear = Calendar.getInstance().get(Calendar.YEAR)
             val currentEdition = seriesEditions
                 .firstOrNull { edition -> edition.periodEnd == currentYear.toString() }
@@ -116,7 +116,9 @@ class SeriesEditionDetailFragment : Fragment(), AdapterView.OnItemSelectedListen
         val getSeriesEditionEventsTask = GetSeriesEditionEventsTask(currentEdition.id!!, doneSignal)
         val opEditionEvents: Future<List<EventEdition>> = executor.submit(getSeriesEditionEventsTask)
         doneSignal.await()
-        return opEditionEvents.get()
+        return opEditionEvents.get().filter { edition ->
+            !edition.status.equals("cancelled", true)
+        }
     }
 
     override fun onTouch(view: View?, event: MotionEvent?): Boolean {

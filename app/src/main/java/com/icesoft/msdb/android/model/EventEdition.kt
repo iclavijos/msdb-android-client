@@ -10,10 +10,11 @@ data class EventEdition(
     val trackLayout: RacetrackLayout? = null,
     val posterUrl: String? = null,
     val multidriver: Boolean? = false,
-    val location: String? = null
+    val location: String? = null,
+    val status: String? = null
 ): BaseModel() {
 
-    constructor(): this(null, null,null, null, null, null, false, null)
+    constructor(): this(null, null,null, null, null, null, false, null, null)
 
     fun getEventDate(): LocalDate? {
         return LocalDate.of(
