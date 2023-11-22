@@ -19,7 +19,6 @@ import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
 import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
-import com.icesoft.msdb.android.client.MSDBBillingClient
 import com.icesoft.msdb.android.tasks.RemoveTokenTask
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ExecutionException

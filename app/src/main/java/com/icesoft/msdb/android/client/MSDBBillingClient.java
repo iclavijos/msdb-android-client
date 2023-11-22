@@ -21,7 +21,7 @@ package com.icesoft.msdb.android.client;
 //import com.android.billingclient.api.QueryPurchaseHistoryParams;
 //import com.android.billingclient.api.QueryPurchasesParams;
 
-import java.util.List;
+//import java.util.List;
 
 public class MSDBBillingClient { // implements PurchasesUpdatedListener {
 
