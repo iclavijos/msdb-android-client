@@ -21,9 +21,9 @@ android {
 
     defaultConfig {
         applicationId "com.icesoft.msdb.android"
-        minSdkVersion 26
+        minSdkVersion 33
         targetSdkVersion 33
-        versionCode 43
+        versionCode 44
         versionName "1.8.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -113,7 +113,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-    implementation 'com.android.billingclient:billing:6.0.0'
+    // implementation 'com.android.billingclient:billing:6.0.0'
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
