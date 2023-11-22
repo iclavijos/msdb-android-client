@@ -6,13 +6,10 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
 import com.icesoft.msdb.android.R
 import com.icesoft.msdb.android.databinding.ActivitySupportBinding
 import com.icesoft.msdb.android.service.MSDBService
-import java.util.*
 
 class SupportActivity : AppCompatActivity() {
 

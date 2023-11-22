@@ -38,7 +38,7 @@ class MSDBService : Service() {
     private lateinit var authenticationAPIClient: AuthenticationAPIClient
     private lateinit var credentialsManager: SecureCredentialsManager
 
-    private lateinit var billingClient: MSDBBillingClient
+    // private lateinit var billingClient: MSDBBillingClient
 
     private var cachedCredentials: Credentials? = null
 
