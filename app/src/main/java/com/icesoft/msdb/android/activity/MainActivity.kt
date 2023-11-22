@@ -154,10 +154,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_support -> {
-                val intent = Intent(this, SupportActivity::class.java)
-                startActivity(intent)
-            }
+//            R.id.nav_support -> {
+//                val intent = Intent(this, SupportActivity::class.java)
+//                startActivity(intent)
+//            }
             R.id.nav_login -> msdbService.doLogin(this, loginCallback)
             R.id.nav_subscriptions -> {
                 val credentials = runBlocking { msdbService.getCredentials() }
@@ -199,10 +199,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val mItemLogout =
                         menu.add(0, R.id.nav_logout, 1, R.string.logout)
                     mItemLogout.setIcon(R.drawable.ic_log_out)
-                    menu.removeItem(R.id.nav_support)
-                    val mItemSupport =
-                        menu.add(0, R.id.nav_support, 2, R.string.nav_support)
-                    mItemSupport.setIcon(R.drawable.ic_support)
+//                    menu.removeItem(R.id.nav_support)
+//                    val mItemSupport =
+//                        menu.add(0, R.id.nav_support, 2, R.string.nav_support)
+//                    mItemSupport.setIcon(R.drawable.ic_support)
                 }
             }
             getProfile()

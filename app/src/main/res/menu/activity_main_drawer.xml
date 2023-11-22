@@ -13,8 +13,8 @@
         android:id="@+id/nav_subscriptions"
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/subscriptions" />
-    <item
+    <!-- item
         android:id="@+id/nav_support"
         android:icon="@drawable/ic_support"
-        android:title="@string/nav_support" />
+        android:title="@string/nav_support" / -->
 </menu>

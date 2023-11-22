@@ -59,7 +59,7 @@ class MSDBService : Service() {
             AuthenticationAPIClient(auth0),
             SharedPreferencesStorage(this)
         )
-        billingClient = MSDBBillingClient(this)
+        // billingClient = MSDBBillingClient(this)
         runBlocking { getCredentials() }
 
         initialized = true
@@ -175,8 +175,8 @@ class MSDBService : Service() {
         cachedCredentials = null
     }
 
-    fun isBillingAvailable() = billingClient.isBillingAvailable
-    fun initBillingFlow(activity: Activity) = billingClient.launchBillingFlow(activity)
-
-    fun isSubscribed() = billingClient.isSubscribed
+//    fun isBillingAvailable() = billingClient.isBillingAvailable
+//    fun initBillingFlow(activity: Activity) = billingClient.launchBillingFlow(activity)
+//
+//    fun isSubscribed() = billingClient.isSubscribed
 }

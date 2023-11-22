@@ -27,16 +27,16 @@ class SupportActivity : AppCompatActivity() {
             val binder = service as MSDBService.LocalBinder
             msdbService = binder.getService()
             serviceConnected = true
-            if (msdbService.isBillingAvailable() && !msdbService.isSubscribed()) {
-                binding.subscribeButton.text = getString(R.string.support_subscribe)
-
-            } else if (msdbService.isSubscribed()) {
-                binding.subscribeButton.isEnabled = false
-                binding.subscribeButton.text = getString(R.string.support_subscribed)
-            } else {
-                binding.subscribeButton.isEnabled = false
-                binding.subscribeButton.text = getString(R.string.support_cannot_subscribe)
-            }
+//            if (msdbService.isBillingAvailable() && !msdbService.isSubscribed()) {
+//                binding.subscribeButton.text = getString(R.string.support_subscribe)
+//
+//            } else if (msdbService.isSubscribed()) {
+//                binding.subscribeButton.isEnabled = false
+//                binding.subscribeButton.text = getString(R.string.support_subscribed)
+//            } else {
+//                binding.subscribeButton.isEnabled = false
+//                binding.subscribeButton.text = getString(R.string.support_cannot_subscribe)
+//            }
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
@@ -69,7 +69,7 @@ class SupportActivity : AppCompatActivity() {
         binding.supportTextView.text = getString(R.string.support_title)
 
         binding.subscribeButton.setOnClickListener {
-            msdbService.initBillingFlow(this)
+            // msdbService.initBillingFlow(this)
         }
     }
 
@@ -77,10 +77,10 @@ class SupportActivity : AppCompatActivity() {
         super.onResume()
 
         if (serviceConnected) {
-            if (msdbService.isSubscribed()) {
-                binding.subscribeButton.isEnabled = false
-                binding.subscribeButton.text = getString(R.string.support_subscribed)
-            }
+//            if (msdbService.isSubscribed()) {
+//                binding.subscribeButton.isEnabled = false
+//                binding.subscribeButton.text = getString(R.string.support_subscribed)
+//            }
         } else {
             binding.subscribeButton.isEnabled = false
             binding.subscribeButton.text = getString(R.string.support_cannot_subscribe)
