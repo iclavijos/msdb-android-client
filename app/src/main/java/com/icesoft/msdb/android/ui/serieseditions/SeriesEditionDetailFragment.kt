@@ -4,6 +4,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.IBinder
 import android.view.LayoutInflater
@@ -26,6 +28,7 @@ import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+
 
 class SeriesEditionDetailFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
     private lateinit var msdbService: MSDBService
@@ -71,6 +74,9 @@ class SeriesEditionDetailFragment : Fragment(), AdapterView.OnItemSelectedListen
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val sharedPref = requireActivity().getSharedPreferences("SeriesEditionDetailPrefs", 0)
+        val spinnerSeriesId = sharedPref.getLong("series_edition_spinner_item", 0L)
+
         val seriesId = arguments?.getLong("seriesId")!!
         val view = inflater.inflate(R.layout.fragment_series_edition_detail, container, false)
 
@@ -92,13 +98,19 @@ class SeriesEditionDetailFragment : Fragment(), AdapterView.OnItemSelectedListen
             seriesEditions =
                 opSeriesEditions.get().sortedByDescending(SeriesEdition::periodEnd)
             val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-            val currentEdition = seriesEditions
-                .firstOrNull { edition -> edition.periodEnd == currentYear.toString() }
-                ?: seriesEditions.first()
+            val orientation = resources.configuration.orientation
+            val currentEdition = if (spinnerSeriesId != 0L) {
+                seriesEditions.firstOrNull { edition -> edition.id == spinnerSeriesId }
+            } else {
+                seriesEditions
+                    .firstOrNull { edition -> edition.periodEnd == currentYear.toString() }
+                    ?: seriesEditions.first()
+            }
+
             currentEditionIndex = seriesEditions.indexOf(currentEdition)
 
             // Set the adapter
-            adapter = SeriesEditionDetailRecyclerViewAdapter(getEditionEvents(currentEdition))
+            adapter = SeriesEditionDetailRecyclerViewAdapter(getEditionEvents(currentEdition!!))
         }
 
         recyclerView.adapter = adapter
@@ -129,11 +141,26 @@ class SeriesEditionDetailFragment : Fragment(), AdapterView.OnItemSelectedListen
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
         if (userSelect) {
             val seriesEdition = parent.getItemAtPosition(pos) as SeriesEdition
+            val sharedPref = requireActivity().getSharedPreferences("SeriesEditionDetailPrefs", Context.MODE_PRIVATE)
+            val prefEditor = sharedPref.edit()
+            prefEditor.putLong("series_edition_spinner_item", seriesEdition.id!!)
+            prefEditor.apply()
             adapter.updateEventsList(getEditionEvents(seriesEdition))
         }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>) {
         println("Nothing selected")
+    }
+
+    override fun onDestroyView() {
+        val sharedPreferences: SharedPreferences = requireContext()
+            .getSharedPreferences("SeriesEditionDetailPrefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().remove("series_edition_spinner_item").apply()
+        super.onDestroyView()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
     }
 }
