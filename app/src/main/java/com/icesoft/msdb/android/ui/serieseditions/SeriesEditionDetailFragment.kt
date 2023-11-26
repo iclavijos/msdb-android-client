@@ -98,7 +98,7 @@ class SeriesEditionDetailFragment : Fragment(), AdapterView.OnItemSelectedListen
             seriesEditions =
                 opSeriesEditions.get().sortedByDescending(SeriesEdition::periodEnd)
             val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-            val orientation = resources.configuration.orientation
+            // val orientation = resources.configuration.orientation
             val currentEdition = if (spinnerSeriesId != 0L) {
                 seriesEditions.firstOrNull { edition -> edition.id == spinnerSeriesId }
             } else {

@@ -48,12 +48,8 @@ public class EventDetailsInfoFragment extends Fragment {
             racetrackNameTextView.setText(racetrackLayout.getRacetrack().getName());
 
             ImageView trackLayoutImageview = eventDetailsView.findViewById(R.id.racetrackLayoutEventDetailsImageView);
-            String layoutUrl = racetrackLayout.getLayoutImageUrl();
-            if (isDarkMode()) {
-                layoutUrl = layoutUrl.replace("image/upload", "image/upload/e_negate");
-            }
             Glide.with(eventDetailsView)
-                    .load(layoutUrl)
+                    .load(racetrackLayout.getLayoutImageUrl())
                     //.override(150)
                     .centerInside()
                     .dontAnimate()
