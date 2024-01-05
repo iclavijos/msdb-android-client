@@ -111,9 +111,14 @@ public class UpcomingSessionsViewModel extends ViewModel {
 
         return upcomingSessions
             .stream()
-            .filter(upcomingSession ->
-                    Objects.requireNonNull(upcomingSession.getSeriesIds()).stream()
-                            .anyMatch(id -> enabledSeriesIds.contains("series-" + id) || enabledSeriesIds.isEmpty()))
+            .filter(upcomingSession -> {
+                if (enabledSeriesIds.isEmpty()) {
+                    return true;
+                } else {
+                    return Objects.requireNonNull(upcomingSession.getSeriesIds()).stream()
+                            .anyMatch(id -> enabledSeriesIds.contains("series-" + id));
+                }
+            })
             .peek(upcomingSession -> {
                 LocalDate startDate = LocalDateTime.ofInstant(
                         Instant.ofEpochSecond(upcomingSession.getSessionStartTime()), ZoneId.systemDefault()).toLocalDate();
